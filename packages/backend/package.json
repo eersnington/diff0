@@ -1,0 +1,23 @@
+{
+  "name": "@v1/backend",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "convex dev --tail-logs",
+    "setup": "convex dev --once && convex env set VALIDATE_ENV=true",
+    "seed": "convex dev --once && convex run init"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@auth/core": "0.37.0",
+    "@convex-dev/auth": "^0.0.80",
+    "@convex-dev/polar": "npm:@erquhart/convex-polar@0.2.0-alpha.5",
+    "@polar-sh/sdk": "^0.26.1",
+    "convex": "^1.19.2",
+    "convex-helpers": "^0.1.63",
+    "openai": "^4.61.1",
+    "standardwebhooks": "^1.0.0"
+  }
+}

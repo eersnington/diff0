@@ -1,0 +1,45 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "globalDependencies": ["**/.env"],
+  "ui": "stream",
+  "tasks": {
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
+    "build": {
+      "env": [
+        "RESEND_API_KEY",
+        "LOOPS_ENDPOINT",
+        "LOOPS_API_KEY",
+        "OPENPANEL_SECRET_KEY",
+        "SENTRY_AUTH_TOKEN",
+        "SENTRY_ORG",
+        "SENTRY_PROJECT"
+      ],
+      "inputs": ["$TURBO_DEFAULT$", ".env"],
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "next-env.d.ts", ".expo/**"]
+    },
+    "start": {
+      "cache": false
+    },
+    "test": {
+      "cache": false
+    },
+    "clean": {
+      "cache": false
+    },
+    "dev": {
+      "inputs": ["$TURBO_DEFAULT$", ".env"],
+      "persistent": true,
+      "cache": false
+    },
+    "lint": {
+      "dependsOn": ["^topo"]
+    },
+    "typecheck": {
+      "dependsOn": ["^topo"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "extends": "@v1/typescript/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "strict": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "next.config.js",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "tailwind.config.ts",
+    "src/env.mjs"
+  ],
+  "exclude": ["node_modules"]
+}
