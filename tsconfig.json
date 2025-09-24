@@ -1,3 +1,6 @@
 {
-  "extends": "@v1/typescript/base.json"
+  "extends": "@v1/typescript/base.json",
+  "compilerOptions": {
+    "strictNullChecks": true
+  }
 }
