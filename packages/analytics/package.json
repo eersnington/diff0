@@ -1,5 +1,5 @@
 {
-  "name": "@v1/analytics",
+  "name": "@d0/analytics",
   "version": "1.0.0",
   "main": "src/index.ts",
   "private": true,
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@openpanel/nextjs": "^1.0.0",
-    "@v1/logger": "workspace:*",
+    "@d0/logger": "workspace:*",
     "@vercel/functions": "^1.4.1"
   },
   "exports": {

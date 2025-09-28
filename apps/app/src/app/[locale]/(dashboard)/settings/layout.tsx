@@ -1,7 +1,7 @@
 "use client";
 import { I18nProviderClient, useScopedI18n } from "@/locales/client";
-import { buttonVariants } from "@v1/ui/button";
-import { cn } from "@v1/ui/utils";
+import { buttonVariants } from "@d0/ui/button";
+import { cn } from "@d0/ui/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 

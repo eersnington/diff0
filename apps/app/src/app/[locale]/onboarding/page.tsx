@@ -2,10 +2,10 @@
 
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { api } from "@v1/backend/convex/_generated/api";
-import * as validators from "@v1/backend/convex/utils/validators";
-import { Button } from "@v1/ui/button";
-import { Input } from "@v1/ui/input";
+import { api } from "@d0/backend/convex/_generated/api";
+import * as validators from "@d0/backend/convex/utils/validators";
+import { Button } from "@d0/ui/button";
+import { Input } from "@d0/ui/input";
 import { useMutation, useQuery } from "convex/react";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";

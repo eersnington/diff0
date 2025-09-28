@@ -1,5 +1,5 @@
 {
-  "extends": "@v1/typescript/nextjs.json",
+  "extends": "@d0/typescript/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

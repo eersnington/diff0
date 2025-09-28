@@ -3,7 +3,7 @@ import {
   type PostEventPayload,
   useOpenPanel,
 } from "@openpanel/nextjs";
-import { logger } from "@v1/logger";
+import { logger } from "@d0/logger";
 
 const isProd = process.env.NODE_ENV === "production";
 
