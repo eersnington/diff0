@@ -1,9 +1,9 @@
 "use client";
 
 import { CheckoutLink, CustomerPortalLink } from "@convex-dev/polar/react";
-import { api } from "@v1/backend/convex/_generated/api";
-import { Button } from "@v1/ui/button";
-import { Switch } from "@v1/ui/switch";
+import { api } from "@d0/backend/convex/_generated/api";
+import { Button } from "@d0/ui/button";
+import { Switch } from "@d0/ui/switch";
 import { useQuery } from "convex/react";
 import { useState } from "react";
 

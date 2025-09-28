@@ -1,5 +1,5 @@
 {
-  "name": "v1",
+  "name": "diff0",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -11,11 +11,11 @@
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
     "dev": "turbo dev --parallel",
-    "dev:web": "turbo dev --filter=@v1/web",
-    "dev:jobs": "turbo jobs --filter=@v1/jobs",
-    "dev:app": "turbo dev --filter=@v1/app",
-    "start:web": "turbo start --filter=@v1/web",
-    "start:app": "turbo start --filter=@v1/app",
+    "dev:web": "turbo dev --filter=@d0/web",
+    "dev:jobs": "turbo jobs --filter=@d0/jobs",
+    "dev:app": "turbo dev --filter=@d0/app",
+    "start:web": "turbo start --filter=@d0/web",
+    "start:app": "turbo start --filter=@d0/app",
     "test": "turbo test --parallel",
     "format": "biome format --write .",
     "lint": "turbo lint && bun lint:repo",
