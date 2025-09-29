@@ -36,10 +36,10 @@ export function SubscriptionSuccessEmail({ email }: SubscriptionEmailOptions) {
       >
         <Container style={{ margin: "0 auto", padding: "20px 0 48px" }}>
           <Img
+            alt=""
+            height="37"
             src={`${env.SITE_URL}/images/convex-logo-email.jpg`}
             width="40"
-            height="37"
-            alt=""
           />
           <Text style={{ fontSize: "16px", lineHeight: "26px" }}>
             Hello {email}!
@@ -76,10 +76,10 @@ export function SubscriptionErrorEmail({ email }: SubscriptionEmailOptions) {
       >
         <Container style={{ margin: "0 auto", padding: "20px 0 48px" }}>
           <Img
+            alt=""
+            height="37"
             src="https://react-email-demo-ijnnx5hul-resend.vercel.app/static/vercel-logo.png"
             width="40"
-            height="37"
-            alt=""
           />
           <Text style={{ fontSize: "16px", lineHeight: "26px" }}>
             Hello {email}.

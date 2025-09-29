@@ -29,7 +29,7 @@ export default internalAction(async () => {
     recurringInterval: "year",
     prices: [
       {
-        priceAmount: 20000,
+        priceAmount: 20_000,
         amountType: "fixed",
       },
     ],

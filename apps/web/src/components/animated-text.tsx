@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const lettersAndSymbols = "abcdefghijklmnopqrstuvwxyz!@#$%^&*-_+=;:<>,";
 
-interface AnimatedTextProps {
+type AnimatedTextProps = {
   text: string;
-}
+};
 
 export function AnimatedText({ text }: AnimatedTextProps) {
   const [animatedText, setAnimatedText] = useState("");
@@ -14,7 +14,7 @@ export function AnimatedText({ text }: AnimatedTextProps) {
   const getRandomChar = useCallback(
     () =>
       lettersAndSymbols[Math.floor(Math.random() * lettersAndSymbols.length)],
-    [],
+    []
   );
 
   const animateText = useCallback(async () => {
@@ -45,7 +45,7 @@ export function AnimatedText({ text }: AnimatedTextProps) {
             .slice(i + 1)
             .split("")
             .map(() => getRandomChar())
-            .join(""),
+            .join("")
       );
     }
   }, [text, getRandomChar]);

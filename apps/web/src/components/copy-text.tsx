@@ -4,6 +4,8 @@ import { Icons } from "@d0/ui/icons";
 import { useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 
+const TIMEOUT_MS = 2000;
+
 export function CopyText({ value }: { value: string }) {
   const [_, copy] = useCopyToClipboard();
   const [copied, setCopied] = useState(false);
@@ -12,14 +14,14 @@ export function CopyText({ value }: { value: string }) {
     copy(value);
     setCopied(true);
 
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), TIMEOUT_MS);
   };
 
   return (
     <button
+      className="flex items-center gap-2 rounded-full border border-border bg-background p-4 font-mono text-[#878787] text-xs transition-colors md:text-sm"
       onClick={handleCopy}
       type="button"
-      className="font-mono text-[#878787] text-xs md:text-sm p-4 rounded-full border border-border transition-colors flex items-center gap-2 bg-background"
     >
       <span>{value}</span>
       {copied ? (

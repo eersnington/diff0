@@ -1,5 +1,5 @@
-import polar from "@convex-dev/polar/convex.config";
 import betterAuth from "@convex-dev/better-auth/convex.config";
+import polar from "@convex-dev/polar/convex.config";
 import { defineApp } from "convex/server";
 
 const app = defineApp();

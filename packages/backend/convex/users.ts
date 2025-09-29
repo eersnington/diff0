@@ -1,6 +1,6 @@
 import { getAuthUserId } from "@convex-dev/auth/server";
-import { asyncMap } from "convex-helpers";
 import { v } from "convex/values";
+import { asyncMap } from "convex-helpers";
 import { internal } from "./_generated/api";
 import { action, internalMutation, mutation, query } from "./_generated/server";
 import { polar } from "./subscriptions";
@@ -94,14 +94,14 @@ export const deleteUserAccount = internalMutation({
         const authAccount = await ctx.db
           .query("authAccounts")
           .withIndex("userIdAndProvider", (q) =>
-            q.eq("userId", args.userId).eq("provider", provider),
+            q.eq("userId", args.userId).eq("provider", provider)
           )
           .unique();
         if (!authAccount) {
           return;
         }
         await ctx.db.delete(authAccount._id);
-      },
+      }
     );
     await ctx.db.delete(args.userId);
   },
@@ -117,12 +117,12 @@ export const deleteCurrentUserAccount = action({
     const subscription = await polar.getCurrentSubscription(ctx, {
       userId,
     });
-    if (!subscription) {
-      console.error("No subscription found");
-    } else {
+    if (subscription) {
       await polar.cancelSubscription(ctx, {
         revokeImmediately: true,
       });
+    } else {
+      console.error("No subscription found");
     }
     await ctx.runMutation(internal.users.deleteUserAccount, {
       userId,

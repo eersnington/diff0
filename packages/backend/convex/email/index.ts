@@ -1,9 +1,16 @@
 import { z } from "zod";
 import { env } from "../env";
 
+const StatusCodes = {
+  OK: 200,
+  NotFound: 404,
+  InternalError: 500,
+} as const;
+
 const ResendSuccessSchema = z.object({
   id: z.string(),
 });
+
 const ResendErrorSchema = z.union([
   z.object({
     name: z.string(),
@@ -13,7 +20,7 @@ const ResendErrorSchema = z.union([
   z.object({
     name: z.literal("UnknownError"),
     message: z.literal("Unknown Error"),
-    statusCode: z.literal(500),
+    statusCode: z.literal(StatusCodes.InternalError),
     cause: z.any(),
   }),
 ]);
