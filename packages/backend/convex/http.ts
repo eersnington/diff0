@@ -1,10 +1,10 @@
 import { httpRouter } from "convex/server";
-import { auth } from "./auth";
+import { authComponent, createAuth } from "./auth";
 import { polar } from "./subscriptions";
 
 const http = httpRouter();
 
-auth.addHttpRoutes(http);
+authComponent.registerRoutes(http, createAuth);
 
 // Register the webhook handler at /polar/events
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
