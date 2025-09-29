@@ -1,5 +1,4 @@
-import { Header } from "@/app/[locale]/(dashboard)/_components/header";
-import { getScopedI18n } from "@/locales/server";
+import { Header } from "@/app/(dashboard)/_components/header";
 
 export const metadata = {
   title: "Home",
@@ -10,7 +9,6 @@ import { cn } from "@d0/ui/utils";
 import { ExternalLink, Plus } from "lucide-react";
 
 export default async function Page() {
-  const t = await getScopedI18n("dashboard");
 
   return (
     <>

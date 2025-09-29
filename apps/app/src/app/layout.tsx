@@ -6,7 +6,7 @@ import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { ConvexClientProvider } from "../convex-client-provider";
+import { ConvexClientProvider } from "./convex-client-provider";
 
 export const metadata: Metadata = {
   title: "diff0 app",

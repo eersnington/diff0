@@ -1,6 +1,5 @@
 "use client";
 
-import { useScopedI18n } from "@/locales/client";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
@@ -17,7 +16,6 @@ import { Upload } from "lucide-react";
 import { useState } from "react";
 
 export default function DashboardSettings() {
-  const t = useScopedI18n("settings");
   const user = useQuery(api.users.getUser);
   const { signOut } = useAuthActions();
   const updateUserImage = useMutation(api.users.updateUserImage);
