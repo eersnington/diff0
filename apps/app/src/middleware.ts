@@ -4,13 +4,6 @@ import {
   isAuthenticatedNextjs,
   nextjsMiddlewareRedirect,
 } from "@convex-dev/auth/nextjs/server";
-import { createI18nMiddleware } from "next-international/middleware";
-
-const I18nMiddleware = createI18nMiddleware({
-  locales: ["en", "fr", "es"],
-  defaultLocale: "en",
-  urlMappingStrategy: "rewrite",
-});
 
 const isSignInPage = createRouteMatcher(["/login"]);
 
@@ -35,8 +28,6 @@ export default convexAuthNextjsMiddleware(async (request, { convexAuth }) => {
     isSignIn,
     isAuthenticated,
   });
-
-  return I18nMiddleware(request);
 });
 
 export const config = {
