@@ -1,14 +1,6 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
   "linter": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "packages/tsconfig"
-    ],
     "enabled": true,
     "rules": {
       "recommended": true,
@@ -22,9 +14,6 @@
         "noForEach": "off"
       }
     }
-  },
-  "formatter": {
-    "indentStyle": "space"
   },
   "extends": [
     "ultracite"

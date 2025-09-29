@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@auth/core": "0.37.0",
-    "@convex-dev/auth": "^0.0.80",
+    "@convex-dev/better-auth": "^0.8.6",
     "@convex-dev/polar": "npm:@erquhart/convex-polar@0.2.0-alpha.5",
     "@d0/analytics": "workspace:*",
     "@d0/backend": "workspace:*",

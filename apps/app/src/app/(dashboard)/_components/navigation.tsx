@@ -27,6 +27,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ThemeSwitcher } from "./theme-switcher";
+import { authClient } from "@d0/backend/lib/auth-client";
 
 export function Navigation({
   preloadedUser,
@@ -35,7 +36,11 @@ export function Navigation({
   preloadedUser: Preloaded<typeof api.users.getUser>;
   preloadedProducts: Preloaded<typeof api.subscriptions.listAllProducts>;
 }) {
-  const { signOut } = useAuthActions();
+
+  const signOut = async () => {
+    await authClient.signOut()
+  }
+  
   const pathname = usePathname();
   const router = useRouter();
   const isDashboardPath = pathname === "/";
