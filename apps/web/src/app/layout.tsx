@@ -15,10 +15,10 @@ const DepartureMono = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://v1-convex.vercel.app"),
-  title: "Create v1",
+  metadataBase: new URL("https://diff0.dev"),
+  title: "diff0",
   description:
-    "A free, open-source starter kit for your next project, built with insights from Midday.",
+    "OSS AI PR Review Agent",
 };
 
 export default function RootLayout({

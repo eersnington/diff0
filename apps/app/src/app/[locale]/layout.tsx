@@ -9,8 +9,8 @@ import { ThemeProvider } from "next-themes";
 import { ConvexClientProvider } from "../convex-client-provider";
 
 export const metadata: Metadata = {
-  title: "Create v1",
-  description: "Production ready Next.js app",
+  title: "diff0 app",
+  description: "OSS AI PR Review Agent",
 };
 
 export const viewport = {
