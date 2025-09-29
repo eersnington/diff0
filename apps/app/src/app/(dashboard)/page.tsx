@@ -12,17 +12,17 @@ export default async function Page() {
 
   return (
     <>
-      <Header title={t("title")} description={t("description")} />
+      <Header title="Create your App" description="Build your app on top of Convex SaaS, explore the documentation and start your journey." />
       <div className="flex h-full w-full bg-secondary px-6 py-8 dark:bg-black">
         <div className="z-10 mx-auto flex h-full w-full max-w-screen-xl gap-12">
           <div className="flex w-full flex-col rounded-lg border border-border bg-card dark:bg-black">
             <div className="flex w-full flex-col rounded-lg p-6">
               <div className="flex flex-col gap-2">
                 <h2 className="text-xl font-medium text-primary">
-                  {t("bodyTitle")}
+                  Get Started
                 </h2>
                 <p className="text-sm font-normal text-primary/60">
-                  {t("bodyDescription")}
+                  Explore the Dashboard and get started with your first app.
                 </p>
               </div>
             </div>
@@ -37,13 +37,13 @@ export default async function Page() {
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <p className="text-base font-medium text-primary">
-                      {t("title")}
+                      Create your App
                     </p>
                     <p className="text-center text-base font-normal text-primary/60">
-                      {t("description")}
+                      Build your app on top of Convex SaaS, explore the documentation and start your journey.
                     </p>
                     <span className="hidden select-none items-center rounded-full bg-green-500/5 px-3 py-1 text-xs font-medium tracking-tight text-green-700 ring-1 ring-inset ring-green-600/20 backdrop-blur-md dark:bg-green-900/40 dark:text-green-100 md:flex">
-                      {t("bodyTip")}
+                      TIP: Try changing the language!
                     </span>
                   </div>
                 </div>
@@ -57,7 +57,7 @@ export default async function Page() {
                     )}
                   >
                     <span className="text-sm font-medium text-primary/60 group-hover:text-primary">
-                      {t("documentationLink")}
+                      Explore Documentation
                     </span>
                     <ExternalLink className="h-4 w-4 stroke-[1.5px] text-primary/60 group-hover:text-primary" />
                   </a>

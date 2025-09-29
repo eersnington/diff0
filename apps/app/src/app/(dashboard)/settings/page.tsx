@@ -60,10 +60,10 @@ export default function DashboardSettings() {
         <div className="flex w-full items-start justify-between rounded-lg p-6">
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-medium text-primary">
-              {t("avatar.title")}
+              Your Avatar
             </h2>
             <p className="text-sm font-normal text-primary/60">
-              {t("avatar.description")}
+              This is your avatar. It will be displayed on your profile.
             </p>
           </div>
           <label
@@ -96,7 +96,7 @@ export default function DashboardSettings() {
         </div>
         <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-secondary px-6 dark:bg-card">
           <p className="text-sm font-normal text-primary/60">
-            {t("avatar.uploadHint")}
+            Click on the avatar to upload a custom one from your files.
           </p>
           {user.avatarUrl && (
             <Button
@@ -107,7 +107,7 @@ export default function DashboardSettings() {
                 removeUserImage({});
               }}
             >
-              {t("avatar.resetButton")}
+              Reset
             </Button>
           )}
         </div>
@@ -170,15 +170,15 @@ export default function DashboardSettings() {
       <div className="flex w-full flex-col items-start rounded-lg border border-destructive bg-card">
         <div className="flex flex-col gap-2 p-6">
           <h2 className="text-xl font-medium text-primary">
-            {t("deleteAccount.title")}
+            Delete Account
           </h2>
           <p className="text-sm font-normal text-primary/60">
-            {t("deleteAccount.description")}
+            Permanently delete your Convex SaaS account, all of your projects, links and their respective stats.
           </p>
         </div>
         <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-red-500/10 px-6 dark:bg-red-500/10">
           <p className="text-sm font-normal text-primary/60">
-            {t("deleteAccount.warning")}
+            This action cannot be undone, proceed with caution.
           </p>
           <Button
             size="sm"
@@ -188,8 +188,8 @@ export default function DashboardSettings() {
             })}
           >
             {doubleCheck
-              ? t("deleteAccount.confirmButton")
-              : t("deleteAccount.deleteButton")}
+              ? "Are you sure?"
+              : "Delete Account"}
           </Button>
         </div>
       </div>

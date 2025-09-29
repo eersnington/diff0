@@ -26,7 +26,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LanguageSwitcher } from "./language-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 
 export function Navigation({
@@ -203,16 +202,6 @@ export function Navigation({
                 <ThemeSwitcher />
               </DropdownMenuItem>
 
-              <DropdownMenuItem
-                className={cn(
-                  "group flex h-9 justify-between rounded-md px-2 hover:bg-transparent",
-                )}
-              >
-                <span className="w-full text-sm text-primary/60 group-hover:text-primary group-focus:text-primary">
-                  Language
-                </span>
-                <LanguageSwitcher />
-              </DropdownMenuItem>
 
               <DropdownMenuSeparator className="mx-0 my-2" />
 

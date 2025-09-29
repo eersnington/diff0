@@ -7,7 +7,6 @@ import {
 import { cn } from "@d0/ui/utils";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 export function ThemeSwitcher({ triggerClass }: { triggerClass?: string }) {
   const { theme: currentTheme, setTheme, themes } = useTheme();
