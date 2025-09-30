@@ -1,20 +1,24 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { getUser } from "./auth";
 
 const DEFAULT_TRANSACTION_LIMIT = 50;
 
 export const getBalance = query({
   args: {},
   handler: async (ctx) => {
-    const user = await getUser(ctx);
-    const userId = user.userId ?? user._id;
-    
+    const identity = await ctx.auth.getUserIdentity();
+    console.log(identity);
+
+    if (identity === null) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+
     const credits = await ctx.db
       .query("userCredits")
       .withIndex("userId", (q) => q.eq("userId", userId))
       .first();
-    
+
     if (!credits) {
       return {
         balance: 0,
@@ -22,7 +26,7 @@ export const getBalance = query({
         totalUsed: 0,
       };
     }
-    
+
     return {
       balance: credits.balance,
       totalPurchased: credits.totalPurchased,
@@ -34,14 +38,19 @@ export const getBalance = query({
 export const initializeCredits = mutation({
   args: {},
   handler: async (ctx) => {
-    const user = await getUser(ctx);
-    const userId = user.userId ?? user._id;
-    
+    const identity = await ctx.auth.getUserIdentity();
+    console.log(identity);
+
+    if (identity === null) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
+
     const existing = await ctx.db
       .query("userCredits")
       .withIndex("userId", (q) => q.eq("userId", userId))
       .first();
-    
+
     if (!existing) {
       await ctx.db.insert("userCredits", {
         userId,
@@ -59,16 +68,20 @@ export const getTransactions = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const user = await getUser(ctx);
-    const userId = user.userId ?? user._id;
+    const identity = await ctx.auth.getUserIdentity();
+    console.log(identity);
+    if (identity === null) {
+      throw new Error("Not authenticated");
+    }
+    const userId = identity.subject;
     const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
-    
+
     const transactions = await ctx.db
       .query("creditTransactions")
       .withIndex("userId", (q) => q.eq("userId", userId))
       .order("desc")
       .take(limit);
-    
+
     return transactions;
   },
 });
@@ -85,9 +98,9 @@ export const addCredits = mutation({
       .query("userCredits")
       .withIndex("userId", (q) => q.eq("userId", args.userId))
       .first();
-    
+
     const newBalance = (credits?.balance ?? 0) + args.amount;
-    
+
     if (credits) {
       await ctx.db.patch(credits._id, {
         balance: newBalance,
@@ -103,7 +116,7 @@ export const addCredits = mutation({
         lastUpdated: Date.now(),
       });
     }
-    
+
     await ctx.db.insert("creditTransactions", {
       userId: args.userId,
       type: "purchase",
@@ -113,7 +126,7 @@ export const addCredits = mutation({
       polarCheckoutId: args.polarCheckoutId,
       createdAt: Date.now(),
     });
-    
+
     return { balance: newBalance };
   },
 });
@@ -129,19 +142,19 @@ export const deductCredits = mutation({
       .query("userCredits")
       .withIndex("userId", (q) => q.eq("userId", args.userId))
       .first();
-    
+
     if (!credits || credits.balance < args.amount) {
       throw new Error("Insufficient credits");
     }
-    
+
     const newBalance = credits.balance - args.amount;
-    
+
     await ctx.db.patch(credits._id, {
       balance: newBalance,
       totalUsed: credits.totalUsed + args.amount,
       lastUpdated: Date.now(),
     });
-    
+
     await ctx.db.insert("creditTransactions", {
       userId: args.userId,
       type: "usage",
@@ -150,7 +163,7 @@ export const deductCredits = mutation({
       description: args.description,
       createdAt: Date.now(),
     });
-    
+
     return { balance: newBalance };
   },
 });
