@@ -3,15 +3,18 @@ import { preloadQuery } from "convex/nextjs";
 import { BillingContent } from "./billing-content";
 
 export default async function BillingPage() {
-  const credits = await preloadQuery(api.credits.getBalance);
-  const transactions = await preloadQuery(api.credits.getTransactions, {
-    limit: 10,
-  });
+  const preloadedCredits = await preloadQuery(api.credits.getBalance);
+  const preloadedTransactions = await preloadQuery(
+    api.credits.getTransactions,
+    {
+      limit: 10,
+    }
+  );
 
   return (
     <BillingContent
-      preloadedCredits={credits}
-      preloadedTransactions={transactions}
+      preloadedCredits={preloadedCredits}
+      preloadedTransactions={preloadedTransactions}
     />
   );
 }
