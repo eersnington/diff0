@@ -23,5 +23,18 @@
       "!**/components/ui"
     ]
   },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off",
+        "useNamingConvention": "off"
+      },
+      "complexity": {
+        "noForEach": "off"
+      }
+    }
+  },
   "extends": ["ultracite"]
 }
