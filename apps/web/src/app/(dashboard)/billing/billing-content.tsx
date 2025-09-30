@@ -1,0 +1,257 @@
+"use client";
+
+import type { Preloaded } from "convex/react";
+import { usePreloadedQuery } from "convex/react";
+import type { FunctionReference } from "convex/server";
+import { CreditCard, TrendingUp } from "lucide-react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+type BillingContentProps = {
+  preloadedCredits: Preloaded<FunctionReference<"query", "public">>;
+  preloadedTransactions: Preloaded<FunctionReference<"query", "public">>;
+};
+
+const CREDIT_PACKAGES = [
+  { credits: 100, price: 10, popular: false },
+  { credits: 500, price: 45, popular: true },
+  { credits: 1000, price: 80, popular: false },
+];
+
+const PRICE_PRECISION = 3;
+
+export function BillingContent({
+  preloadedCredits,
+  preloadedTransactions,
+}: BillingContentProps) {
+  const credits = usePreloadedQuery(preloadedCredits);
+  const transactions = usePreloadedQuery(preloadedTransactions);
+
+  const formatDate = (timestamp: number) =>
+    new Date(timestamp).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+
+  return (
+    <>
+      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <div className="flex items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <Separator
+            className="mr-2 data-[orientation=vertical]:h-4"
+            orientation="vertical"
+          />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Billing</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </header>
+
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+        <div className="mb-4">
+          <h2 className="font-bold text-3xl tracking-tight">Billing</h2>
+          <p className="text-muted-foreground">
+            Manage your credits and view transaction history
+          </p>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="h-5 w-5" />
+                Credits Balance
+              </CardTitle>
+              <CardDescription>
+                Use credits to run AI code reviews on your pull requests
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="font-bold text-4xl">
+                  {credits?.balance ?? 0}
+                </div>
+                <p className="text-muted-foreground text-sm">
+                  Available credits
+                </p>
+                <div className="grid grid-cols-2 gap-4 pt-4 text-sm">
+                  <div>
+                    <p className="text-muted-foreground">Total Purchased</p>
+                    <p className="font-medium text-lg">
+                      {credits?.totalPurchased ?? 0}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Total Used</p>
+                    <p className="font-medium text-lg">
+                      {credits?.totalUsed ?? 0}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Credit Usage
+              </CardTitle>
+              <CardDescription>
+                Track your AI review credit consumption
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex h-[140px] items-center justify-center rounded-lg border border-dashed">
+                <p className="text-muted-foreground text-sm">
+                  Usage chart coming soon
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Top Up Credits</CardTitle>
+            <CardDescription>
+              One-time payment for credits. No monthly subscriptions.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {CREDIT_PACKAGES.map((pkg) => (
+                <Card
+                  className={
+                    pkg.popular ? "border-primary shadow-md" : undefined
+                  }
+                  key={pkg.credits}
+                >
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <span>{pkg.credits} Credits</span>
+                      {pkg.popular && (
+                        <span className="rounded-full bg-primary px-2 py-1 text-primary-foreground text-xs">
+                          Popular
+                        </span>
+                      )}
+                    </CardTitle>
+                    <CardDescription>
+                      ${pkg.price} one-time payment
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button className="w-full" variant="outline">
+                      Purchase ${pkg.price}
+                    </Button>
+                    <p className="mt-2 text-center text-muted-foreground text-xs">
+                      ${(pkg.price / pkg.credits).toFixed(PRICE_PRECISION)} per
+                      credit
+                    </p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+            <p className="mt-4 text-muted-foreground text-sm">
+              Payment processing via Polar. Credits never expire.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Transaction History</CardTitle>
+            <CardDescription>
+              View your recent credit purchases and usage
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {transactions && transactions.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                    <TableHead className="text-right">Balance</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {transactions.map(
+                    (tx: {
+                      _id: string;
+                      createdAt: number;
+                      type: string;
+                      description: string;
+                      amount: number;
+                      balance: number;
+                    }) => (
+                      <TableRow key={tx._id}>
+                        <TableCell>{formatDate(tx.createdAt)}</TableCell>
+                        <TableCell className="capitalize">{tx.type}</TableCell>
+                        <TableCell>{tx.description}</TableCell>
+                        <TableCell
+                          className={`text-right font-medium ${
+                            tx.amount > 0 ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
+                          {tx.amount > 0 ? "+" : ""}
+                          {tx.amount}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {tx.balance}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  )}
+                </TableBody>
+              </Table>
+            ) : (
+              <div className="rounded-lg border border-dashed p-8 text-center">
+                <p className="text-muted-foreground text-sm">
+                  No transactions yet. Purchase credits to get started.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </>
+  );
+}

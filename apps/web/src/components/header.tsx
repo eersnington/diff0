@@ -4,7 +4,8 @@ import type { api } from "@diff0/backend/convex/_generated/api";
 import { type Preloaded, usePreloadedQuery } from "convex/react";
 import { CreditCard, LayoutDashboard, Settings } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { setCookie } from "@/actions/cookies";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,23 +30,20 @@ function censorEmailText(email: string): string {
   return `${censored}@${domain}`;
 }
 
-export function Header(props: {
-  preloaded: Preloaded<typeof api.auth.getCurrentUser>;
+export function Header({
+  currentUser,
+  initialCensorEmail,
+}: {
+  currentUser: Preloaded<typeof api.auth.getCurrentUser>;
+  initialCensorEmail: boolean;
 }) {
-  const user = usePreloadedQuery(props.preloaded);
+  const user = usePreloadedQuery(currentUser);
 
-  const [shouldCensorEmail, setShouldCensorEmail] = useState(true);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("censorEmail");
-    if (stored !== null) {
-      setShouldCensorEmail(stored === "true");
-    }
-  }, []);
+  const [shouldCensorEmail, setShouldCensorEmail] = useState(initialCensorEmail);
 
   const handleCensorToggle = (checked: boolean) => {
     setShouldCensorEmail(checked);
-    localStorage.setItem("censorEmail", String(checked));
+    setCookie("censorEmail", String(checked));
   };
 
   const getUserInitials = () => {

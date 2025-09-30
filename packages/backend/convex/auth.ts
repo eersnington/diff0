@@ -9,6 +9,7 @@ import {
 } from "@polar-sh/better-auth";
 import { Polar } from "@polar-sh/sdk";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
+import { organization } from "better-auth/plugins";
 import { env } from "../env";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
@@ -47,8 +48,14 @@ export const createAuth = (
       },
     },
     plugins: [
-      // The Convex plugin is required for Convex compatibility
       convex(),
+      organization({
+        teams: {
+          enabled: true,
+          maximumTeams: 10,
+          allowRemovingAllTeams: false,
+        },
+      }),
       polar({
         client: polarClient,
         createCustomerOnSignUp: true,
@@ -56,8 +63,8 @@ export const createAuth = (
           checkout({
             products: [
               {
-                productId: "123-456-789", // ID of Product from Polar Dashboard
-                slug: "pro", // Custom slug for easy reference in Checkout URL, e.g. /checkout/pro
+                productId: "123-456-789",
+                slug: "pro",
               },
             ],
             successUrl: "/success?checkout_id={CHECKOUT_ID}",

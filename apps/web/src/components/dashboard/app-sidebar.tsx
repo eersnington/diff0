@@ -1,17 +1,14 @@
 "use client";
 
+import type { Preloaded } from "convex/react";
+import type { FunctionReference } from "convex/server";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map as MapIcon,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+  CreditCard,
+  GitBranch,
+  LayoutDashboard,
+  Settings,
 } from "lucide-react";
+import { usePreloadedQuery } from "convex/react";
 import type * as React from "react";
 import {
   Sidebar,
@@ -21,152 +18,74 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavMain } from "./nav-main";
-import { NavProjects } from "./nav-projects";
 import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 
-// This is sample data.
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  preloadedUser: Preloaded<FunctionReference<"query", "public">>;
+};
+
+export function AppSidebar({ preloadedUser, ...props }: AppSidebarProps) {
+  const user = usePreloadedQuery(preloadedUser);
+
+  const navMain = [
     {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "Playground",
-      url: "#",
-      icon: SquareTerminal,
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
       isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
+      title: "Repositories",
+      url: "/repositories",
+      icon: GitBranch,
     },
     {
       title: "Settings",
-      url: "#",
-      icon: Settings2,
+      url: "/settings",
+      icon: Settings,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: "GitHub Integration",
+          url: "/settings",
         },
         {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
+          title: "Profile",
+          url: "/settings/profile",
         },
       ],
     },
-  ],
-  projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      title: "Billing",
+      url: "/billing",
+      icon: CreditCard,
+      items: [
+        {
+          title: "Credits",
+          url: "/billing",
+        },
+        {
+          title: "History",
+          url: "/billing/history",
+        },
+      ],
     },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: MapIcon,
-    },
-  ],
-};
+  ];
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  if (!user) {
+    return null;
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher user={user} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

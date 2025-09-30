@@ -2,6 +2,7 @@
 
 import { authClient } from "@diff0/backend/lib/auth-client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,22 +21,26 @@ export default function SignIn() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background">
       <div className="mb-8">
         <div className="block dark:hidden">
-          <Image
-            alt="diff0 logo"
-            className="rounded-xl"
-            height={64}
-            src="/logo-dark.svg"
-            width={64}
-          />
+          <Link href={"/"} passHref>
+            <Image
+              alt="diff0 logo"
+              className="rounded-xl"
+              height={64}
+              src="/logo-dark.svg"
+              width={64}
+            />
+          </Link>
         </div>
         <div className="hidden dark:block">
-          <Image
-            alt="diff0 logo"
-            className="rounded-xl"
-            height={64}
-            src="/logo.svg"
-            width={64}
-          />
+          <Link href={"/"} passHref>
+            <Image
+              alt="diff0 logo"
+              className="rounded-xl"
+              height={64}
+              src="/logo.svg"
+              width={64}
+            />
+          </Link>
         </div>
       </div>
       <Card className="w-full max-w-md">
