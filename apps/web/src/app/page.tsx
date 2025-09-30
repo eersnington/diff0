@@ -1,4 +1,5 @@
 import { api } from "@diff0/backend/convex/_generated/api";
+import { getToken } from "@diff0/backend/lib/auth-server";
 import { preloadQuery } from "convex/nextjs";
 import { Github } from "lucide-react";
 import { cookies } from "next/headers";
@@ -10,8 +11,10 @@ import { Button } from "@/components/ui/button";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
 export default async function Page() {
+  const token = await getToken();
+
   const [currentUser, cookieStore] = await Promise.all([
-    preloadQuery(api.auth.getCurrentUser),
+    preloadQuery(api.auth.getCurrentUser, {}, { token }),
     cookies(),
   ]);
 

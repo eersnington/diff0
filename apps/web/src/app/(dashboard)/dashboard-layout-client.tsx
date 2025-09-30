@@ -8,6 +8,7 @@ import {
   usePreloadedQuery,
 } from "convex/react";
 import type { FunctionReference } from "convex/server";
+import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { AppSidebar } from "@/components/dashboard/app-sidebar";
@@ -23,10 +24,9 @@ export function DashboardLayoutClient({
   return (
     <>
       <AuthLoading>
-        <div className="flex h-screen items-center justify-center">
+        <div className="flex h-screen items-center justify-center bg-background">
           <div className="text-center">
-            <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-current border-r-transparent border-solid motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-            <p className="text-muted-foreground">Loading...</p>
+            <Loader className="size-8 animate-spin" />
           </div>
         </div>
       </AuthLoading>
