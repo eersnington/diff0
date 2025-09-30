@@ -1,17 +1,28 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "extends": ["ultracite"],
-  "javascript": {
-    "globals": ["Liveblocks"]
-  },
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "ignore": [
-      "packages/design-system/components/ui/**",
-      "packages/design-system/lib/**",
-      "packages/design-system/hooks/**",
-      "packages/collaboration/config.ts",
-      "apps/docs/**/*.json",
-      "apps/email/.react-email/**"
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/dist",
+      "!**/.turbo",
+      "!**/dev-dist",
+      "!**/.zed",
+      "!**/.vscode",
+      "!**/routeTree.gen.ts",
+      "!**/src-tauri",
+      "!**/.nuxt",
+      "!bts.jsonc",
+      "!**/.expo",
+      "!**/.wrangler",
+      "!**/.alchemy",
+      "!**/.svelte-kit",
+      "!**/wrangler.jsonc",
+      "!**/.source"
     ]
-  }
+  },
+  "extends": [
+    "ultracite"
+  ]
 }

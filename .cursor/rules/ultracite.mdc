@@ -1,19 +1,190 @@
 ---
-description: Ultracite Rules - AI-Ready Formatter and Linter
+description: Project Context - Rules, Standard and Linter
 globs: "**/*.{ts,tsx,js,jsx}"
 alwaysApply: true
 ---
 
-# Project Context
+Concise rules for building accessible, fast, delightful UIs Use MUST/SHOULD/NEVER to guide decisions
+
+## Interactions
+
+- Keyboard
+  - MUST: Full keyboard support per [WAI-ARIA APG](https://wwww3org/WAI/ARIA/apg/patterns/)
+  - MUST: Visible focus rings (`:focus-visible`; group with `:focus-within`)
+  - MUST: Manage focus (trap, move, and return) per APG patterns
+- Targets & input
+  - MUST: Hit target ≥24px (mobile ≥44px) If visual <24px, expand hit area
+  - MUST: Mobile `<input>` font-size ≥16px or set:
+    ```html
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+    />
+    ```
+  - NEVER: Disable browser zoom
+  - MUST: `touch-action: manipulation` to prevent double-tap zoom; set `-webkit-tap-highlight-color` to match design
+- Inputs & forms (behavior)
+  - MUST: Hydration-safe inputs (no lost focus/value)
+  - NEVER: Block paste in `<input>/<textarea>`
+  - MUST: Loading buttons show spinner and keep original label
+  - MUST: Enter submits focused text input In `<textarea>`, ⌘/Ctrl+Enter submits; Enter adds newline
+  - MUST: Keep submit enabled until request starts; then disable, show spinner, use idempotency key
+  - MUST: Don’t block typing; accept free text and validate after
+  - MUST: Allow submitting incomplete forms to surface validation
+  - MUST: Errors inline next to fields; on submit, focus first error
+  - MUST: `autocomplete` + meaningful `name`; correct `type` and `inputmode`
+  - SHOULD: Disable spellcheck for emails/codes/usernames
+  - SHOULD: Placeholders end with ellipsis and show example pattern (eg, `+1 (123) 456-7890`, `sk-012345…`)
+  - MUST: Warn on unsaved changes before navigation
+  - MUST: Compatible with password managers & 2FA; allow pasting one-time codes
+  - MUST: Trim values to handle text expansion trailing spaces
+  - MUST: No dead zones on checkboxes/radios; label+control share one generous hit target
+- State & navigation
+  - MUST: URL reflects state (deep-link filters/tabs/pagination/expanded panels) Prefer libs like [nuqs](https://nuqs.dev)
+  - MUST: Back/Forward restores scroll
+  - MUST: Links are links—use `<a>/<Link>` for navigation (support Cmd/Ctrl/middle-click)
+- Feedback
+  - SHOULD: Optimistic UI; reconcile on response; on failure show error and rollback or offer Undo
+  - MUST: Confirm destructive actions or provide Undo window
+  - MUST: Use polite `aria-live` for toasts/inline validation
+  - SHOULD: Ellipsis (`…`) for options that open follow-ups (eg, “Rename…”)
+- Touch/drag/scroll
+  - MUST: Design forgiving interactions (generous targets, clear affordances; avoid finickiness)
+  - MUST: Delay first tooltip in a group; subsequent peers no delay
+  - MUST: Intentional `overscroll-behavior: contain` in modals/drawers
+  - MUST: During drag, disable text selection and set `inert` on dragged element/containers
+  - MUST: No “dead-looking” interactive zones—if it looks clickable, it is
+- Autofocus
+  - SHOULD: Autofocus on desktop when there’s a single primary input; rarely on mobile (to avoid layout shift)
+
+## Animation
+
+- MUST: Honor `prefers-reduced-motion` (provide reduced variant)
+- SHOULD: Prefer CSS > Web Animations API > JS libraries
+- MUST: Animate compositor-friendly props (`transform`, `opacity`); avoid layout/repaint props (`top/left/width/height`)
+- SHOULD: Animate only to clarify cause/effect or add deliberate delight
+- SHOULD: Choose easing to match the change (size/distance/trigger)
+- MUST: Animations are interruptible and input-driven (avoid autoplay)
+- MUST: Correct `transform-origin` (motion starts where it “physically” should)
+
+## Layout
+
+- SHOULD: Optical alignment; adjust by ±1px when perception beats geometry
+- MUST: Deliberate alignment to grid/baseline/edges/optical centers—no accidental placement
+- SHOULD: Balance icon/text lockups (stroke/weight/size/spacing/color)
+- MUST: Verify mobile, laptop, ultra-wide (simulate ultra-wide at 50% zoom)
+- MUST: Respect safe areas (use env(safe-area-inset-\*))
+- MUST: Avoid unwanted scrollbars; fix overflows
+
+## Content & Accessibility
+
+- SHOULD: Inline help first; tooltips last resort
+- MUST: Skeletons mirror final content to avoid layout shift
+- MUST: `<title>` matches current context
+- MUST: No dead ends; always offer next step/recovery
+- MUST: Design empty/sparse/dense/error states
+- SHOULD: Curly quotes (“ ”); avoid widows/orphans
+- MUST: Tabular numbers for comparisons (`font-variant-numeric: tabular-nums` or a mono like Geist Mono)
+- MUST: Redundant status cues (not color-only); icons have text labels
+- MUST: Don’t ship the schema—visuals may omit labels but accessible names still exist
+- MUST: Use the ellipsis character `…` (not ``)
+- MUST: `scroll-margin-top` on headings for anchored links; include a “Skip to content” link; hierarchical `<h1–h6>`
+- MUST: Resilient to user-generated content (short/avg/very long)
+- MUST: Locale-aware dates/times/numbers/currency
+- MUST: Accurate names (`aria-label`), decorative elements `aria-hidden`, verify in the Accessibility Tree
+- MUST: Icon-only buttons have descriptive `aria-label`
+- MUST: Prefer native semantics (`button`, `a`, `label`, `table`) before ARIA
+- SHOULD: Right-clicking the nav logo surfaces brand assets
+- MUST: Use non-breaking spaces to glue terms: `10&nbsp;MB`, `⌘&nbsp;+&nbsp;K`, `Vercel&nbsp;SDK`
+
+## Performance
+
+- SHOULD: Test iOS Low Power Mode and macOS Safari
+- MUST: Measure reliably (disable extensions that skew runtime)
+- MUST: Track and minimize re-renders (React DevTools/React Scan)
+- MUST: Profile with CPU/network throttling
+- MUST: Batch layout reads/writes; avoid unnecessary reflows/repaints
+- MUST: Mutations (`POST/PATCH/DELETE`) target <500 ms
+- SHOULD: Prefer uncontrolled inputs; make controlled loops cheap (keystroke cost)
+- MUST: Virtualize large lists (eg, `virtua`)
+- MUST: Preload only above-the-fold images; lazy-load the rest
+- MUST: Prevent CLS from images (explicit dimensions or reserved space)
+
+## Design
+
+- SHOULD: Layered shadows (ambient + direct)
+- SHOULD: Crisp edges via semi-transparent borders + shadows
+- SHOULD: Nested radii: child ≤ parent; concentric
+- SHOULD: Hue consistency: tint borders/shadows/text toward bg hue
+- MUST: Accessible charts (color-blind-friendly palettes)
+- MUST: Meet contrast—prefer [APCA](https://apcacontrastcom/) over WCAG 2
+- MUST: Increase contrast on `:hover/:active/:focus`
+- SHOULD: Match browser UI to bg
+- SHOULD: Avoid gradient banding (use masks when needed)
+
+## Code Style and Structure:
+
+- Write concise, technical TypeScript code with accurate examples
+- Use functional and declarative programming patterns; avoid classes
+- Prefer iteration and modularization over code duplication
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
+- Structure files: exported component, subcomponents, helpers, static content, types
+
+## Naming Conventions:
+
+- Use lowercase with dashes for directories (e.g., components/auth-wizard)
+- Favor named exports for components
+
+## TypeScript Usage:
+
+- Use TypeScript for all code; prefer types over interfaces UNLESS specificially for intersections (Typescript Performance)
+- Avoid enums; use maps instead
+- Use functional components with types
+
+## Syntax and Formatting:
+
+- Use the "function" keyword for pure functions
+- Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements
+- Use declarative JSX
+
+## Error Handling and Validation:
+
+- Prioritize error handling: handle errors and edge cases early
+- Use early returns and guard clauses
+- Implement proper error logging and user-friendly messages
+- Use Zod for form validation
+- Model expected errors as return values in Server Actions
+- Use error boundaries for unexpected errors
+
+## Performance Optimization:
+
+- Minimize 'use client', 'useEffect', and 'setState'; favor React Server Components (RSC)
+- Wrap client components in Suspense with fallback
+- Use dynamic loading for non-critical components
+- Optimize images: use WebP format, include size data, implement lazy loading
+
+## Key Conventions:
+
+- Use 'nuqs' for URL search parameter state management
+- Optimize Web Vitals (LCP, CLS, FID)
+- Limit 'use client':
+  - Favor server components and Next.js SSR
+  - Use only for Web API access in small components
+  - Avoid for data fetching or state management
+
+# Project Linter Context
+
 Ultracite enforces strict type safety, accessibility standards, and consistent code quality for JavaScript/TypeScript projects using Biome's lightning-fast formatter and linter.
 
 ## Key Principles
+
 - Zero configuration required
 - Subsecond performance
 - Maximum type safety
 - AI-friendly code generation
 
 ## Before Writing Code
+
 1. Analyze existing patterns in the codebase
 2. Consider edge cases and error scenarios
 3. Follow the rules below strictly
@@ -22,6 +193,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 ## Rules
 
 ### Accessibility (a11y)
+
 - Don't use `accessKey` attribute on any HTML element.
 - Don't set `aria-hidden="true"` on focusable elements.
 - Don't add ARIA roles, states, and properties to elements that don't support them.
@@ -58,6 +230,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Use correct ISO language/country codes for the `lang` attribute.
 
 ### Code Complexity and Quality
+
 - Don't use consecutive spaces in regular expression literals.
 - Don't use the `arguments` object.
 - Don't use primitive type aliases or misleading types.
@@ -113,6 +286,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Don't use literal numbers that lose precision.
 
 ### React and JSX Best Practices
+
 - Don't use the return value of React.render.
 - Make sure all dependencies are correctly specified in React hooks.
 - Make sure all React hooks are called from the top level of component functions.
@@ -131,6 +305,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Watch out for possible "wrong" semicolons inside JSX elements.
 
 ### Correctness and Safety
+
 - Don't assign a value to itself.
 - Don't return a value from a setter.
 - Don't compare expressions that modify string case with non-compliant values.
@@ -155,7 +330,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Don't use bitwise operators.
 - Don't use expressions where the operation doesn't change the value.
 - Make sure Promise-like statements are handled appropriately.
-- Don't use __dirname and __filename in the global scope.
+- Don't use **dirname and **filename in the global scope.
 - Prevent import cycles.
 - Don't use configured elements.
 - Don't hardcode sensitive data like API keys and tokens.
@@ -186,6 +361,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Don't use `target="_blank"` without `rel="noopener"`.
 
 ### TypeScript Best Practices
+
 - Don't use TypeScript enums.
 - Don't export imported variables.
 - Don't add type annotations to variables, parameters, and class properties that are initialized with literal expressions.
@@ -210,6 +386,7 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Use the namespace keyword instead of the module keyword to declare TypeScript namespaces.
 
 ### Style and Consistency
+
 - Don't use global `eval()`.
 - Don't use callbacks in asynchronous tests and hooks.
 - Don't use negation in `if` statements that have `else` clauses.
@@ -297,30 +474,34 @@ Ultracite enforces strict type safety, accessibility standards, and consistent c
 - Make sure to use the "use strict" directive in script files.
 
 ### Next.js Specific Rules
+
 - Don't use `<img>` elements in Next.js projects.
 - Don't use `<head>` elements in Next.js projects.
-- Don't import next/document outside of pages/_document.jsx in Next.js projects.
-- Don't use the next/head module in pages/_document.js on Next.js projects.
+- Don't import next/document outside of pages/\_document.jsx in Next.js projects.
+- Don't use the next/head module in pages/\_document.js on Next.js projects.
 
 ### Testing Best Practices
+
 - Don't use export or module.exports in test files.
 - Don't use focused tests.
 - Make sure the assertion function, like expect, is placed inside an it() function call.
 - Don't use disabled tests.
 
 ## Common Tasks
+
 - `npx ultracite init` - Initialize Ultracite in your project
 - `npx ultracite fix` - Format and fix code automatically
 - `npx ultracite check` - Check for issues without fixing
 
 ## Example: Error Handling
+
 ```typescript
 // ✅ Good: Comprehensive error handling
 try {
   const result = await fetchData();
   return { success: true, data: result };
 } catch (error) {
-  console.error('API call failed:', error);
+  console.error("API call failed:", error);
   return { success: false, error: error.message };
 }
 
