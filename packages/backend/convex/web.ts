@@ -7,7 +7,7 @@ export const subscribe = action({
     email: v.string(),
     userGroup: v.string(),
   },
-  handler: async (ctx, args) => {
+  handler: async (_ctx, args) => {
     const res = await fetch(
       `https://app.loops.so/api/newsletter-form/${env.LOOPS_FORM_ID}`,
       {
@@ -19,7 +19,7 @@ export const subscribe = action({
           email: args.email,
           userGroup: args.userGroup,
         }),
-      },
+      }
     );
 
     const json = await res.json();

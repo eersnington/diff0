@@ -7,6 +7,7 @@ export const env = createEnv({
       .string()
       .optional()
       .transform((v) => (v ? `https://${v}` : undefined)),
+    // biome-ignore lint/style/noMagicNumbers: not magic
     PORT: z.coerce.number().default(3000),
   },
   client: {

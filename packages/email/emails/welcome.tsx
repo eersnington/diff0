@@ -19,45 +19,42 @@ const baseUrl = process.env.VERCEL_URL
 export default function WelcomeEmail() {
   return (
     <Html>
-      <Preview>Welcome</Preview>
+      <Preview>Welcome to diff0 — Your AI Code Review Companion</Preview>
       <Tailwind>
-        <Body className="my-auto mx-auto font-sans">
-          <Container className="border-transparent my-[40px] mx-auto max-w-[600px]">
-            <Img src="/logo.png" alt="logo" width={100} height={100} />
-            <Heading className="font-normal text-center p-0 my-[30px] mx-0">
-              Welcome to v1
+        <Body className="mx-auto my-auto font-sans">
+          <Container className="mx-auto my-[40px] max-w-[600px] border-transparent">
+            <Img alt="logo" height={100} src="/logo.png" width={100} />
+            <Heading className="mx-0 my-[30px] p-0 text-center font-normal">
+              Welcome to diff0
             </Heading>
             <Section className="mb-4">
-              Hi, I'm Pontus, one of the founders.
+              {" "}
+              Hi there, I'm Sree, the founder of diff0.
             </Section>
             <Section className="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
-              euismod, nisi vel consectetur interdum, nisl nunc egestas nunc,
-              vitae tincidunt nisl nunc euismod nunc. Sed euismod, nisi vel
-              consectetur interdum, nisl nunc egestas nunc, vitae tincidunt nisl
-              nunc euismod nunc. Sed euismod, nisi vel consectetur interdum,
-              nisl nunc egestas nunc, vitae tincidunt nisl nunc euismod nunc.
+              diff0 is an open-source AI code review agent inspired by Vercel's
+              AI review tools. It reads your pull requests, highlights issues,
+              and gives suggestions so you can ship code confidently — faster.
             </Section>
             <Section className="mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
-            </Section>
-            <Section className="mb-8">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat.
+              This is just the beginning. I&apos;d love to hear your thoughts,
+              feedback, or wild ideas. Seriously, reach out anytime. I
+              personally read every message.
             </Section>
             <Section className="mb-6">
               <Link href={baseUrl}>
-                <Button className="bg-black text-white p-4 text-center">
+                <Button className="bg-black p-4 text-center text-white">
                   Get started
                 </Button>
               </Link>
             </Section>
             <Hr />
+            <Section className="mt-4 text-center text-gray-500 text-sm">
+              Ping me at <Link href="mailto:hi@eers.dev">hi@eers.dev</Link> or
+              send a message on{" "}
+              <Link href="https://x.com/eersnington">@eersnington</Link>.
+              I&apos;ll get back to you personally.
+            </Section>
           </Container>
         </Body>
       </Tailwind>

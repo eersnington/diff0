@@ -1,12 +1,12 @@
-import "@d0/ui/globals.css";
-import { Footer } from "@/components/footer";
-import { Header } from "@/components/header";
+import "./styles.css";
 import { Provider as AnalyticsProvider } from "@d0/analytics/client";
 import { cn } from "@d0/ui/utils";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
 import { ConvexClientProvider } from "./convex-client-provider";
 
 const DepartureMono = localFont({
@@ -17,8 +17,7 @@ const DepartureMono = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL("https://diff0.dev"),
   title: "diff0",
-  description:
-    "OSS AI PR Review Agent",
+  description: "OSS AI PR Review Agent",
 };
 
 export default function RootLayout({
@@ -31,7 +30,7 @@ export default function RootLayout({
       <body
         className={cn(
           `${DepartureMono.variable} ${GeistSans.variable} ${GeistMono.variable}`,
-          "antialiased dark",
+          "dark antialiased"
         )}
       >
         <ConvexClientProvider>

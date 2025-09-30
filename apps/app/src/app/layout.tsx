@@ -1,6 +1,6 @@
-import "@d0/ui/globals.css";
+import "@d0/ui/styles/globals.css";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
-import { TooltipProvider } from "@d0/ui/tooltip";
+import { TooltipProvider } from "@d0/ui/components/ui/tooltip";
 import { cn } from "@d0/ui/utils";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
@@ -31,14 +31,14 @@ export default function RootLayout({
         <body
           className={cn(
             `${GeistSans.variable} ${GeistMono.variable}`,
-            "antialiased",
+            "antialiased"
           )}
         >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
-            enableSystem
             disableTransitionOnChange
+            enableSystem
           >
             <TooltipProvider delayDuration={0}>
               <ConvexClientProvider>{children}</ConvexClientProvider>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Icons } from "@d0/ui/icons";
+import { Icons } from "@d0/ui/components/icons";
 import { useState } from "react";
 import { useCopyToClipboard } from "usehooks-ts";
 

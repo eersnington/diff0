@@ -1,13 +1,14 @@
 {
-  "extends": "@d0/typescript/react-library.json",
+  "extends": "@d0/typescript/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+     "@d0/*": ["../*"],
+      "@d0/ui/*": ["./*"]
     },
     "module": "ESNext",
     "moduleResolution": "Bundler"
   },
-  "include": ["src"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

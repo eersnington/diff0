@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noMagicNumbers: nothing magic about it */
 import { z } from "zod";
 
 export const username = z
@@ -8,5 +9,5 @@ export const username = z
   .trim()
   .regex(
     /^[a-zA-Z0-9]+$/,
-    "Username may only contain alphanumeric characters.",
+    "Username may only contain alphanumeric characters."
   );

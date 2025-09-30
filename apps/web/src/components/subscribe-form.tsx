@@ -1,18 +1,20 @@
 "use client";
 
 import { api } from "@d0/backend/convex/_generated/api";
-import { Button } from "@d0/ui/button";
-import { Icons } from "@d0/ui/icons";
-import { Input } from "@d0/ui/input";
+import { Icons } from "@d0/ui/components/icons";
+import { Button } from "@d0/ui/components/ui/button";
+import { Input } from "@d0/ui/components/ui/input";
 import { useAction } from "convex/react";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
+
+const TIMEOUT_MS = 5000;
 
 function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" className="ml-auto rounded-full">
+    <Button className="ml-auto rounded-full" type="submit">
       {pending ? <Icons.Loader className="size-4" /> : "Subscribe"}
     </Button>
   );
@@ -32,13 +34,13 @@ export function SubscribeForm({ group, placeholder, className }: Props) {
     <div>
       <div>
         {isSubmitted ? (
-          <div className="border border-[#2C2C2C] text-sm text-primary h-9 w-[290px] flex items-center py-0.5 px-2 justify-between">
+          <div className="flex h-9 w-[290px] items-center justify-between border border-[#2C2C2C] px-2 py-0.5 text-primary text-sm">
             <p>Subscribed</p>
 
             <svg
-              width="17"
-              height="17"
               fill="none"
+              height="17"
+              width="17"
               xmlns="http://www.w3.org/2000/svg"
             >
               <title>Check</title>
@@ -50,7 +52,6 @@ export function SubscribeForm({ group, placeholder, className }: Props) {
           </div>
         ) : (
           <form
-            className="flex flex-col gap-4"
             action={async (formData) => {
               setSubmitted(true);
               await subscribe({
@@ -60,18 +61,19 @@ export function SubscribeForm({ group, placeholder, className }: Props) {
 
               setTimeout(() => {
                 setSubmitted(false);
-              }, 5000);
+              }, TIMEOUT_MS);
             }}
+            className="flex flex-col gap-4"
           >
             <Input
-              placeholder={placeholder}
-              type="email"
-              name="email"
-              id="email"
-              autoComplete="email"
               aria-label="Email address"
-              required
+              autoComplete="email"
               className={className}
+              id="email"
+              name="email"
+              placeholder={placeholder}
+              required
+              type="email"
             />
 
             <SubmitButton />

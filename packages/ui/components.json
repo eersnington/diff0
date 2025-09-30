@@ -5,17 +5,20 @@
   "tsx": true,
   "tailwind": {
     "config": "",
-    "css": "src/globals.css",
+    "css": "styles/globals.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
   },
+  "iconLibrary": "lucide",
   "aliases": {
-    "components": "@/components",
-    "hooks": "@/hooks",
-    "lib": "@/lib",
-    "ui": "@/components",
-    "utils": "@/utils"
+    "components": "@d0/ui/components",
+    "utils": "@d0/ui/utils",
+    "ui": "@d0/ui/components/ui",
+    "lib": "@d0/ui/lib",
+    "hooks": "@d0/ui/hooks"
   },
-    "iconLibrary": "lucide"
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}.json"
+  }
 }

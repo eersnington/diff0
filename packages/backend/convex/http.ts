@@ -7,7 +7,6 @@ const http = httpRouter();
 authComponent.registerRoutes(http, createAuth);
 
 // Register the webhook handler at /polar/events
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-polar.registerRoutes(http as any);
+polar.registerRoutes(http);
 
 export default http;

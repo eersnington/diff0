@@ -1,19 +1,20 @@
+/** biome-ignore-all lint/performance/noImgElement: i will go bankrupt with <Image> cost */
+/** biome-ignore-all lint/nursery/useImageSize: wrong*/
 "use client";
 
 import { useAuthActions } from "@convex-dev/auth/react";
-import { useForm } from "@tanstack/react-form";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { api } from "@d0/backend/convex/_generated/api";
 import type { Id } from "@d0/backend/convex/_generated/dataModel";
-import * as validators from "@d0/backend/convex/utils/validators";
-import { Button } from "@d0/ui/button";
-import { Input } from "@d0/ui/input";
-import { UploadInput } from "@d0/ui/upload-input";
+import { username } from "@d0/backend/convex/utils/validators";
+import { Button } from "@d0/ui/components/ui/button";
+import { Input } from "@d0/ui/components/ui/input";
+import { UploadInput } from "@d0/ui/components/ui/upload-input";
 import { useDoubleCheck } from "@d0/ui/utils";
+import { useForm } from "@tanstack/react-form";
+import { zodValidator } from "@tanstack/zod-form-adapter";
 import type { UploadFileResponse } from "@xixixao/uploadstuff/react";
 import { useAction, useMutation, useQuery } from "convex/react";
 import { Upload } from "lucide-react";
-import { useState } from "react";
 
 export default function DashboardSettings() {
   const user = useQuery(api.users.getUser);
@@ -23,16 +24,15 @@ export default function DashboardSettings() {
   const removeUserImage = useMutation(api.users.removeUserImage);
   const generateUploadUrl = useMutation(api.users.generateUploadUrl);
   const deleteCurrentUserAccount = useAction(
-    api.users.deleteCurrentUserAccount,
+    api.users.deleteCurrentUserAccount
   );
   const { doubleCheck, getButtonProps } = useDoubleCheck();
 
-  const handleUpdateUserImage = (uploaded: UploadFileResponse[]) => {
-    return updateUserImage({
+  const handleUpdateUserImage = (uploaded: UploadFileResponse[]) =>
+    updateUserImage({
       imageId: (uploaded[0]?.response as { storageId: Id<"_storage"> })
         .storageId,
     });
-  };
 
   const handleDeleteAccount = async () => {
     await deleteCurrentUserAccount();
@@ -59,53 +59,51 @@ export default function DashboardSettings() {
       <div className="flex w-full flex-col items-start rounded-lg border border-border bg-card">
         <div className="flex w-full items-start justify-between rounded-lg p-6">
           <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-medium text-primary">
-              Your Avatar
-            </h2>
-            <p className="text-sm font-normal text-primary/60">
+            <h2 className="font-medium text-primary text-xl">Your Avatar</h2>
+            <p className="font-normal text-primary/60 text-sm">
               This is your avatar. It will be displayed on your profile.
             </p>
           </div>
           <label
-            htmlFor="avatar_field"
             className="group relative flex cursor-pointer overflow-hidden rounded-full transition active:scale-95"
+            htmlFor="avatar_field"
           >
             {user.avatarUrl ? (
               <img
-                src={user.avatarUrl}
-                className="h-20 w-20 rounded-full object-cover"
                 alt={user.username ?? user.email}
+                className="h-20 w-20 rounded-full object-cover"
+                src={user.avatarUrl}
               />
             ) : (
-              <div className="h-20 w-20 rounded-full bg-gradient-to-br from-lime-400 from-10% via-cyan-300 to-blue-500" />
+              <div className="h-20 w-20 rounded-full bg-gradient-to-br from-10% from-lime-400 via-cyan-300 to-blue-500" />
             )}
             <div className="absolute z-10 hidden h-full w-full items-center justify-center bg-primary/40 group-hover:flex">
               <Upload className="h-6 w-6 text-secondary" />
             </div>
           </label>
           <UploadInput
-            id="avatar_field"
-            type="file"
             accept="image/*"
             className="peer sr-only"
+            generateUploadUrl={generateUploadUrl}
+            id="avatar_field"
+            onUploadComplete={handleUpdateUserImage}
             required
             tabIndex={user ? -1 : 0}
-            generateUploadUrl={generateUploadUrl}
-            onUploadComplete={handleUpdateUserImage}
+            type="file"
           />
         </div>
-        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-secondary px-6 dark:bg-card">
-          <p className="text-sm font-normal text-primary/60">
+        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-border border-t bg-secondary px-6 dark:bg-card">
+          <p className="font-normal text-primary/60 text-sm">
             Click on the avatar to upload a custom one from your files.
           </p>
           {user.avatarUrl && (
             <Button
-              type="button"
-              size="sm"
-              variant="secondary"
               onClick={() => {
                 removeUserImage({});
               }}
+              size="sm"
+              type="button"
+              variant="secondary"
             >
               Reset
             </Button>
@@ -124,43 +122,43 @@ export default function DashboardSettings() {
       >
         <div className="flex w-full flex-col gap-4 rounded-lg p-6">
           <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-medium text-primary">Your Username</h2>
-            <p className="text-sm font-normal text-primary/60">
+            <h2 className="font-medium text-primary text-xl">Your Username</h2>
+            <p className="font-normal text-primary/60 text-sm">
               This is your username. It will be displayed on your profile.
             </p>
           </div>
           <usernameForm.Field
-            name="username"
-            validators={{
-              onSubmit: validators.username,
-            }}
-            // biome-ignore lint/correctness/noChildrenProp: <explanation>
+            // biome-ignore lint/correctness/noChildrenProp: i disagree with this
             children={(field) => (
               <Input
-                placeholder="Username"
                 autoComplete="off"
-                required
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
                 className={`w-80 bg-transparent ${
                   field.state.meta?.errors.length > 0 &&
                   "border-destructive focus-visible:ring-destructive"
                 }`}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                placeholder="Username"
+                required
+                value={field.state.value}
               />
             )}
+            name="username"
+            validators={{
+              onSubmit: username,
+            }}
           />
           {usernameForm.state.fieldMeta.username?.errors.length > 0 && (
-            <p className="text-sm text-destructive dark:text-destructive-foreground">
+            <p className="text-destructive text-sm dark:text-destructive-foreground">
               {usernameForm.state.fieldMeta.username?.errors.join(" ")}
             </p>
           )}
         </div>
-        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-secondary px-6 dark:bg-card">
-          <p className="text-sm font-normal text-primary/60">
+        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-border border-t bg-secondary px-6 dark:bg-card">
+          <p className="font-normal text-primary/60 text-sm">
             Please use 32 characters at maximum.
           </p>
-          <Button type="submit" size="sm">
+          <Button size="sm" type="submit">
             Save
           </Button>
         </div>
@@ -169,15 +167,14 @@ export default function DashboardSettings() {
       {/* Delete Account */}
       <div className="flex w-full flex-col items-start rounded-lg border border-destructive bg-card">
         <div className="flex flex-col gap-2 p-6">
-          <h2 className="text-xl font-medium text-primary">
-            Delete Account
-          </h2>
-          <p className="text-sm font-normal text-primary/60">
-            Permanently delete your Convex SaaS account, all of your projects, links and their respective stats.
+          <h2 className="font-medium text-primary text-xl">Delete Account</h2>
+          <p className="font-normal text-primary/60 text-sm">
+            Permanently delete your Convex SaaS account, all of your projects,
+            links and their respective stats.
           </p>
         </div>
-        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-t border-border bg-red-500/10 px-6 dark:bg-red-500/10">
-          <p className="text-sm font-normal text-primary/60">
+        <div className="flex min-h-14 w-full items-center justify-between rounded-lg rounded-t-none border-border border-t bg-red-500/10 px-6 dark:bg-red-500/10">
+          <p className="font-normal text-primary/60 text-sm">
             This action cannot be undone, proceed with caution.
           </p>
           <Button
@@ -187,9 +184,7 @@ export default function DashboardSettings() {
               onClick: doubleCheck ? handleDeleteAccount : undefined,
             })}
           >
-            {doubleCheck
-              ? "Are you sure?"
-              : "Delete Account"}
+            {doubleCheck ? "Are you sure?" : "Delete Account"}
           </Button>
         </div>
       </div>
