@@ -5,7 +5,27 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**"],
+      "env": [
+        "RESEND_API_KEY",
+        "RESEND_SENDER_EMAIL_AUTH",
+        "POLAR_ORGANIZATION_TOKEN",
+        "POLAR_WEBHOOK_SECRET",
+        "POLAR_ENVIRONMENT",
+        "OPENPANEL_SECRET_KEY",
+        "SENTRY_AUTH_TOKEN",
+        "SENTRY_ORG",
+        "SENTRY_PROJECT",
+        "CONVEX_DEPLOYMENT",
+        "BETTER_AUTH_SECRET",
+        "GITHUB_CLIENT_ID",
+        "GITHUB_CLIENT_SECRET",
+        "NEXT_PUBLIC_OPENPANEL_CLIENT_ID",
+        "NEXT_PUBLIC_SENTRY_DSN",
+        "NEXT_PUBLIC_CONVEX_URL",
+        "NEXT_PUBLIC_CONVEX_SITE_URL",
+        "NEXT_PUBLIC_SITE_URL"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]
