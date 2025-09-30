@@ -19,10 +19,9 @@
       "!**/.alchemy",
       "!**/.svelte-kit",
       "!**/wrangler.jsonc",
-      "!**/.source"
+      "!**/.source",
+      "!**/components/ui"
     ]
   },
-  "extends": [
-    "ultracite"
-  ]
+  "extends": ["ultracite"]
 }
