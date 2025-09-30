@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  CreditCard,
-  GitBranch,
-  LayoutDashboard,
-  Settings,
-} from "lucide-react";
+import { CreditCard, GitBranch, LayoutDashboard, Settings } from "lucide-react";
 import type * as React from "react";
 import {
   Sidebar,
@@ -27,13 +22,18 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
 };
 
 export function AppSidebar({ user, ...props }: AppSidebarProps) {
-
   const navMain = [
     {
       title: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboard,
       isActive: true,
+      items: [
+        {
+          title: "Home",
+          url: "/dashboard",
+        },
+      ],
     },
     {
       title: "Repositories",
@@ -44,6 +44,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       title: "Settings",
       url: "/settings",
       icon: Settings,
+      isActive: true,
       items: [
         {
           title: "GitHub Integration",
@@ -59,6 +60,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
       title: "Billing",
       url: "/billing",
       icon: CreditCard,
+      isActive: true,
       items: [
         {
           title: "Credits",

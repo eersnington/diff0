@@ -1,6 +1,7 @@
 "use client";
-
 import { ChevronsUpDown, Plus, User } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,7 +37,28 @@ export function TeamSwitcher({ user }: TeamSwitcherProps) {
               size="lg"
             >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <User className="size-4" />
+                <div className="block dark:hidden">
+                  <Link href={"/"} passHref>
+                    <Image
+                      alt="diff0 logo"
+                      className="rounded-sm"
+                      height={32}
+                      src="/logo-dark.svg"
+                      width={32}
+                    />
+                  </Link>
+                </div>
+                <div className="hidden dark:block">
+                  <Link href={"/"} passHref>
+                    <Image
+                      alt="diff0 logo"
+                      className="rounded-sm"
+                      height={32}
+                      src="/logo.svg"
+                      width={32}
+                    />
+                  </Link>
+                </div>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -65,7 +87,9 @@ export function TeamSwitcher({ user }: TeamSwitcherProps) {
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
                 <Plus className="size-4" />
               </div>
-              <div className="font-medium text-muted-foreground">Create Organization</div>
+              <div className="font-medium text-muted-foreground">
+                Create Organization
+              </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
