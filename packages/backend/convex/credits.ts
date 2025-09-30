@@ -1,18 +1,14 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { authComponent } from "./auth";
 
 const DEFAULT_TRANSACTION_LIMIT = 50;
 
 export const getBalance = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    console.log(identity);
-
-    if (identity === null) {
-      throw new Error("Not authenticated");
-    }
-    const userId = identity.subject;
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user.userId ?? user._id;
 
     const credits = await ctx.db
       .query("userCredits")
@@ -38,13 +34,8 @@ export const getBalance = query({
 export const initializeCredits = mutation({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    console.log(identity);
-
-    if (identity === null) {
-      throw new Error("Not authenticated");
-    }
-    const userId = identity.subject;
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user.userId ?? user._id;
 
     const existing = await ctx.db
       .query("userCredits")
@@ -68,12 +59,8 @@ export const getTransactions = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    console.log(identity);
-    if (identity === null) {
-      throw new Error("Not authenticated");
-    }
-    const userId = identity.subject;
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user.userId ?? user._id;
     const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
 
     const transactions = await ctx.db
