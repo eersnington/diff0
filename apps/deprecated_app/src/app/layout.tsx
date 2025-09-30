@@ -1,7 +1,7 @@
-import "@repo/ui/styles/globals.css";
+import "@repo/design-system/styles/globals.css";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
-import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
-import { cn } from "@repo/ui/utils";
+import { TooltipProvider } from "@repo/design-system/components/ui/tooltip";
+import { cn } from "@repo/design-system/utils";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";

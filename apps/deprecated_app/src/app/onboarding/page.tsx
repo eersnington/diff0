@@ -2,8 +2,8 @@
 
 import { api } from "@repo/backend/convex/_generated/api";
 import { username } from "@repo/backend/convex/utils/validators";
-import { Button } from "@repo/ui/components/ui/button";
-import { Input } from "@repo/ui/components/ui/input";
+import { Button } from "@repo/design-system/components/ui/button";
+import { Input } from "@repo/design-system/components/ui/input";
 import { useForm } from "@tanstack/react-form";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { useMutation, useQuery } from "convex/react";

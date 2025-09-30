@@ -5,7 +5,10 @@
 import { CheckoutLink } from "@convex-dev/polar/react";
 import { api } from "@repo/backend/convex/_generated/api";
 import { authClient } from "@repo/backend/lib/auth-client";
-import { Button, buttonVariants } from "@repo/ui/components/ui/button";
+import {
+	Button,
+	buttonVariants,
+} from "@repo/design-system/components/ui/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,9 +16,9 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@repo/ui/components/ui/dropdown-menu";
+} from "@repo/design-system/components/ui/dropdown-menu";
 
-import { cn } from "@repo/ui/utils";
+import { cn } from "@repo/design-system/utils";
 import { type Preloaded, usePreloadedQuery } from "convex/react";
 import {
 	Check,

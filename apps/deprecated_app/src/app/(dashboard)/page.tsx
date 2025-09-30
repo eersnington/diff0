@@ -4,8 +4,8 @@ export const metadata = {
 	title: "Home",
 };
 
-import { buttonVariants } from "@repo/ui/components/ui/button";
-import { cn } from "@repo/ui/utils";
+import { buttonVariants } from "@repo/design-system/components/ui/button";
+import { cn } from "@repo/design-system/utils";
 import { ExternalLink, Plus } from "lucide-react";
 
 export default function Page() {

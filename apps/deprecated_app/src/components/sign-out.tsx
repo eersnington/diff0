@@ -1,8 +1,8 @@
 "use client";
 
 import { authClient } from "@repo/backend/lib/auth-client";
-import { Icons } from "@repo/ui/components/icons";
-import { Button } from "@repo/ui/components/ui/button";
+import { Icons } from "@repo/design-system/components/icons";
+import { Button } from "@repo/design-system/components/ui/button";
 
 export function SignOut() {
 	const signOut = async () => {

@@ -3,8 +3,8 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
-} from "@repo/ui/components/ui/select";
-import { cn } from "@repo/ui/utils";
+} from "@repo/design-system/components/ui/select";
+import { cn } from "@repo/design-system/utils";
 import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
