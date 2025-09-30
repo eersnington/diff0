@@ -3,19 +3,19 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
-    CONVEX_DEPLOYMENT: z.string().min(1),
-    SITE_URL: z.string().min(1),
-    BETTER_AUTH_SECRET: z.string().min(1),
-    POLAR_ORGANIZATION_TOKEN: z.string().min(1),
-    POLAR_ENVIRONMENT: z.enum(["sandbox", "production"]),
-    POLAR_WEBHOOK_SECRET: z.string().min(1),
-    GITHUB_CLIENT_ID: z.string().min(1),
-    GITHUB_CLIENT_SECRET: z.string().min(1),
+    CONVEX_DEPLOYMENT: z.string().min(1).optional(),
+    SITE_URL: z.string().min(1).optional(),
+    BETTER_AUTH_SECRET: z.string().min(1).optional(),
+    POLAR_ORGANIZATION_TOKEN: z.string().min(1).optional(),
+    POLAR_ENVIRONMENT: z.enum(["sandbox", "production"]).optional(),
+    POLAR_WEBHOOK_SECRET: z.string().min(1).optional(),
+    GITHUB_CLIENT_ID: z.string().min(1).optional(),
+    GITHUB_CLIENT_SECRET: z.string().min(1).optional(),
   },
   clientPrefix: "NEXT_PUBLIC",
   client: {
-    NEXT_PUBLIC_CONVEX_URL: z.string().min(1),
-    NEXT_PUBLIC_CONVEX_SITE_URL: z.string().min(1),
+    NEXT_PUBLIC_CONVEX_URL: z.string().min(1).optional(),
+    NEXT_PUBLIC_CONVEX_SITE_URL: z.string().min(1).optional(),
   },
 
   /**
