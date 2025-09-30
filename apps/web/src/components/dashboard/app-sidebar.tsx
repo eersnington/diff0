@@ -1,14 +1,11 @@
 "use client";
 
-import type { Preloaded } from "convex/react";
-import type { FunctionReference } from "convex/server";
 import {
   CreditCard,
   GitBranch,
   LayoutDashboard,
   Settings,
 } from "lucide-react";
-import { usePreloadedQuery } from "convex/react";
 import type * as React from "react";
 import {
   Sidebar,
@@ -22,11 +19,14 @@ import { NavUser } from "./nav-user";
 import { TeamSwitcher } from "./team-switcher";
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  preloadedUser: Preloaded<FunctionReference<"query", "public">>;
+  user: {
+    name: string;
+    email: string;
+    image?: string | null;
+  };
 };
 
-export function AppSidebar({ preloadedUser, ...props }: AppSidebarProps) {
-  const user = usePreloadedQuery(preloadedUser);
+export function AppSidebar({ user, ...props }: AppSidebarProps) {
 
   const navMain = [
     {
