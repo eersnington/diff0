@@ -1,5 +1,5 @@
-import type { Doc } from "@d0/backend/convex/_generated/dataModel";
+import type { Doc } from "@repo/backend/convex/_generated/dataModel";
 
 export type User = Doc<"users"> & {
-  avatarUrl?: string;
+	avatarUrl?: string;
 };
