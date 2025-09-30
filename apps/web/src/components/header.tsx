@@ -12,13 +12,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EmailVisibilitySwitcher } from "./email-visibility-switcher";
+import ThemeSwitcherOption from "./theme-switcher";
 
 const VISIBLE_CHAR = 0.3;
 
@@ -125,12 +126,22 @@ export function Header({
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem
-                    checked={shouldCensorEmail}
-                    onCheckedChange={handleCensorToggle}
-                  >
-                    Censor Email
-                  </DropdownMenuCheckboxItem>
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                      <span className="font-medium text-sm">Email</span>
+                      <EmailVisibilitySwitcher
+                        onChange={handleCensorToggle}
+                        value={shouldCensorEmail}
+                      />
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel className="p-0 font-normal">
+                    <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                      <span className="font-medium text-sm">Theme</span>
+                      <ThemeSwitcherOption />
+                    </div>
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut />
