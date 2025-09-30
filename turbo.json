@@ -1,45 +1,39 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
-  "globalDependencies": ["**/.env"],
-  "ui": "stream",
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "ui": "tui",
+  "envMode": "loose",
   "tasks": {
-    "topo": {
-      "dependsOn": ["^topo"]
-    },
     "build": {
-      "env": [
-        "RESEND_API_KEY",
-        "LOOPS_ENDPOINT",
-        "LOOPS_API_KEY",
-        "OPENPANEL_SECRET_KEY",
-        "SENTRY_AUTH_TOKEN",
-        "SENTRY_ORG",
-        "SENTRY_PROJECT"
-      ],
-      "inputs": ["$TURBO_DEFAULT$", ".env"],
-      "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "next-env.d.ts", ".expo/**"]
-    },
-    "start": {
-      "cache": false
+      "dependsOn": ["^build", "test"],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**",
+        ".basehub/**",
+        "**/generated/**",
+        "storybook-static/**",
+        ".react-email/**"
+      ]
     },
     "test": {
+      "dependsOn": ["^test"]
+    },
+    "analyze": {
+      "dependsOn": ["^analyze"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "translate": {
+      "dependsOn": ["^translate"],
       "cache": false
     },
     "clean": {
       "cache": false
     },
-    "dev": {
-      "inputs": ["$TURBO_DEFAULT$", ".env"],
-      "persistent": true,
+    "//#clean": {
       "cache": false
-    },
-    "lint": {
-      "dependsOn": ["^topo"]
-    },
-    "typecheck": {
-      "dependsOn": ["^topo"],
-      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
     }
   }
 }

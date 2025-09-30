@@ -1,12 +1,8 @@
 {
-  "extends": "@d0/typescript/react-library.json",
+  "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"],
-      "@d0/ui/*": ["../ui/src/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["."],
+  "include": ["./*.ts", "./*.tsx"],
   "exclude": ["node_modules"]
 }

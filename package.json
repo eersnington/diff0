@@ -1,43 +1,45 @@
 {
-  "name": "diff0",
-  "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*",
-    "tooling/*"
-  ],
-  "scripts": {
-    "build": "turbo build",
-    "clean": "git clean -xdf node_modules",
-    "clean:workspaces": "turbo clean",
-    "dev": "turbo dev --parallel",
-    "dev:web": "turbo dev --filter=@d0/web",
-    "dev:jobs": "turbo jobs --filter=@d0/jobs",
-    "dev:app": "turbo dev --filter=@d0/app",
-    "start:web": "turbo start --filter=@d0/web",
-    "start:app": "turbo start --filter=@d0/app",
-    "test": "turbo test --parallel",
-    "format": "biome format --write .",
-    "lint": "turbo lint && bun lint:repo",
-    "lint:repo": "bunx sherif@latest",
-    "lint:repo:fix": "bunx sherif@latest --fix",
-    "typecheck": "turbo typecheck"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.4",
-    "@t3-oss/env-nextjs": "^0.11.1",
-    "chalk": "^4.1.2",
-    "dotenv": "^16.4.5",
-    "ora": "^5.4.1",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.19.1",
-    "turbo": "2.1.1",
-    "typescript": "^5.5.4",
-    "ultracite": "5.4.4"
-  },
-  "packageManager": "bun@1.1.26",
-  "dependencies": {
-    "@auth/core": "0.37.0"
-  },
-  "version": "0.0.1"
+	"name": "diff0",
+	"version": "0.1.0",
+	"bin": {
+		"next-forge": "dist/index.js"
+	},
+	"files": [
+		"dist/index.js"
+	],
+	"scripts": {
+		"build": "turbo build",
+		"dev": "turbo dev",
+		"lint": "ultracite lint",
+		"format": "ultracite format",
+		"test": "turbo test",
+		"analyze": "turbo analyze",
+		"translate": "turbo translate",
+		"boundaries": "turbo boundaries",
+		"bump-deps": "npx npm-check-updates --deep -u -x react-day-picker",
+		"bump-ui": "npx shadcn@latest add --all --overwrite -c packages/design-system",
+		"migrate": "cd packages/database && npx prisma format && npx prisma generate && npx prisma db push",
+		"clean": "git clean -xdf node_modules"
+	},
+	"devDependencies": {
+		"@auto-it/first-time-contributor": "^11.3.0",
+		"@biomejs/biome": "1.9.4",
+		"@repo/typescript-config": "workspace:*",
+		"@turbo/gen": "^2.5.3",
+		"@types/node": "^22.15.21",
+		"tsup": "^8.5.0",
+		"turbo": "^2.5.3",
+		"typescript": "^5.8.3",
+		"ultracite": "^4.2.5",
+		"vitest": "^3.1.4"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"packageManager": "pnpm@10.11.0",
+	"dependencies": {
+		"@clack/prompts": "^0.11.0",
+		"commander": "^14.0.0"
+	},
+	"type": "module"
 }
