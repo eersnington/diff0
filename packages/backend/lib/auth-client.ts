@@ -1,6 +1,7 @@
 import { convexClient } from "@convex-dev/better-auth/client/plugins";
+import { polarClient } from "@polar-sh/better-auth";
 import { createAuthClient } from "better-auth/react";
 
 export const authClient = createAuthClient({
-  plugins: [convexClient()],
+  plugins: [convexClient(), polarClient()],
 });
