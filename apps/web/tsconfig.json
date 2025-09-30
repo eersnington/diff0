@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@d0/*": ["../../packages/*"]
     },
     "strict": true,
     "allowJs": true,
@@ -20,8 +21,7 @@
     "next.config.js",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts",
-    "tailwind.config.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }
