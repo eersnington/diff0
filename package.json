@@ -16,7 +16,9 @@
     "dev:server": "turbo -F @diff0/backend dev",
     "dev:setup": "turbo -F @diff0/backend dev:setup"
   },
-  "dependencies": {},
+  "dependencies": {
+    "typescript": "^5.9.2"
+  },
   "devDependencies": {
     "turbo": "^2.5.4",
     "@biomejs/biome": "2.2.4",
