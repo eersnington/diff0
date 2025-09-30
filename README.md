@@ -1,31 +1,65 @@
-# ▲ / next-forge
+# diff0
 
-**Production-grade Turborepo template for Next.js apps.**
+This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines Next.js, Convex, and more.
 
-<div>
-  <img src="https://img.shields.io/npm/dy/next-forge" alt="" />
-  <img src="https://img.shields.io/npm/v/next-forge" alt="" />
-  <img src="https://img.shields.io/github/license/vercel/next-forge" alt="" />
-</div>
+## Features
 
-## Overview
-
-[next-forge](https://github.com/vercel/next-forge) is a [Next.js](https://nextjs.org/) project boilerplate for modern web application. It is designed to be a comprehensive starting point for new apps, providing a solid, opinionated foundation with a minimal amount of configuration.
+- **TypeScript** - For type safety and improved developer experience
+- **Next.js** - Full-stack React framework
+- **TailwindCSS** - Utility-first CSS for rapid UI development
+- **shadcn/ui** - Reusable UI components
+- **Convex** - Reactive backend-as-a-service platform
+- **Biome** - Linting and formatting
+- **Turborepo** - Optimized monorepo build system
 
 ## Getting Started
 
-Clone the repo using:
+First, install the dependencies:
 
-```sh
-npx next-forge@latest init
+```bash
+pnpm install
 ```
 
-Then read the [docs](https://www.next-forge.com/docs) for more information.
+## Convex Setup
 
-## Contributors
+This project uses Convex as a backend. You'll need to set up Convex before running the app:
 
-<a href="https://github.com/vercel/next-forge/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=vercel/next-forge" />
-</a>
+```bash
+pnpm dev:setup
+```
 
-Made with [contrib.rocks](https://contrib.rocks).
+Follow the prompts to create a new Convex project and connect it to your application.
+
+Then, run the development server:
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
+Your app will connect to the Convex cloud backend automatically.
+
+
+
+
+
+
+
+## Project Structure
+
+```
+diff0/
+├── apps/
+│   ├── web/         # Frontend application (Next.js)
+├── packages/
+│   └── backend/     # Convex backend functions and schema
+```
+
+## Available Scripts
+
+- `pnpm dev`: Start all applications in development mode
+- `pnpm build`: Build all applications
+- `pnpm dev:web`: Start only the web application
+- `pnpm dev:setup`: Setup and configure your Convex project
+- `pnpm check-types`: Check TypeScript types across all apps
+- `pnpm check`: Run Biome formatting and linting
