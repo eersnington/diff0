@@ -40,10 +40,11 @@ export const createAuth = (
     },
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
-    // Configure simple, non-verified email/password to get started
-    emailAndPassword: {
-      enabled: true,
-      requireEmailVerification: false,
+    socialProviders: {
+      github: {
+        clientId: env.GITHUB_CLIENT_ID,
+        clientSecret: env.GITHUB_CLIENT_SECRET,
+      },
     },
     plugins: [
       // The Convex plugin is required for Convex compatibility

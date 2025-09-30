@@ -12,7 +12,7 @@ export function Header() {
         <ul className="flex items-center gap-4">
           <li>
             <Button asChild variant={"outline"}>
-              <Link href={"/todos"} prefetch>
+              <Link href={"/auth"} prefetch>
                 Sign in
               </Link>
             </Button>

@@ -29,6 +29,7 @@ export const metadata: Metadata = {
   description:
     "Open-source AI code reviewer that helps you catch bugs before you merge",
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
