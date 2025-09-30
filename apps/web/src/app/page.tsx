@@ -1,46 +1,72 @@
-"use client";
-import { useQuery } from "convex/react";
 import { api } from "@diff0/backend/convex/_generated/api";
+import { preloadQuery } from "convex/nextjs";
+import { Github } from "lucide-react";
+import Link from "next/link";
+import { AnimatedText } from "@/components/animated-text";
+import { Footer } from "@/components/footer";
+import { HealthCheck } from "@/components/health-check";
+import { Button } from "@/components/ui/button";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
-const TITLE_TEXT = `
- ██████╗ ███████╗████████╗████████╗███████╗██████╗
- ██╔══██╗██╔════╝╚══██╔══╝╚══██╔══╝██╔════╝██╔══██╗
- ██████╔╝█████╗     ██║      ██║   █████╗  ██████╔╝
- ██╔══██╗██╔══╝     ██║      ██║   ██╔══╝  ██╔══██╗
- ██████╔╝███████╗   ██║      ██║   ███████╗██║  ██║
- ╚═════╝ ╚══════╝   ╚═╝      ╚═╝   ╚══════╝╚═╝  ╚═╝
+export default async function Page() {
+  const preloadedHealthCheck = await preloadQuery(api.healthCheck.get);
 
- ████████╗    ███████╗████████╗ █████╗  ██████╗██╗  ██╗
- ╚══██╔══╝    ██╔════╝╚══██╔══╝██╔══██╗██╔════╝██║ ██╔╝
-    ██║       ███████╗   ██║   ███████║██║     █████╔╝
-    ██║       ╚════██║   ██║   ██╔══██║██║     ██╔═██╗
-    ██║       ███████║   ██║   ██║  ██║╚██████╗██║  ██╗
-    ╚═╝       ╚══════╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
- `;
+  return (
+    <div className="relative min-h-screen w-full overflow-hidden bg-background">
+      {/* Hero Section */}
+      <section className="relative flex min-h-[calc(100vh-73px)] w-full flex-col items-center justify-center px-6 py-24 lg:px-8">
+        {/* Flickering Grid Background */}
+        <FlickeringGrid
+          className="absolute inset-0 z-0 size-full"
+          color="rgb(107, 114, 128)"
+          flickerChance={0.08}
+          gridGap={6}
+          maxOpacity={0.3}
+          squareSize={4}
+        />
 
-export default function Home() {
-	const healthCheck = useQuery(api.healthCheck.get);
+        {/* Content */}
+        <div className="relative z-10 mx-auto max-w-5xl text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-muted/30 px-4 py-1.5 text-sm backdrop-blur-sm">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-accent" />
+            </span>
+            <span className="text-muted-foreground">Open Source & Free</span>
+          </div>
 
-	return (
-		<div className="container mx-auto max-w-3xl px-4 py-2">
-			<pre className="overflow-x-auto font-mono text-sm">{TITLE_TEXT}</pre>
-			<div className="grid gap-6">
-				<section className="rounded-lg border p-4">
-					<h2 className="mb-2 font-medium">API Status</h2>
-					<div className="flex items-center gap-2">
-						<div
-							className={`h-2 w-2 rounded-full ${healthCheck === "OK" ? "bg-green-500" : healthCheck === undefined ? "bg-orange-400" : "bg-red-500"}`}
-						/>
-						<span className="text-sm text-muted-foreground">
-							{healthCheck === undefined
-								? "Checking..."
-								: healthCheck === "OK"
-									? "Connected"
-									: "Error"}
-						</span>
-					</div>
-				</section>
-			</div>
-		</div>
-	);
+          <h1 className="relative z-10 h-[120px] text-center font-departure text-[40px] leading-tight md:h-auto md:text-[84px]">
+            <AnimatedText text="AI Code Reviewer" />
+          </h1>
+
+          <p className="mx-auto mb-10 max-w-2xl text-balance text-lg text-muted-foreground leading-relaxed sm:text-xl">
+            Your last line of defense before you merge. Catch bugs, improve code
+            quality, and ship with confidence using AI-powered code reviews.
+          </p>
+
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Button asChild>
+              <Link href={"/todos"} prefetch>
+                Sign in
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline">
+              <a
+                href="https://github.com/eersnington/diff0"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <Github className="mr-2 size-4" />
+                Star on GitHub
+              </a>
+            </Button>
+          </div>
+
+          <HealthCheck preloadedHealthCheck={preloadedHealthCheck} />
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
 }
