@@ -8,12 +8,11 @@ import {
   webhooks,
 } from "@polar-sh/better-auth";
 import { Polar } from "@polar-sh/sdk";
-import { betterAuth } from "better-auth";
+import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { env } from "../env";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { type QueryCtx, query } from "./_generated/server";
-import authSchema from "./betterAuth/schema";
 
 const siteUrl = env.SITE_URL;
 
@@ -27,14 +26,8 @@ const polarClient = new Polar({
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
-export const authComponent = createClient<DataModel, typeof authSchema>(
-  components.betterAuth,
-  {
-    local: {
-      schema: authSchema,
-    },
-  }
-);
+export const authComponent = createClient<DataModel>(components.betterAuth);
+
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
   { optionsOnly } = { optionsOnly: false }
@@ -78,10 +71,8 @@ export const createAuth = (
         ],
       }),
     ],
-  });
+  } satisfies BetterAuthOptions);
 };
-
-export default createAuth;
 
 // Example function for getting the current user
 // Feel free to edit, omit, etc.

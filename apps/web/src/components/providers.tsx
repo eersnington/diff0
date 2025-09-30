@@ -10,6 +10,7 @@ import { Toaster } from "./ui/sonner";
 const convex = new ConvexReactClient(env.NEXT_PUBLIC_CONVEX_URL, {
   // Optionally pause queries until the user is authenticated
   expectAuth: true,
+  verbose: true,
 });
 
 export default function Providers({ children }: { children: React.ReactNode }) {

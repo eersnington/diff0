@@ -1,27 +1,146 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+"use client";
 
-export function Header() {
+import type { api } from "@diff0/backend/convex/_generated/api";
+import { type Preloaded, usePreloadedQuery } from "convex/react";
+import { CreditCard, LayoutDashboard, Settings } from "lucide-react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const VISIBLE_CHAR = 0.3;
+
+function censorEmailText(email: string): string {
+  const [localPart, domain] = email.split("@");
+  if (localPart.length <= 2) {
+    return `${localPart[0]}***@${domain}`;
+  }
+  const visibleChars = Math.max(2, Math.floor(localPart.length * VISIBLE_CHAR));
+  const censored = `${localPart.slice(0, visibleChars)}***`;
+  return `${censored}@${domain}`;
+}
+
+export function Header(props: {
+  preloaded: Preloaded<typeof api.auth.getCurrentUser>;
+}) {
+  const user = usePreloadedQuery(props.preloaded);
+
+  const [shouldCensorEmail, setShouldCensorEmail] = useState(true);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("censorEmail");
+    if (stored !== null) {
+      setShouldCensorEmail(stored === "true");
+    }
+  }, []);
+
+  const handleCensorToggle = (checked: boolean) => {
+    setShouldCensorEmail(checked);
+    localStorage.setItem("censorEmail", String(checked));
+  };
+
+  const getUserInitials = () => {
+    if (!user?.name) {
+      return "U";
+    }
+    return user.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
-    <header className="absolute top-0 z-10 flex w-full items-center justify-between p-4">
+    <header className="absolute top-0 z-10 flex w-full items-center justify-between px-4">
       <span className="hidden font-departure-mono font-medium text-lg md:block">
         diff0.dev
       </span>
 
       <nav className="md:mt-2">
         <ul className="flex items-center gap-4">
-          <li>
-            <Button asChild variant={"outline"}>
-              <Link href={"/auth"} prefetch>
-                Sign in
-              </Link>
-            </Button>
-          </li>
+          {user ? (
+            <li>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    className="relative size-7 rounded-full"
+                    variant="ghost"
+                  >
+                    <Avatar className="size-7">
+                      <AvatarImage
+                        alt={user.name}
+                        src={user.image || undefined}
+                      />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col gap-1">
+                      <p className="font-medium text-sm leading-none">
+                        {user.name}
+                      </p>
+                      <p className="text-muted-foreground text-xs leading-none">
+                        {shouldCensorEmail
+                          ? censorEmailText(user.email)
+                          : user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link className="cursor-pointer" href="/dashboard">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link className="cursor-pointer" href="/settings">
+                      <Settings className="mr-2 h-4 w-4" />
+                      Settings
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link className="cursor-pointer" href="/billing">
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      Billing
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuCheckboxItem
+                    checked={shouldCensorEmail}
+                    onCheckedChange={handleCensorToggle}
+                  >
+                    Censor Email
+                  </DropdownMenuCheckboxItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </li>
+          ) : (
+            <li>
+              <Button asChild variant={"outline"}>
+                <Link href={"/auth"} prefetch>
+                  Sign in
+                </Link>
+              </Button>
+            </li>
+          )}
           <li>
             <Button asChild>
               <a
                 href="https://github.com/eersnington/diff0"
-                rel="noopener"
+                rel="noreferrer noopener"
                 target="_blank"
               >
                 Github

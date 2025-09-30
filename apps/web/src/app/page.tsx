@@ -1,3 +1,5 @@
+import { api } from "@diff0/backend/convex/_generated/api";
+import { preloadQuery } from "convex/nextjs";
 import { Github } from "lucide-react";
 import Link from "next/link";
 import { AnimatedText } from "@/components/animated-text";
@@ -6,10 +8,12 @@ import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { FlickeringGrid } from "@/components/ui/flickering-grid";
 
-export default function Page() {
+export default async function Page() {
+  const currentUser = await preloadQuery(api.auth.getCurrentUser);
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background">
-      <Header />
+      <Header preloaded={currentUser} />
 
       {/* Hero Section */}
       <section className="relative flex min-h-[calc(100vh-73px)] w-full flex-col items-center justify-center px-6 py-24 lg:px-8">
