@@ -10,6 +10,8 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { setCookie } from "@/actions/cookies";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -26,6 +28,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { EmailVisibilitySwitcher } from "../email-visibility-switcher";
+import ThemeSwitcherOption from "../theme-switcher";
 
 type NavUserProps = {
   user: {
@@ -33,15 +37,35 @@ type NavUserProps = {
     email: string;
     image?: string | null;
   };
+  initialCensorEmail: boolean;
 };
 
-export function NavUser({ user }: NavUserProps) {
+const VISIBLE_CHAR = 0.3;
+
+function censorEmailText(email: string): string {
+  const [localPart, domain] = email.split("@");
+  if (localPart.length <= 2) {
+    return `${localPart[0]}***@${domain}`;
+  }
+  const visibleChars = Math.max(2, Math.floor(localPart.length * VISIBLE_CHAR));
+  const censored = `${localPart.slice(0, visibleChars)}***`;
+  return `${censored}@${domain}`;
+}
+
+export function NavUser({ user, initialCensorEmail }: NavUserProps) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const [shouldCensorEmail, setShouldCensorEmail] =
+    useState(initialCensorEmail);
 
   const handleSignOut = async () => {
     await authClient.signOut();
     router.push("/");
+  };
+
+  const handleCensorToggle = (checked: boolean) => {
+    setShouldCensorEmail(checked);
+    setCookie("censorEmail", String(checked));
   };
 
   const initials = user.name
@@ -68,7 +92,9 @@ export function NavUser({ user }: NavUserProps) {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-xs">
+                  {shouldCensorEmail ? censorEmailText(user.email) : user.email}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -89,7 +115,11 @@ export function NavUser({ user }: NavUserProps) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">
+                    {shouldCensorEmail
+                      ? censorEmailText(user.email)
+                      : user.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -115,6 +145,23 @@ export function NavUser({ user }: NavUserProps) {
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                <span className="font-medium text-sm">Email </span>
+                <EmailVisibilitySwitcher
+                  onChange={handleCensorToggle}
+                  value={shouldCensorEmail}
+                />
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel className="p-0 font-normal">
+              <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                <span className="font-medium text-sm">Theme</span>
+                <ThemeSwitcherOption />
+              </div>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut}>
               <LogOut />

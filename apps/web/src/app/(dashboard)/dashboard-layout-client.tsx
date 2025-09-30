@@ -17,9 +17,11 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 export function DashboardLayoutClient({
   children,
   preloadedUser,
+  initialCensorEmail,
 }: {
   children: React.ReactNode;
   preloadedUser: Preloaded<FunctionReference<"query", "public">>;
+  initialCensorEmail: boolean;
 }) {
   return (
     <>
@@ -34,7 +36,10 @@ export function DashboardLayoutClient({
         <RedirectToAuth />
       </Unauthenticated>
       <Authenticated>
-        <DashboardContent preloadedUser={preloadedUser}>
+        <DashboardContent
+          initialCensorEmail={initialCensorEmail}
+          preloadedUser={preloadedUser}
+        >
           {children}
         </DashboardContent>
       </Authenticated>
@@ -55,9 +60,11 @@ function RedirectToAuth() {
 function DashboardContent({
   children,
   preloadedUser,
+  initialCensorEmail,
 }: {
   children: React.ReactNode;
   preloadedUser: Preloaded<FunctionReference<"query", "public">>;
+  initialCensorEmail: boolean;
 }) {
   const user = usePreloadedQuery(preloadedUser);
 
@@ -67,7 +74,7 @@ function DashboardContent({
 
   return (
     <SidebarProvider>
-      <AppSidebar user={user} />
+      <AppSidebar initialCensorEmail={initialCensorEmail} user={user} />
       <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );

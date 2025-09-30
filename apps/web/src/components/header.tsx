@@ -1,9 +1,11 @@
 "use client";
 
 import type { api } from "@diff0/backend/convex/_generated/api";
+import { authClient } from "@diff0/backend/lib/auth-client";
 import { type Preloaded, usePreloadedQuery } from "convex/react";
-import { CreditCard, LayoutDashboard, Settings } from "lucide-react";
+import { CreditCard, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { setCookie } from "@/actions/cookies";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,8 +40,10 @@ export function Header({
   initialCensorEmail: boolean;
 }) {
   const user = usePreloadedQuery(currentUser);
+  const router = useRouter();
 
-  const [shouldCensorEmail, setShouldCensorEmail] = useState(initialCensorEmail);
+  const [shouldCensorEmail, setShouldCensorEmail] =
+    useState(initialCensorEmail);
 
   const handleCensorToggle = (checked: boolean) => {
     setShouldCensorEmail(checked);
@@ -56,6 +60,11 @@ export function Header({
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const handleSignOut = async () => {
+    await authClient.signOut();
+    router.push("/");
   };
 
   return (
@@ -122,6 +131,11 @@ export function Header({
                   >
                     Censor Email
                   </DropdownMenuCheckboxItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut />
+                    Log out
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </li>

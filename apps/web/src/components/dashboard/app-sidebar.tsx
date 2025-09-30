@@ -19,9 +19,14 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
     email: string;
     image?: string | null;
   };
+  initialCensorEmail: boolean;
 };
 
-export function AppSidebar({ user, ...props }: AppSidebarProps) {
+export function AppSidebar({
+  user,
+  initialCensorEmail,
+  ...props
+}: AppSidebarProps) {
   const navMain = [
     {
       title: "Dashboard",
@@ -87,7 +92,7 @@ export function AppSidebar({ user, ...props }: AppSidebarProps) {
         <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser initialCensorEmail={initialCensorEmail} user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
