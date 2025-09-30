@@ -12,7 +12,7 @@ import { betterAuth } from "better-auth";
 import { env } from "../env";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
-import { query } from "./_generated/server";
+import { type QueryCtx, query } from "./_generated/server";
 
 const siteUrl = env.SITE_URL;
 
@@ -76,7 +76,12 @@ export const createAuth = (
 
 // Example function for getting the current user
 // Feel free to edit, omit, etc.
+export const safeGetUser = async (ctx: QueryCtx) =>
+  authComponent.safeGetAuthUser(ctx);
+
+export const getUser = async (ctx: QueryCtx) => authComponent.getAuthUser(ctx);
+
 export const getCurrentUser = query({
   args: {},
-  handler: async (ctx) => authComponent.getAuthUser(ctx),
+  handler: async (ctx) => safeGetUser(ctx),
 });
