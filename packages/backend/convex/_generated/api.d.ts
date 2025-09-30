@@ -8,9 +8,9 @@
  * @module
  */
 
-import type * as auth_client from "../auth-client.js";
 import type * as auth from "../auth.js";
 import type * as healthCheck from "../healthCheck.js";
+import type * as http from "../http.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -28,9 +28,9 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  "auth-client": typeof auth_client;
   auth: typeof auth;
   healthCheck: typeof healthCheck;
+  http: typeof http;
   todos: typeof todos;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
