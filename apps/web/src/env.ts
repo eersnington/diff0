@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
+    DAYTONA_API_KEY: z.string().min(1),
     RESEND_API_KEY: z.string().min(1),
     RESEND_SENDER_EMAIL_AUTH: z.string().min(1),
     POLAR_ORGANIZATION_TOKEN: z.string().min(1),
@@ -25,6 +26,7 @@ export const env = createEnv({
   },
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
   runtimeEnv: {
+    DAYTONA_API_KEY: process.env.DAYTONA_API_KEY,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
     RESEND_SENDER_EMAIL_AUTH: process.env.RESEND_SENDER_EMAIL_AUTH,
     POLAR_ORGANIZATION_TOKEN: process.env.POLAR_ORGANIZATION_TOKEN,
