@@ -4,6 +4,8 @@ import { z } from "zod";
 export const env = createEnv({
   server: {
     CONVEX_DEPLOYMENT: z.string().min(1).optional(),
+    CONVEX_URL: z.string().min(1).optional(),
+    CONVEX_SITE: z.string().min(1).optional(),
     SITE_URL: z.string().min(1).optional(),
     BETTER_AUTH_SECRET: z.string().min(1).optional(),
     POLAR_ORGANIZATION_TOKEN: z.string().min(1).optional(),
@@ -18,8 +20,6 @@ export const env = createEnv({
   },
   clientPrefix: "NEXT_PUBLIC",
   client: {
-    NEXT_PUBLIC_CONVEX_URL: z.string().min(1).optional(),
-    NEXT_PUBLIC_CONVEX_SITE_URL: z.string().min(1).optional(),
     NEXT_PUBLIC_100_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
     NEXT_PUBLIC_200_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
     NEXT_PUBLIC_500_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
@@ -32,7 +32,9 @@ export const env = createEnv({
    */
   runtimeEnv: {
     CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
-    SITE_URL: process.env.SITE_URL,
+    CONVEX_URL: process.env.CONVEX_URL,
+    CONVEX_SITE: process.env.CONVEX_SITE,
+    SITE_URL: process.env.SITE_URL, // web app site url
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     POLAR_ORGANIZATION_TOKEN: process.env.POLAR_ORGANIZATION_TOKEN,
     POLAR_ENVIRONMENT: process.env.POLAR_ENVIRONMENT,
@@ -43,12 +45,14 @@ export const env = createEnv({
     GITHUB_APP_CLIENT_ID: process.env.GITHUB_APP_CLIENT_ID,
     GITHUB_APP_PRIVATE_KEY: process.env.GITHUB_APP_PRIVATE_KEY,
     GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
-    NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
-    NEXT_PUBLIC_CONVEX_SITE_URL: process.env.NEXT_PUBLIC_CONVEX_SITE_URL,
-    NEXT_PUBLIC_100_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_100_CREDITS_PRODUCT_ID,
-    NEXT_PUBLIC_200_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_200_CREDITS_PRODUCT_ID,
-    NEXT_PUBLIC_500_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_500_CREDITS_PRODUCT_ID,
-    NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_100_CREDITS_PRODUCT_ID:
+      process.env.NEXT_PUBLIC_100_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_200_CREDITS_PRODUCT_ID:
+      process.env.NEXT_PUBLIC_200_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_500_CREDITS_PRODUCT_ID:
+      process.env.NEXT_PUBLIC_500_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID:
+      process.env.NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID,
   },
 
   /**

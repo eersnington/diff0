@@ -266,6 +266,9 @@ importers:
       '@inkeep/agents-sdk':
         specifier: ^0.11.2
         version: 0.11.2(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@types/pg@8.15.5)(kysely@0.28.7)
+      '@mendable/firecrawl-js':
+        specifier: ^4.3.7
+        version: 4.3.7
       '@t3-oss/env-nextjs':
         specifier: ^0.13.4
         version: 0.13.8(typescript@5.9.2)(zod@4.1.11)
@@ -278,6 +281,9 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.1.16)(react@19.1.1)
+      scorecard-ai:
+        specifier: ^2.1.1
+        version: 2.1.1
       tailwind-merge:
         specifier: ^3.3.0
         version: 3.3.1
@@ -1306,6 +1312,10 @@ packages:
 
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
+
+  '@mendable/firecrawl-js@4.3.7':
+    resolution: {integrity: sha512-mWSjI1v6OyvF/zxyx7zMemuSKLhof7lYNv3z5/HmifJqJ+eaMA5Tqoypq/Q+MtyyBl/0dVJzBPS4O9RiISuB9w==}
+    engines: {node: '>=22.0.0'}
 
   '@modelcontextprotocol/sdk@1.18.2':
     resolution: {integrity: sha512-beedclIvFcCnPrYgHsylqiYJVJ/CI47Vyc4tY8no1/Li/O8U4BTlJfy6ZwxkYwx+Mx10nrgwSVrA7VBbhh4slg==}
@@ -5613,6 +5623,9 @@ packages:
   scheduler@0.26.0:
     resolution: {integrity: sha512-NlHwttCI/l5gCPR3D1nNXtWABUmBwvZpEQiD4IXSbIDq8BzLIK/7Ir5gTFSGZDUu37K5cMNp0hFtzO38sC7gWA==}
 
+  scorecard-ai@2.1.1:
+    resolution: {integrity: sha512-PtyQmGO4fzKBGqD0VnFn2iiPuU+2BCj1JFumUR3CIAAywY3RyyYgpHML00mooTAb3m4KBBQAZjlNm/Jal7dPBA==}
+
   scroll-into-view-if-needed@3.1.0:
     resolution: {integrity: sha512-49oNpRjWRvnU8NyGVmUaYG4jtTkNonFZI86MmGRDqBphEK2EXT9gdEUoQPZhuBM8yWHxCWbobltqYO5M4XrUvQ==}
 
@@ -5975,6 +5988,9 @@ packages:
   type-is@2.0.1:
     resolution: {integrity: sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw==}
     engines: {node: '>= 0.6'}
+
+  typescript-event-target@1.1.1:
+    resolution: {integrity: sha512-dFSOFBKV6uwaloBCCUhxlD3Pr/P1a/tJdcmPrTXCHlEFD3faj0mztjcGn6VBAhQ0/Bdy8K3VWrrqwbt/ffsYsg==}
 
   typescript@5.9.2:
     resolution: {integrity: sha512-CWBzXQrc/qOkhidw1OzBTQuYRbfyxDXJMVJ1XNwUHGROVmuaeiEm3OslpZ1RV96d7SKKjZKrSJu3+t/xlw3R9A==}
@@ -7440,6 +7456,15 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
+
+  '@mendable/firecrawl-js@4.3.7':
+    dependencies:
+      axios: 1.12.2
+      typescript-event-target: 1.1.1
+      zod: 3.25.76
+      zod-to-json-schema: 3.24.6(zod@3.25.76)
+    transitivePeerDependencies:
+      - debug
 
   '@modelcontextprotocol/sdk@1.18.2':
     dependencies:
@@ -12588,6 +12613,8 @@ snapshots:
 
   scheduler@0.26.0: {}
 
+  scorecard-ai@2.1.1: {}
+
   scroll-into-view-if-needed@3.1.0:
     dependencies:
       compute-scroll-into-view: 3.1.1
@@ -12958,6 +12985,8 @@ snapshots:
       content-type: 1.0.5
       media-typer: 1.1.0
       mime-types: 3.0.1
+
+  typescript-event-target@1.1.1: {}
 
   typescript@5.9.2: {}
 

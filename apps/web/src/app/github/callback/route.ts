@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       new URL("/settings?success=github_connected", request.url)
     );
   } catch (error) {
-    // biome-ignore lint/suspicious/noConsole: <explanation>
+    // biome-ignore lint/suspicious/noConsole: needed to debug
     console.error("GitHub callback error:", error);
     return NextResponse.redirect(
       new URL(
