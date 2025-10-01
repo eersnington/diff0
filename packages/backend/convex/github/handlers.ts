@@ -102,7 +102,26 @@ export const routeEvent = internalAction({
           break;
 
         case "installation":
+          await ctx.runMutation(
+            internal.github.installationHandlers.handleInstallationWebhook,
+            {
+              action: event.payload.action,
+              installation: event.payload.installation,
+              repositories: event.payload.repositories,
+            }
+          );
+          break;
+
         case "installation_repositories":
+          await ctx.runMutation(
+            internal.github.installationHandlers.handleInstallationRepositoriesWebhook,
+            {
+              action: event.payload.action,
+              installation: event.payload.installation,
+              repositories_added: event.payload.repositories_added,
+              repositories_removed: event.payload.repositories_removed,
+            }
+          );
           break;
 
         case "check_run":

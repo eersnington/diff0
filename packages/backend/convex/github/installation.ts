@@ -9,7 +9,7 @@ export const handleInstallationCallback = mutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-    
+
     if (!identity) {
       throw new Error("Not authenticated");
     }
@@ -29,6 +29,19 @@ export const handleInstallationCallback = mutation({
         updatedAt: Date.now(),
         suspendedAt: undefined,
       });
+
+      const repos = await ctx.db
+        .query("repositories")
+        .withIndex("installationId", (q) =>
+          q.eq("installationId", args.installationId)
+        )
+        .collect();
+
+      for (const repo of repos) {
+        await ctx.db.patch(repo._id, {
+          userId,
+        });
+      }
     }
 
     return null;
@@ -50,7 +63,7 @@ export const getUserInstallations = query({
   ),
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    
+
     if (!identity) {
       return [];
     }
@@ -91,7 +104,7 @@ export const getConnectedRepositories = query({
   ),
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
-    
+
     if (!identity) {
       return [];
     }
