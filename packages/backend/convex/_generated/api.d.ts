@@ -10,6 +10,10 @@
 
 import type * as auth from "../auth.js";
 import type * as credits from "../credits.js";
+import type * as github_handlers from "../github/handlers.js";
+import type * as github_installation from "../github/installation.js";
+import type * as github_signature from "../github/signature.js";
+import type * as github_webhooks from "../github/webhooks.js";
 import type * as http from "../http.js";
 import type * as polar from "../polar.js";
 import type * as polarHelpers from "../polarHelpers.js";
@@ -31,6 +35,10 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   credits: typeof credits;
+  "github/handlers": typeof github_handlers;
+  "github/installation": typeof github_installation;
+  "github/signature": typeof github_signature;
+  "github/webhooks": typeof github_webhooks;
   http: typeof http;
   polar: typeof polar;
   polarHelpers: typeof polarHelpers;
