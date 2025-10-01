@@ -8,6 +8,7 @@ import type { FunctionReference } from "convex/server";
 import { CreditCard, Loader2, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -108,6 +109,19 @@ export function BillingContent({
             Manage your credits and view transaction history
           </p>
         </div>
+
+        <Alert>
+          <AlertTitle>Early beta</AlertTitle>
+          <AlertDescription>
+            This app is in early beta and I haven't really figured out the
+            economics of payments. If you do feel like adding credits, reach out
+            to me at{" "}
+            <a className="underline" href="mailto:hi@eers.dev">
+              hi@eers.dev
+            </a>
+            . I'd love to talk.
+          </AlertDescription>
+        </Alert>
 
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
