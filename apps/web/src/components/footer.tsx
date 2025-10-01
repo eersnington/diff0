@@ -1,6 +1,6 @@
 export function Footer() {
   return (
-    <footer className="relative z-10 border-border/40 border-t px-6 py-8 lg:px-8">
+    <footer className="relative border-border/40 border-t px-6 py-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 sm:flex-row">
         <p className="text-center text-muted-foreground text-sm">
           © 2025 diff0. Open source under MIT License.
@@ -19,6 +19,18 @@ export function Footer() {
             href="/docs"
           >
             Documentation
+          </a>
+          <a
+            className="text-muted-foreground text-sm transition-colors hover:text-foreground"
+            href="/terms"
+          >
+            Terms
+          </a>
+          <a
+            className="text-muted-foreground text-sm transition-colors hover:text-foreground"
+            href="/privacy"
+          >
+            Privacy
           </a>
         </div>
       </div>

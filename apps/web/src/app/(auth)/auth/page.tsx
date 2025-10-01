@@ -47,7 +47,7 @@ export default function SignIn() {
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Welcome to diff0</CardTitle>
           <CardDescription className="text-xs md:text-sm">
-            Sign in to start reviewing your PRs with AI assistance
+            Sign in to start reviewing your PRs with AI assistance 😎
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -86,6 +86,16 @@ export default function SignIn() {
           </div>
         </CardContent>
       </Card>
+      <p className="mt-4 text-center text-muted-foreground text-sm">
+        By continuing, you agree to our{" "}
+        <Link className="text-primary hover:underline" href="/terms">
+          Terms of Service
+        </Link>{" "}
+        and{" "}
+        <Link className="text-primary hover:underline" href="/privacy">
+          Privacy Policy
+        </Link>
+      </p>
     </div>
   );
 }
