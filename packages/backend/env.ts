@@ -3,6 +3,7 @@ import { z } from "zod";
 
 export const env = createEnv({
   server: {
+    DAYTONA_API_KEY: z.string().min(1),
     CONVEX_DEPLOYMENT: z.string().min(1).optional(),
     CONVEX_URL: z.string().min(1).optional(),
     CONVEX_SITE: z.string().min(1).optional(),
@@ -32,6 +33,8 @@ export const env = createEnv({
    * `process.env` or `import.meta.env`.
    */
   runtimeEnv: {
+    DAYTONA_API_KEY: process.env.DAYTONA_API_KEY,
+
     CONVEX_DEPLOYMENT: process.env.CONVEX_DEPLOYMENT,
     CONVEX_URL: process.env.CONVEX_URL,
     CONVEX_SITE: process.env.CONVEX_SITE,

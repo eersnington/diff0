@@ -1,8 +1,6 @@
 import { bedrock } from "@ai-sdk/amazon-bedrock";
 import { openai } from "@ai-sdk/openai";
-import { keys } from "@/env";
-
-const env = keys();
+import { env } from "@/env";
 
 export const models = {
   chat:

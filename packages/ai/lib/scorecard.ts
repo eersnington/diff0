@@ -1,7 +1,6 @@
 import { Scorecard } from "scorecard-ai";
-import { keys } from "@/env";
+import { env } from "@/env";
 
-const env = keys();
 const HIGH_QUALITY_SCORE = 0.9;
 const MEDIUM_QUALITY_SCORE = 0.5;
 const EXCELLENT_QUALITY_SCORE = 0.95;

@@ -1,7 +1,7 @@
-import { z } from "zod";
 import type { Sandbox } from "@daytonaio/sdk";
-import type { CreateSandboxOptions, DaytonaCreateParams } from "./types";
+import { z } from "zod";
 import { getDaytonaClient } from "./client";
+import type { CreateSandboxOptions, DaytonaCreateParams } from "./types";
 
 const MIN_CPU = 1;
 const MAX_CPU = 4;
@@ -15,16 +15,24 @@ const DEFAULT_DISK = 3;
 
 const createSandboxSchema = z.object({
   name: z.string().optional(),
-  language: z.enum(["python", "typescript", "javascript", "go", "java", "ruby", "rust"]).optional(),
+  language: z
+    .enum(["python", "typescript", "javascript", "go", "java", "ruby", "rust"])
+    .optional(),
   ephemeral: z.boolean().default(true),
   autoStopInterval: z.number().default(0),
   autoArchiveInterval: z.number().default(0),
   autoDeleteInterval: z.number().default(0),
-  resources: z.object({
-    cpu: z.number().min(MIN_CPU).max(MAX_CPU).default(DEFAULT_CPU),
-    memory: z.number().min(MIN_MEMORY).max(MAX_MEMORY).default(DEFAULT_MEMORY),
-    disk: z.number().min(MIN_DISK).max(MAX_DISK).default(DEFAULT_DISK),
-  }).optional(),
+  resources: z
+    .object({
+      cpu: z.number().min(MIN_CPU).max(MAX_CPU).default(DEFAULT_CPU),
+      memory: z
+        .number()
+        .min(MIN_MEMORY)
+        .max(MAX_MEMORY)
+        .default(DEFAULT_MEMORY),
+      disk: z.number().min(MIN_DISK).max(MAX_DISK).default(DEFAULT_DISK),
+    })
+    .optional(),
   labels: z.record(z.string()).optional(),
   envVars: z.record(z.string()).optional(),
 });

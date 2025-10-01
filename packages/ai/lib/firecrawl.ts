@@ -1,7 +1,5 @@
 import Firecrawl from "@mendable/firecrawl-js";
-import { keys } from "@/env";
-
-const env = keys();
+import { env } from "@/env";
 
 let firecrawlClient: Firecrawl | null = null;
 
