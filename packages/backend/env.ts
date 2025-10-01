@@ -14,6 +14,7 @@ export const env = createEnv({
     GITHUB_CLIENT_ID: z.string().min(1).optional(),
     GITHUB_CLIENT_SECRET: z.string().min(1).optional(),
     GITHUB_APP_ID: z.string().min(1).optional(),
+    GITHUB_APP_CLIENT_SECRET: z.string().min(1).optional(),
     GITHUB_APP_CLIENT_ID: z.string().min(1).optional(),
     GITHUB_APP_PRIVATE_KEY: z.string().min(1).optional(),
     GITHUB_WEBHOOK_SECRET: z.string().min(1).optional(),
@@ -43,6 +44,7 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GITHUB_APP_ID: process.env.GITHUB_APP_ID,
     GITHUB_APP_CLIENT_ID: process.env.GITHUB_APP_CLIENT_ID,
+    GITHUB_APP_CLIENT_SECRET: process.env.GITHUB_APP_CLIENT_SECRET,
     GITHUB_APP_PRIVATE_KEY: process.env.GITHUB_APP_PRIVATE_KEY,
     GITHUB_WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET,
     NEXT_PUBLIC_100_CREDITS_PRODUCT_ID:

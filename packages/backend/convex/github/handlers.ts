@@ -93,6 +93,12 @@ export const routeEvent = internalAction({
     try {
       switch (args.eventType) {
         case "pull_request":
+          await ctx.runAction(
+            internal.github.prReview.handlePullRequestWebhook,
+            {
+              payload: event.payload,
+            }
+          );
           break;
 
         case "issue_comment":

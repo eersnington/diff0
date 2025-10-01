@@ -63,8 +63,8 @@ export default async function Page() {
           </h1>
 
           <p className="mx-auto mb-10 max-w-3xl text-balance text-lg text-muted-foreground leading-relaxed sm:text-xl">
-            Your last line of defense before you merge. Catch bugs, improve code
-            quality, and ship with confidence using AI-powered code reviews.
+            Code reviews that catch bugs before they reach production.
+            Context-aware and run tests in isolated sandboxes.
           </p>
 
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
