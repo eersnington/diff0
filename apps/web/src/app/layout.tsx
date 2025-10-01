@@ -15,9 +15,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "diff0 - OSS AI Code Review Agent",
+  metadataBase: new URL("https://diff0.dev"),
+  title:
+    "diff0 - OSS AI Code Review Agent | Catch bugs before they reach prod!",
   description:
-    "Open-source AI code reviewer that helps you catch bugs before you merge",
+    "Open-source AI code reviewer agent that helps you catch bugs before you merge to prod",
 };
 
 export default function RootLayout({
