@@ -1,8 +1,9 @@
 "use client";
 
+import { api } from "@diff0/backend/convex/_generated/api";
 import { authClient } from "@diff0/backend/lib/auth-client";
 import type { Preloaded } from "convex/react";
-import { usePreloadedQuery } from "convex/react";
+import { useAction, usePreloadedQuery } from "convex/react";
 import type { FunctionReference } from "convex/server";
 import { CreditCard, Loader2, TrendingUp } from "lucide-react";
 import { useState } from "react";
@@ -61,15 +62,18 @@ export function BillingContent({
       day: "numeric",
     });
 
+  const ensurePolarCustomer = useAction(api.polarHelpers.ensurePolarCustomer);
+
   const handlePurchase = async (slug: string) => {
     setLoadingSlug(slug);
     try {
+      await ensurePolarCustomer();
+
       await authClient.checkout({
         slug,
       });
     } catch (_error) {
       toast.error("Failed to initiate checkout. Please try again.");
-    } finally {
       setLoadingSlug(null);
     }
   };

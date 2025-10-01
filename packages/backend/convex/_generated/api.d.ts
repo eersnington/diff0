@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as credits from "../credits.js";
 import type * as http from "../http.js";
 import type * as polar from "../polar.js";
+import type * as polarHelpers from "../polarHelpers.js";
 
 import type {
   ApiFromModules,
@@ -32,6 +33,7 @@ declare const fullApi: ApiFromModules<{
   credits: typeof credits;
   http: typeof http;
   polar: typeof polar;
+  polarHelpers: typeof polarHelpers;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
