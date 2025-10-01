@@ -63,3 +63,42 @@ diff0/
 - `pnpm dev:setup`: Setup and configure your Convex project
 - `pnpm check-types`: Check TypeScript types across all apps
 - `pnpm check`: Run Biome formatting and linting
+
+
+# diff0 Agent (GitHub Bot's Permissions)
+---
+
+## Repository Permissions
+
+| Permission      | Access Level            | Purpose                                                   |
+| --------------- | ----------------------- | --------------------------------------------------------- |
+| Pull requests   | Read & Write            | Fetch PRs, post comments, and track PR lifecycle events.  |
+| Contents        | Read                    | Access repository files/diffs to analyze code.            |
+| Checks          | Read & Write            | Create and update GitHub check runs and annotations.      |
+| Issues          | Read & Write            | Open or manage issues for detected problems.              |
+| Metadata        | Read                    | Access basic repository info (required).                  |
+| Commit statuses | Read & Write            | Update commit status if using checks or CI-like feedback. |
+
+
+---
+
+## Subscribed Webhook Events
+
+| Event                       | Triggers / Use                                                                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Pull request                | PR opened, reopened, synchronized, ready for review, edited, labeled, unlocked, etc. → main trigger for running your agent.    |
+| Pull request review comment | Inline diff comments created, edited, deleted → respond to line-specific human feedback or commands.                           |
+| Issue comment               | Issue or PR comment created, edited, deleted → handle `/fix` or other bot commands.                                            |
+| Issues                      | Issue opened, edited, closed, reopened, labeled, assigned, etc. → optional, for creating or managing issues from bot findings. |
+| Check run                   | Check run created, requested, rerequested, completed → post inline analysis results.                                           |
+| Check suite                 | Check suite requested, rerequested, completed → update overall PR check status.                                                |
+
+
+---
+
+App is configured too
+
+* Track PR lifecycle and comments.
+* Post inline feedback via check runs and comments.
+* Optionally manage issues.
+* React to human commands in comments.
