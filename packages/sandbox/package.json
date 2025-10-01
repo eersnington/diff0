@@ -3,15 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "exports": {
-    ".": "./helpers/index.ts",
-    "./types": "./helpers/types.ts",
-    "./client": "./helpers/client.ts",
-    "./sandbox": "./helpers/sandbox.ts",
-    "./process": "./helpers/process.ts",
-    "./git": "./helpers/git.ts",
-    "./fs": "./helpers/fs.ts"
-  },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"

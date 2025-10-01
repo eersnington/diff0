@@ -1,12 +1,12 @@
 "use node";
 
 import { codeAnalysisAgent } from "@diff0/ai/lib/agent";
+import { cloneRepo } from "@diff0/sandbox/helpers/git";
+import { execCommand } from "@diff0/sandbox/helpers/process";
 import {
-  cloneRepo,
   createPrSandbox,
-  execCommand,
   manageLifecycle,
-} from "@diff0/sandbox/helpers/index";
+} from "@diff0/sandbox/helpers/sandbox";
 import { v } from "convex/values";
 import { api, internal } from "../_generated/api";
 import { internalAction } from "../_generated/server";
