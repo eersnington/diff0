@@ -9,7 +9,7 @@ import {
   runCode,
 } from "@diff0/sandbox";
 
-async function executeUserCode(code: string): Promise<{
+export async function executeUserCode(code: string): Promise<{
   success: boolean;
   output: string;
   error?: string;
@@ -39,7 +39,7 @@ async function executeUserCode(code: string): Promise<{
   }
 }
 
-async function cloneAndBuildRepo(repoUrl: string): Promise<{
+export async function cloneAndBuildRepo(repoUrl: string): Promise<{
   success: boolean;
   output: string;
   error?: string;
@@ -85,7 +85,7 @@ async function cloneAndBuildRepo(repoUrl: string): Promise<{
   }
 }
 
-async function runShellCommand(
+export async function runShellCommand(
   command: string,
   cwd?: string
 ): Promise<{

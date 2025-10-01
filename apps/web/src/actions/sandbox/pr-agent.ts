@@ -15,7 +15,7 @@ import {
 const SHA_PREFIX_LENGTH = 7;
 const TEST_TIMEOUT_MS = 120_000;
 
-async function analyzePrAndFix(input: {
+export async function analyzePrAndFix(input: {
   repoUrl: string;
   headSha: string;
   githubToken: string;
@@ -73,7 +73,7 @@ async function analyzePrAndFix(input: {
   }
 }
 
-async function applyFixToPr(input: {
+export async function applyFixToPr(input: {
   repoUrl: string;
   headSha: string;
   githubToken: string;
