@@ -1,9 +1,12 @@
 "use client";
 
+import { authClient } from "@diff0/backend/lib/auth-client";
 import type { Preloaded } from "convex/react";
 import { usePreloadedQuery } from "convex/react";
 import type { FunctionReference } from "convex/server";
-import { CreditCard, TrendingUp } from "lucide-react";
+import { CreditCard, Loader2, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -37,12 +40,11 @@ type BillingContentProps = {
 };
 
 const CREDIT_PACKAGES = [
-  { credits: 100, price: 10, popular: false },
-  { credits: 500, price: 45, popular: true },
-  { credits: 1000, price: 80, popular: false },
+  { credits: 100, price: 10, popular: false, slug: "credits-100" },
+  { credits: 200, price: 20, popular: true, slug: "credits-200" },
+  { credits: 500, price: 50, popular: false, slug: "credits-500" },
+  { credits: 1000, price: 100, popular: false, slug: "credits-1000" },
 ];
-
-const PRICE_PRECISION = 3;
 
 export function BillingContent({
   preloadedCredits,
@@ -50,6 +52,7 @@ export function BillingContent({
 }: BillingContentProps) {
   const credits = usePreloadedQuery(preloadedCredits);
   const transactions = usePreloadedQuery(preloadedTransactions);
+  const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
 
   const formatDate = (timestamp: number) =>
     new Date(timestamp).toLocaleDateString("en-US", {
@@ -57,6 +60,19 @@ export function BillingContent({
       month: "short",
       day: "numeric",
     });
+
+  const handlePurchase = async (slug: string) => {
+    setLoadingSlug(slug);
+    try {
+      await authClient.checkout({
+        slug,
+      });
+    } catch (_error) {
+      toast.error("Failed to initiate checkout. Please try again.");
+    } finally {
+      setLoadingSlug(null);
+    }
+  };
 
   return (
     <>
@@ -154,7 +170,7 @@ export function BillingContent({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               {CREDIT_PACKAGES.map((pkg) => (
                 <Card
                   className={
@@ -176,19 +192,27 @@ export function BillingContent({
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button className="w-full" variant="outline">
-                      Purchase ${pkg.price}
+                    <Button
+                      className="w-full"
+                      disabled={loadingSlug !== null}
+                      onClick={() => handlePurchase(pkg.slug)}
+                      variant="outline"
+                    >
+                      {loadingSlug === pkg.slug ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        `Purchase $${pkg.price}`
+                      )}
                     </Button>
-                    <p className="mt-2 text-center text-muted-foreground text-xs">
-                      ${(pkg.price / pkg.credits).toFixed(PRICE_PRECISION)} per
-                      credit
-                    </p>
                   </CardContent>
                 </Card>
               ))}
             </div>
             <p className="mt-4 text-muted-foreground text-sm">
-              Payment processing via Polar. Credits never expire.
+              Payment processing via Polar. Credits expire in 1 year.
             </p>
           </CardContent>
         </Card>

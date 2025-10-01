@@ -1,12 +1,6 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
-import {
-  checkout,
-  polar,
-  portal,
-  usage,
-  webhooks,
-} from "@polar-sh/better-auth";
+import { checkout, polar, portal, usage } from "@polar-sh/better-auth";
 import { Polar } from "@polar-sh/sdk";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
@@ -19,9 +13,6 @@ const siteUrl = env.SITE_URL;
 
 const polarClient = new Polar({
   accessToken: env.POLAR_ORGANIZATION_TOKEN,
-  // Use 'sandbox' if you're using the Polar Sandbox environment
-  // Remember that access tokens, products, etc. are completely separated between environments.
-  // Access tokens obtained in Production are for instance not usable in the Sandbox environment.
   server: env.POLAR_ENVIRONMENT,
 });
 
@@ -63,18 +54,27 @@ export const createAuth = (
           checkout({
             products: [
               {
-                productId: "123-456-789",
-                slug: "pro",
+                productId: env.NEXT_PUBLIC_100_CREDITS_PRODUCT_ID ?? "",
+                slug: "credits-100",
+              },
+              {
+                productId: env.NEXT_PUBLIC_200_CREDITS_PRODUCT_ID ?? "",
+                slug: "credits-200",
+              },
+              {
+                productId: env.NEXT_PUBLIC_500_CREDITS_PRODUCT_ID ?? "",
+                slug: "credits-500",
+              },
+              {
+                productId: env.NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID ?? "",
+                slug: "credits-1000",
               },
             ],
-            successUrl: "/success?checkout_id={CHECKOUT_ID}",
+            successUrl: "/billing/success?checkout_id={CHECKOUT_ID}",
             authenticatedUsersOnly: true,
           }),
           portal(),
           usage(),
-          webhooks({
-            secret: env.POLAR_WEBHOOK_SECRET ?? "",
-          }),
         ],
       }),
     ],

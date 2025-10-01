@@ -16,6 +16,10 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_CONVEX_URL: z.string().min(1).optional(),
     NEXT_PUBLIC_CONVEX_SITE_URL: z.string().min(1).optional(),
+    NEXT_PUBLIC_100_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
+    NEXT_PUBLIC_200_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
+    NEXT_PUBLIC_500_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
+    NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID: z.string().min(1).optional(),
   },
 
   /**
@@ -33,6 +37,10 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     NEXT_PUBLIC_CONVEX_URL: process.env.NEXT_PUBLIC_CONVEX_URL,
     NEXT_PUBLIC_CONVEX_SITE_URL: process.env.NEXT_PUBLIC_CONVEX_SITE_URL,
+    NEXT_PUBLIC_100_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_100_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_200_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_200_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_500_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_500_CREDITS_PRODUCT_ID,
+    NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID: process.env.NEXT_PUBLIC_1000_CREDITS_PRODUCT_ID,
   },
 
   /**
