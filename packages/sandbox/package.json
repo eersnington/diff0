@@ -1,0 +1,28 @@
+{
+  "name": "@diff0/sandbox",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./helpers/index.ts",
+    "./types": "./helpers/types.ts",
+    "./client": "./helpers/client.ts",
+    "./sandbox": "./helpers/sandbox.ts",
+    "./process": "./helpers/process.ts",
+    "./git": "./helpers/git.ts",
+    "./fs": "./helpers/fs.ts"
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@daytonaio/sdk": "^0.106.4",
+    "zod": "^3.25.28"
+  },
+  "devDependencies": {
+    "@t3-oss/env-core": "^0.13.8",
+    "@types/node": "22.15.21",
+    "typescript": "^5.9.2"
+  }
+}

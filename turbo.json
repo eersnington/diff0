@@ -15,6 +15,7 @@
         ".react-email/**"
       ],
       "env": [
+        "DAYTONA_API_KEY",
         "RESEND_API_KEY",
         "RESEND_SENDER_EMAIL_AUTH",
         "POLAR_ORGANIZATION_TOKEN",
