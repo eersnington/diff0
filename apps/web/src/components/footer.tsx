@@ -16,7 +16,9 @@ export function Footer() {
           </a>
           <a
             className="text-muted-foreground text-sm transition-colors hover:text-foreground"
-            href="/docs"
+            href="https://docs.diff0.dev"
+            rel="noopener noreferrer"
+            target="_blank"
           >
             Documentation
           </a>
