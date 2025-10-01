@@ -164,16 +164,4 @@ export default defineSchema({
     .index("source", ["source"])
     .index("processed", ["processed"])
     .index("deliveryId", ["deliveryId"]),
-
-  // ============================================
-  // LEGACY (Keep for now, can be removed later)
-  // ============================================
-
-  todos: defineTable({
-    text: v.string(),
-    completed: v.boolean(),
-    userId: v.string(),
-    createdAt: v.number(),
-    updatedAt: v.number(),
-  }).index("userId", ["userId"]),
 });
