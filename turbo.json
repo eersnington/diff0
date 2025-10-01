@@ -15,6 +15,15 @@
         ".react-email/**"
       ],
       "env": [
+        "DAYTONA_API_URL",
+        "OPENAI_API_KEY",
+        "AI_PROVIDER",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_REGION",
+        "FIRECRAWL_API_KEY",
+        "SCORECARD_API_KEY",
+        "SCORECARD_PROJECT_ID",
         "DAYTONA_API_KEY",
         "RESEND_API_KEY",
         "RESEND_SENDER_EMAIL_AUTH",
