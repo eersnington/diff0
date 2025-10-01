@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCard, GitBranch, LayoutDashboard, Settings } from "lucide-react";
+import { CreditCard, LayoutDashboard, Settings } from "lucide-react";
 import type * as React from "react";
 import {
   Sidebar,
@@ -41,11 +41,6 @@ export function AppSidebar({
       ],
     },
     {
-      title: "Repositories",
-      url: "/repositories",
-      icon: GitBranch,
-    },
-    {
       title: "Settings",
       url: "/settings",
       icon: Settings,
@@ -70,10 +65,6 @@ export function AppSidebar({
         {
           title: "Credits",
           url: "/billing",
-        },
-        {
-          title: "History",
-          url: "/billing/history",
         },
       ],
     },
