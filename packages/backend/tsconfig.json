@@ -11,7 +11,11 @@
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./*"],
+      "@diff0/*": ["../../packages/*"]
+    }
   },
   "include": ["./**/*"],
   "exclude": ["./_generated"]

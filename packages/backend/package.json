@@ -13,6 +13,8 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@diff0/sandbox": "workspace:*",
+    "@diff0/ai": "workspace:*",
     "@convex-dev/better-auth": "^0.8.6",
     "@convex-dev/polar": "^0.6.4",
     "@octokit/app": "^16.1.1",

@@ -1,12 +1,25 @@
-import { createOpenAI } from '@ai-sdk/openai';
-import { keys } from '../keys';
+import { bedrock } from "@ai-sdk/amazon-bedrock";
+import { openai } from "@ai-sdk/openai";
+import { keys } from "@/env";
 
-const openai = createOpenAI({
-  apiKey: keys().OPENAI_API_KEY,
-  compatibility: 'strict',
-});
+const env = keys();
 
 export const models = {
-  chat: openai('gpt-4o-mini'),
-  embeddings: openai('text-embedding-3-small'),
+  chat:
+    env.AI_PROVIDER === "openai"
+      ? openai.chat("gpt-5-codex")
+      : bedrock("anthropic.claude-sonnet-4-5-20250929-v1:0"),
+
+  embeddings: openai("text-embedding-3-small"),
 };
+
+export const getProviderOptions = () =>
+  env.AI_PROVIDER === "openai"
+    ? {
+        openai: {
+          reasoningEffort: "low" as const,
+        },
+      }
+    : {};
+
+export const getProvider = () => env.AI_PROVIDER;
