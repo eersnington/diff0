@@ -125,6 +125,7 @@ export const handlePullRequestWebhook = internalAction({
         prNumber,
         headRef,
         baseRef,
+        headSha: pull_request.head.sha,
         userId: repo.userId,
       }
     );
@@ -142,6 +143,7 @@ export const analyzePullRequest = internalAction({
     prNumber: v.number(),
     headRef: v.string(),
     baseRef: v.string(),
+    headSha: v.string(),
     userId: v.string(),
   },
   returns: v.null(),
@@ -206,9 +208,16 @@ export const analyzePullRequest = internalAction({
         status: "reviewing",
       });
 
-      const commentBody = formatReviewComment(analysis);
+      const diffMap = parseDiffForPositions(diff);
 
-      await postComment(token, args.repoFullName, args.prNumber, commentBody);
+      await postReview(
+        token,
+        args.repoFullName,
+        args.prNumber,
+        args.headSha,
+        analysis,
+        diffMap
+      );
 
       let creditsUsed = 1;
       try {
@@ -265,56 +274,111 @@ export const analyzePullRequest = internalAction({
   },
 });
 
-async function postComment(
+const matchOneRegex = /b\/(.+)$/;
+const matchTwoRegex = /\+(\d+)/;
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: no
+function parseDiffForPositions(diff: string): Map<string, Map<number, number>> {
+  const filePositions = new Map<string, Map<number, number>>();
+  const lines = diff.split("\n");
+
+  let currentFile = "";
+  let currentPosition = 0;
+  let currentLine = 0;
+
+  for (const line of lines) {
+    if (line.startsWith("diff --git")) {
+      const match = line.match(matchOneRegex);
+      if (match) {
+        currentFile = match[1];
+        filePositions.set(currentFile, new Map());
+      }
+      currentPosition = 0;
+      currentLine = 0;
+    } else if (line.startsWith("@@")) {
+      const match = line.match(matchTwoRegex);
+      if (match) {
+        currentLine = Number.parseInt(match[1], 10);
+      }
+      currentPosition++;
+    } else if (currentFile) {
+      currentPosition++;
+      if (line.startsWith("+") && !line.startsWith("+++")) {
+        filePositions.get(currentFile)?.set(currentLine, currentPosition);
+        currentLine++;
+      } else if (!(line.startsWith("-") || line.startsWith("\\"))) {
+        currentLine++;
+      }
+    }
+  }
+
+  return filePositions;
+}
+
+// biome-ignore lint/nursery/useMaxParams: no
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: no
+async function postReview(
   token: string,
   repoFullName: string,
   prNumber: number,
-  body: string
+  commitSha: string,
+  analysis: {
+    issues: Array<{
+      type: string;
+      severity: string;
+      file?: string;
+      line?: number;
+      message: string;
+      suggestion?: string;
+    }>;
+  },
+  diffMap: Map<string, Map<number, number>>
 ): Promise<void> {
-  const response = await fetch(
-    `${GITHUB_API_BASE}/repos/${repoFullName}/issues/${prNumber}/comments`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      body: JSON.stringify({ body }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error(`Failed to post comment: ${response.statusText}`);
-  }
-}
-
-function formatReviewComment(analysis: {
-  issues: Array<{
-    type: string;
-    severity: string;
-    file?: string;
-    line?: number;
-    message: string;
-    suggestion?: string;
-  }>;
-}): string {
   if (analysis.issues.length === 0) {
-    return "✅ **AI Review Complete** - No issues found!";
+    const response = await fetch(
+      `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}/reviews`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        body: JSON.stringify({
+          commit_id: commitSha,
+          body: "✅ **AI Review Complete** - No issues found!",
+          event: "COMMENT",
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to post review: ${response.statusText}`);
+    }
+    return;
   }
 
-  const MAX_ISSUES = 20;
-  const issues =
-    analysis.issues.length > MAX_ISSUES
-      ? analysis.issues.slice(0, MAX_ISSUES)
-      : analysis.issues;
+  const comments: Array<{
+    path: string;
+    position: number;
+    body: string;
+  }> = [];
 
-  let comment = "## 🤖 AI Code Review\n\n";
-  comment += `Found ${analysis.issues.length} issue(s)${
-    analysis.issues.length > MAX_ISSUES ? ` (showing top ${MAX_ISSUES})` : ""
-  }:\n\n`;
+  for (const issue of analysis.issues) {
+    if (!(issue.file && issue.line)) {
+      continue;
+    }
 
-  for (const issue of issues) {
+    const fileMap = diffMap.get(issue.file);
+    if (!fileMap) {
+      continue;
+    }
+
+    const position = fileMap.get(issue.line);
+    if (!position) {
+      continue;
+    }
+
     const icon =
       {
         critical: "🔴",
@@ -323,22 +387,76 @@ function formatReviewComment(analysis: {
         low: "🟢",
       }[issue.severity] || "⚪";
 
-    comment += `### ${icon} ${issue.type.toUpperCase()} - ${issue.severity}\n`;
-    if (issue.file) {
-      comment += `**File:** \`${issue.file}\``;
-      if (issue.line) {
-        comment += `:${issue.line}`;
-      }
-      comment += "\n";
-    }
-    comment += `${issue.message}\n`;
+    let body = `${icon} **${issue.type.toUpperCase()}** (${issue.severity})\n\n${issue.message}`;
+
     if (issue.suggestion) {
-      comment += `\nSuggested fix:\n\n\`\`\`\n${issue.suggestion}\n\`\`\`\n`;
+      body += `\n\n\`\`\`suggestion\n${issue.suggestion}\n\`\`\``;
     }
-    comment += "\n";
+
+    comments.push({
+      path: issue.file,
+      position,
+      body,
+    });
   }
 
-  comment += "---\n*Powered by diff0 AI*";
+  const summaryIssues = analysis.issues.filter(
+    (issue) =>
+      !(issue.file && issue.line && diffMap.get(issue.file)?.has(issue.line))
+  );
 
-  return comment;
+  let reviewBody = `## 🤖 AI Code Review\n\nFound ${analysis.issues.length} issue(s)`;
+
+  if (comments.length > 0) {
+    reviewBody += `\n\n${comments.length} inline comment(s) with suggestions you can apply with one click.`;
+  }
+
+  if (summaryIssues.length > 0) {
+    reviewBody += "\n\n### Additional Issues\n\n";
+    for (const issue of summaryIssues) {
+      const icon =
+        {
+          critical: "🔴",
+          high: "🟠",
+          medium: "🟡",
+          low: "🟢",
+        }[issue.severity] || "⚪";
+
+      reviewBody += `${icon} **${issue.type.toUpperCase()}** (${issue.severity})`;
+      if (issue.file) {
+        reviewBody += ` in \`${issue.file}\``;
+        if (issue.line) {
+          reviewBody += `:${issue.line}`;
+        }
+      }
+      reviewBody += `\n${issue.message}\n\n`;
+    }
+  }
+
+  reviewBody += "\n---\n*Powered by diff0 AI*";
+
+  const response = await fetch(
+    `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}/reviews`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `token ${token}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: JSON.stringify({
+        commit_id: commitSha,
+        body: reviewBody,
+        event: "COMMENT",
+        comments,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(
+      `Failed to post review: ${response.statusText} - ${errorText}`
+    );
+  }
 }
