@@ -1,6 +1,7 @@
 "use client";
 
 import { api } from "@diff0/backend/convex/_generated/api";
+import type { Id } from "@diff0/backend/convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { CheckCircle2, GitBranch, Github, XCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -31,7 +32,7 @@ export function SettingsContent() {
   );
   const isLoading = installations === undefined || repositories === undefined;
 
-  const handleToggle = async (repositoryId: string) => {
+  const handleToggle = async (repositoryId: Id<"repositories">) => {
     try {
       await toggleAutoReview({ repositoryId });
       toast.success("Auto-review setting updated");
