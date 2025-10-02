@@ -60,6 +60,23 @@ export const POST = Webhooks({
         throw new Error(`No externalId for customer ${order.customerId}`);
       }
 
+      // Ensure the order record exists before marking it paid (idempotent upsert)
+      await fetchMutation(api.polar.mutations.handleOrderCreated, {
+        orderId: order.id,
+        checkoutId: order.checkoutId ?? "",
+        customerId: order.customerId,
+        customerEmail: order.customer.email,
+        customerExternalId: order.customer.externalId ?? undefined,
+        productId: order.productId,
+        productName: order.product.name,
+        amount: order.totalAmount,
+        currency: order.currency,
+        status: order.status,
+        subscriptionId: order.subscriptionId ?? undefined,
+        billingReason: order.billingReason ?? undefined,
+        metadata: order.metadata,
+      });
+
       await fetchMutation(api.polar.mutations.handleOrderPaid, {
         orderId: order.id,
         userExternalId: order.customer.externalId,
