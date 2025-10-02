@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import "../index.css";
+import { Analytics } from "@vercel/analytics/next";
 import localFont from "next/font/local";
 import Providers from "@/components/providers";
 
@@ -35,6 +36,7 @@ export default function RootLayout({
         <Providers>
           <div className="grid h-svh grid-rows-[auto_1fr]">{children}</div>
         </Providers>
+        <Analytics />
       </body>
     </html>
   );
