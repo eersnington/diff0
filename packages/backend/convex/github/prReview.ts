@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: ignore for now */
 "use node";
 
 import { codeAnalysisAgent } from "@diff0/ai/lib/agent";
@@ -21,15 +22,21 @@ export const handlePullRequestWebhook = internalAction({
   handler: async (ctx, args) => {
     const { action, pull_request, repository, installation } = args.payload;
 
+    console.log(
+      `[PR Webhook] Action: ${action}, PR #${pull_request.number}, Repo: ${repository.full_name}`
+    );
+
     if (
       !["opened", "reopened", "synchronize", "ready_for_review"].includes(
         action
       )
     ) {
+      console.log(`Skipping PR action: ${action}`);
       return null;
     }
 
     if (pull_request.draft) {
+      console.log(`Skipping draft PR #${pull_request.number}`);
       return null;
     }
 
@@ -43,17 +50,50 @@ export const handlePullRequestWebhook = internalAction({
     const baseRef = pull_request.base.ref;
     const cloneUrl = repository.clone_url;
 
+    console.log(`Processing PR #${prNumber} in ${repoFullName}`);
+
     const repo = await ctx.runQuery(internal.github.reviews.findRepository, {
       installationId,
-      repoName: repository.name,
+      repoFullName,
     });
 
     if (!repo) {
+      console.log(`Repository ${repoFullName} not found in database`);
+      return null;
+    }
+
+    if (!repo.userId || repo.userId === "") {
+      console.log(
+        `Repository ${repoFullName} not yet linked to user - waiting for OAuth callback`
+      );
       return null;
     }
 
     if (!repo.autoReviewEnabled) {
+      console.log(`Auto-review disabled for ${repoFullName}`);
       return null;
+    }
+
+    const existingReview = await ctx.runQuery(
+      internal.github.reviews.findExistingReview,
+      {
+        repositoryId: repo._id,
+        prNumber,
+      }
+    );
+
+    if (existingReview) {
+      if (existingReview.status === "completed") {
+        console.log(`Review already completed for PR #${prNumber}`);
+        return null;
+      }
+      if (
+        ["pending", "analyzing", "reviewing"].includes(existingReview.status)
+      ) {
+        console.log(`Review already in progress for PR #${prNumber}`);
+        return null;
+      }
+      console.log(`Previous review failed for PR #${prNumber}, retrying...`);
     }
 
     const reviewId = await ctx.runMutation(
@@ -71,6 +111,8 @@ export const handlePullRequestWebhook = internalAction({
         deletions: pull_request.deletions || 0,
       }
     );
+
+    console.log(`Created review ${reviewId} for PR #${prNumber}`);
 
     await ctx.scheduler.runAfter(
       0,

@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noConsole: ignore for now */
 import { v } from "convex/values";
 import { internal } from "../_generated/api";
 import {
@@ -93,17 +94,23 @@ export const routeEvent = internalAction({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
+    console.log(
+      `[Route] Processing ${args.eventType} event: ${args.deliveryId}`
+    );
+
     const event = await ctx.runQuery(internal.github.handlers.getWebhookEvent, {
       deliveryId: args.deliveryId,
     });
 
     if (!event) {
+      console.error(`[Route] Event not found: ${args.deliveryId}`);
       throw new Error("Event not found");
     }
 
     try {
       switch (args.eventType) {
         case "pull_request":
+          console.log("[Route] Handling pull_request event");
           await ctx.runAction(
             internal.github.prReview.handlePullRequestWebhook,
             {
@@ -113,12 +120,17 @@ export const routeEvent = internalAction({
           break;
 
         case "issue_comment":
+          console.log("[Route] Skipping issue_comment event (not implemented)");
           break;
 
         case "pull_request_review_comment":
+          console.log(
+            "[Route] Skipping pull_request_review_comment event (not implemented)"
+          );
           break;
 
         case "installation":
+          console.log("[Route] Handling installation event");
           await ctx.runMutation(
             internal.github.installationHandlers.handleInstallationWebhook,
             {
@@ -130,8 +142,10 @@ export const routeEvent = internalAction({
           break;
 
         case "installation_repositories":
+          console.log("[Route] Handling installation_repositories event");
           await ctx.runMutation(
-            internal.github.installationHandlers.handleInstallationRepositoriesWebhook,
+            internal.github.installationHandlers
+              .handleInstallationRepositoriesWebhook,
             {
               action: event.payload.action,
               installation: event.payload.installation,
@@ -143,16 +157,22 @@ export const routeEvent = internalAction({
 
         case "check_run":
         case "check_suite":
+          console.log(
+            `[Route] Skipping ${args.eventType} event (not implemented)`
+          );
           break;
 
         default:
+          console.log(`[Route] Unknown event type: ${args.eventType}`);
           break;
       }
 
       await ctx.runMutation(internal.github.handlers.markEventProcessed, {
         deliveryId: args.deliveryId,
       });
+      console.log(`[Route] Successfully processed event: ${args.deliveryId}`);
     } catch (error) {
+      console.error(`[Route] Error processing ${args.deliveryId}:`, error);
       await ctx.runMutation(internal.github.handlers.markEventProcessed, {
         deliveryId: args.deliveryId,
         error: error instanceof Error ? error.message : String(error),

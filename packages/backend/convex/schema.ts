@@ -119,7 +119,8 @@ export default defineSchema({
     .index("installationId", ["installationId"])
     .index("userId", ["userId"])
     .index("githubId", ["githubId"])
-    .index("installationId_and_name", ["installationId", "name"]),
+    .index("installationId_and_name", ["installationId", "name"])
+    .index("installationId_and_fullName", ["installationId", "fullName"]),
 
   // ============================================
   // AI REVIEWS
@@ -177,6 +178,7 @@ export default defineSchema({
   })
     .index("userId", ["userId"])
     .index("repositoryId", ["repositoryId"])
+    .index("repositoryId_and_prNumber", ["repositoryId", "prNumber"])
     .index("status", ["status"]),
 
   // ============================================

@@ -4,7 +4,7 @@ import { internalMutation, internalQuery } from "../_generated/server";
 export const findRepository = internalQuery({
   args: {
     installationId: v.string(),
-    repoName: v.string(),
+    repoFullName: v.string(),
   },
   returns: v.union(
     v.object({
@@ -16,11 +16,10 @@ export const findRepository = internalQuery({
     v.null()
   ),
   handler: async (ctx, args) => {
-    // Use composite index to avoid filter + full scan
     const repo = await ctx.db
       .query("repositories")
-      .withIndex("installationId_and_name", (q) =>
-        q.eq("installationId", args.installationId).eq("name", args.repoName)
+      .withIndex("installationId_and_fullName", (q) =>
+        q.eq("installationId", args.installationId).eq("fullName", args.repoFullName)
       )
       .first();
 
@@ -35,6 +34,34 @@ export const findRepository = internalQuery({
       fullName: repo.fullName,
     };
   },
+});
+
+export const findExistingReview = internalQuery({
+  args: {
+    repositoryId: v.id("repositories"),
+    prNumber: v.number(),
+  },
+  returns: v.union(
+    v.object({
+      _id: v.id("reviews"),
+      status: v.union(
+        v.literal("pending"),
+        v.literal("analyzing"),
+        v.literal("reviewing"),
+        v.literal("completed"),
+        v.literal("failed")
+      ),
+      completedAt: v.optional(v.number()),
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) =>
+    await ctx.db
+      .query("reviews")
+      .withIndex("repositoryId_and_prNumber", (q) =>
+        q.eq("repositoryId", args.repositoryId).eq("prNumber", args.prNumber)
+      )
+      .first(),
 });
 
 export const createReview = internalMutation({
