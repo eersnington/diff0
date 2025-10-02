@@ -1,9 +1,10 @@
 "use client";
 
-import { CheckCircle } from "lucide-react";
+import { api } from "@diff0/backend/convex/_generated/api";
+import { useQuery } from "convex/react";
+import { CheckCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,27 +14,70 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const REDIRECT_COUNTDOWN_SECONDS = 5;
-const COUNTDOWN_INTERVAL_MS = 1000;
+const CENTS_TO_CURRENCY_UNIT = 100;
 
 export function SuccessContent() {
   const searchParams = useSearchParams();
   const checkoutId = searchParams.get("checkout_id");
-  const [countdown, setCountdown] = useState(REDIRECT_COUNTDOWN_SECONDS);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          window.location.href = "/billing";
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, COUNTDOWN_INTERVAL_MS);
+  const checkoutDetails = useQuery(
+    api.polar.queries.getCheckoutDetails,
+    checkoutId ? { checkoutId } : "skip"
+  );
 
-    return () => clearInterval(timer);
-  }, []);
+  if (!checkoutId) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Invalid Request</CardTitle>
+          <CardDescription>
+            No checkout ID provided in the URL
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild className="w-full">
+            <Link href="/billing">Return to Billing</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (checkoutDetails === undefined) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="flex items-center justify-center gap-2">
+            <Loader2 className="h-5 w-5 animate-spin" />
+            Processing Order
+          </CardTitle>
+          <CardDescription>
+            Please wait while we confirm your payment...
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  if (!checkoutDetails) {
+    return (
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">Order Not Found</CardTitle>
+          <CardDescription>
+            We couldn't find an order with this checkout ID
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button asChild className="w-full">
+            <Link href="/billing">Return to Billing</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const { order, credits } = checkoutDetails;
 
   return (
     <Card className="w-full max-w-md">
@@ -43,20 +87,38 @@ export function SuccessContent() {
         </div>
         <CardTitle className="text-2xl">Payment Successful!</CardTitle>
         <CardDescription>
-          Your credits have been added to your account
+          {order.creditsAmount} credits have been added to your account
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {checkoutId && (
-          <div className="rounded-lg bg-muted p-4">
-            <p className="text-muted-foreground text-sm">Order ID</p>
-            <p className="font-mono text-sm">{checkoutId}</p>
+        <div className="space-y-2 rounded-lg bg-muted p-4">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Product:</span>
+            <span className="font-medium">{order.productName}</span>
           </div>
-        )}
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Amount:</span>
+            <span className="font-medium">
+              {order.currency.toUpperCase()}{" "}
+              {(order.amount / CENTS_TO_CURRENCY_UNIT).toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Credits:</span>
+            <span className="font-bold text-green-600">
+              +{order.creditsAmount}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Status:</span>
+            <span className="font-medium capitalize">{order.status}</span>
+          </div>
+        </div>
 
-        <p className="text-center text-muted-foreground text-sm">
-          Redirecting to billing page in {countdown} seconds...
-        </p>
+        <div className="rounded-lg border p-4">
+          <p className="mb-2 text-muted-foreground text-sm">Current Balance</p>
+          <p className="font-bold text-3xl">{credits.balance} credits</p>
+        </div>
 
         <div className="flex gap-2">
           <Button asChild className="flex-1" variant="outline">

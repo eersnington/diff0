@@ -29,6 +29,38 @@ export default defineSchema({
   }).index("userId", ["userId"]),
 
   // ============================================
+  // POLAR ORDERS
+  // ============================================
+
+  polarOrders: defineTable({
+    userEmail: v.string(),
+    polarOrderId: v.string(),
+    polarCheckoutId: v.string(),
+    polarCustomerId: v.string(),
+    productId: v.string(),
+    productName: v.string(),
+    amount: v.number(),
+    currency: v.string(),
+    status: v.union(
+      v.literal("pending"),
+      v.literal("paid"),
+      v.literal("refunded")
+    ),
+    creditsAmount: v.number(),
+    creditsApplied: v.boolean(),
+    billingReason: v.optional(v.string()),
+    subscriptionId: v.optional(v.string()),
+    metadata: v.optional(v.any()),
+    createdAt: v.number(),
+    paidAt: v.optional(v.number()),
+    refundedAt: v.optional(v.number()),
+  })
+    .index("userEmail", ["userEmail"])
+    .index("polarOrderId", ["polarOrderId"])
+    .index("polarCheckoutId", ["polarCheckoutId"])
+    .index("status", ["status"]),
+
+  // ============================================
   // GITHUB APP INSTALLATIONS
   // ============================================
 

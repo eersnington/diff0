@@ -8,11 +8,10 @@ export const getBalance = query({
   args: {},
   handler: async (ctx) => {
     const user = await authComponent.getAuthUser(ctx);
-    const userId = user.userId ?? user._id;
 
     const credits = await ctx.db
       .query("userCredits")
-      .withIndex("userId", (q) => q.eq("userId", userId))
+      .withIndex("userId", (q) => q.eq("userId", user._id))
       .first();
 
     if (!credits) {
@@ -35,16 +34,15 @@ export const initializeCredits = mutation({
   args: {},
   handler: async (ctx) => {
     const user = await authComponent.getAuthUser(ctx);
-    const userId = user.userId ?? user._id;
 
     const existing = await ctx.db
       .query("userCredits")
-      .withIndex("userId", (q) => q.eq("userId", userId))
+      .withIndex("userId", (q) => q.eq("userId", user._id))
       .first();
 
     if (!existing) {
       await ctx.db.insert("userCredits", {
-        userId,
+        userId: user._id,
         balance: 0,
         totalPurchased: 0,
         totalUsed: 0,
@@ -60,12 +58,11 @@ export const getTransactions = query({
   },
   handler: async (ctx, args) => {
     const user = await authComponent.getAuthUser(ctx);
-    const userId = user.userId ?? user._id;
     const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
 
     const transactions = await ctx.db
       .query("creditTransactions")
-      .withIndex("userId", (q) => q.eq("userId", userId))
+      .withIndex("userId", (q) => q.eq("userId", user._id))
       .order("desc")
       .take(limit);
 

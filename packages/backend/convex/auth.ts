@@ -70,7 +70,7 @@ export const createAuth = (
                 slug: "credits-1000",
               },
             ],
-            successUrl: "/billing/success?checkout_id={CHECKOUT_ID}",
+            successUrl: `${siteUrl}/billing/success?checkout_id={CHECKOUT_ID}`,
             authenticatedUsersOnly: true,
           }),
           portal(),
