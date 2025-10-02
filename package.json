@@ -17,7 +17,7 @@
     "dev:setup": "turbo -F @diff0/backend dev:setup"
   },
   "dependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "turbo": "^2.5.4",
