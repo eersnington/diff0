@@ -5,7 +5,8 @@ import { authClient } from "@diff0/backend/lib/auth-client";
 import type { Preloaded } from "convex/react";
 import { useAction, usePreloadedQuery } from "convex/react";
 import type { FunctionReference } from "convex/server";
-import { CreditCard, Loader2, TrendingUp } from "lucide-react";
+import { Beaker, CreditCard, Loader2, TrendingUp } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -110,16 +111,26 @@ export function BillingContent({
           </p>
         </div>
 
-        <Alert>
+        <Alert variant="destructive">
+          <Beaker
+            aria-hidden="true"
+            className="h-4 w-4 text-muted-foreground"
+          />
           <AlertTitle>Early beta</AlertTitle>
           <AlertDescription>
-            This app is in early beta and I haven't really figured out the
-            economics of payments. If you do feel like adding credits, reach out
-            to me at{" "}
-            <a className="underline" href="mailto:hi@eers.dev">
-              hi@eers.dev
-            </a>
-            . I'd love to talk.
+            <p>
+              This app is in early beta; payments are experimental. If
+              you&apos;d like to add credits, email{" "}
+              <Link
+                className="underline underline-offset-4"
+                href="mailto:hi@eers.dev"
+                rel="noopener"
+                target="_blank"
+              >
+                hi@eers.dev
+              </Link>
+              . I&apos;d love to chat.
+            </p>
           </AlertDescription>
         </Alert>
 
