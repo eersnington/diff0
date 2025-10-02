@@ -1,5 +1,3 @@
-"use node";
-
 import {
   validateEvent,
   WebhookVerificationError,
@@ -10,7 +8,7 @@ import { httpAction, internalMutation } from "../_generated/server";
 
 export const handlePolarWebhook = httpAction(async (ctx, request) => {
   const body = await request.text();
-  
+
   const deliveryId = request.headers.get("webhook-id");
 
   if (!deliveryId) {
