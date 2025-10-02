@@ -68,6 +68,9 @@ export function BillingContent({
 
   const handlePurchase = async (slug: string) => {
     setLoadingSlug(slug);
+    toast.loading("Just a sec", {
+      description: "Consulting the Orb 🔮 to summon your user essence...",
+    });
     try {
       await ensurePolarCustomer();
 
