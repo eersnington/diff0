@@ -16,12 +16,12 @@ export const findRepository = internalQuery({
     v.null()
   ),
   handler: async (ctx, args) => {
+    // Use composite index to avoid filter + full scan
     const repo = await ctx.db
       .query("repositories")
-      .withIndex("installationId", (q) =>
-        q.eq("installationId", args.installationId)
+      .withIndex("installationId_and_name", (q) =>
+        q.eq("installationId", args.installationId).eq("name", args.repoName)
       )
-      .filter((q) => q.eq(q.field("name"), args.repoName))
       .first();
 
     if (!repo) {

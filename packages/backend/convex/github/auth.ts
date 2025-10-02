@@ -2,7 +2,7 @@
 
 import { App } from "@octokit/app";
 import { v } from "convex/values";
-import { env } from "@/env";
+import { env } from "../../env";
 import { internalAction } from "../_generated/server";
 
 /**

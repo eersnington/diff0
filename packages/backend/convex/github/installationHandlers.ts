@@ -50,6 +50,21 @@ export const handleInstallationWebhook = internalMutation({
 
       if (args.repositories) {
         for (const repo of args.repositories) {
+          // Idempotency: avoid duplicate repositories on webhook retries
+          const existingRepo = await ctx.db
+            .query("repositories")
+            .withIndex("githubId", (q) => q.eq("githubId", repo.id))
+            .first();
+
+          if (existingRepo) {
+            // Ensure installation linkage is correct if record already exists
+            await ctx.db.patch(existingRepo._id, {
+              installationId,
+              lastSyncedAt: Date.now(),
+            });
+            continue;
+          }
+
           await ctx.db.insert("repositories", {
             installationId,
             userId: "",

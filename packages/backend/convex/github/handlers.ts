@@ -15,8 +15,18 @@ export const logWebhookEvent = internalMutation({
     payload: v.any(),
   },
   returns: v.id("webhookEvents"),
-  handler: async (ctx, args) =>
-    await ctx.db.insert("webhookEvents", {
+  handler: async (ctx, args) => {
+    // Idempotent insert by deliveryId to avoid duplicate processing on retries
+    const existing = await ctx.db
+      .query("webhookEvents")
+      .withIndex("deliveryId", (q) => q.eq("deliveryId", args.deliveryId))
+      .first();
+
+    if (existing) {
+      return existing._id;
+    }
+
+    return await ctx.db.insert("webhookEvents", {
       source: args.source,
       eventType: args.eventType,
       deliveryId: args.deliveryId,
@@ -24,7 +34,8 @@ export const logWebhookEvent = internalMutation({
       payload: args.payload,
       processed: false,
       createdAt: Date.now(),
-    }),
+    });
+  },
 });
 
 export const getWebhookEvent = internalQuery({
