@@ -43,7 +43,7 @@ export default async function Page() {
         {/* Content */}
         <div className="relative z-10 mx-auto max-w-5xl text-center">
           <a
-            href="https://www.convex.dev/hackathons/modernstack"
+            href="https://vibeapps.dev/s/diff0"
             rel="noopener noreferrer"
             target="_blank"
           >
