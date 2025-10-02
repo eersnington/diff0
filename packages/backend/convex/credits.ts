@@ -43,7 +43,7 @@ export const initializeCredits = mutation({
     if (!existing) {
       await ctx.db.insert("userCredits", {
         userId: user._id,
-        balance: 0,
+        balance: 10,
         totalPurchased: 0,
         totalUsed: 0,
         lastUpdated: Date.now(),
