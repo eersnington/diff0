@@ -207,7 +207,14 @@ export function SettingsContent() {
                   <div className="flex items-center gap-3">
                     <GitBranch className="h-4 w-4 text-muted-foreground" />
                     <div>
-                      <p className="font-medium text-sm">{repo.fullName}</p>
+                      <p className="font-medium text-sm hover:underline">
+                        <a
+                          href={`https://github.com/${repo.fullName}`}
+                          target="_blank"
+                        >
+                          {repo.fullName}
+                        </a>
+                      </p>
                       <div className="flex items-center gap-2 text-muted-foreground text-xs">
                         {repo.language && <span>{repo.language}</span>}
                         {repo.language && <span>•</span>}
