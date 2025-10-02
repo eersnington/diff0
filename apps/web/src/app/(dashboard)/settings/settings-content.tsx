@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@diff0/backend/convex/_generated/api";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { CheckCircle2, GitBranch, Github, XCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { env } from "@/env";
 
 export function SettingsContent() {
@@ -25,7 +26,21 @@ export function SettingsContent() {
   const repositories = useQuery(
     api.github.installation.getConnectedRepositories
   );
+  const toggleAutoReview = useMutation(
+    api.github.installation.toggleAutoReview
+  );
   const isLoading = installations === undefined || repositories === undefined;
+
+  const handleToggle = async (repositoryId: string) => {
+    try {
+      await toggleAutoReview({ repositoryId });
+      toast.success("Auto-review setting updated");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update setting"
+      );
+    }
+  };
 
   const githubAppName =
     env.NEXT_PUBLIC_GITHUB_APP_NAME ||
@@ -228,18 +243,24 @@ export function SettingsContent() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {repo.autoReviewEnabled ? (
-                      <div className="flex items-center gap-1 text-green-600 text-sm">
-                        <CheckCircle2 className="h-4 w-4" />
-                        <span>Enabled</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-muted-foreground text-sm">
-                        <XCircle className="h-4 w-4" />
-                        <span>Disabled</span>
-                      </div>
-                    )}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      {repo.autoReviewEnabled ? (
+                        <div className="flex items-center gap-1 text-green-600 text-sm">
+                          <CheckCircle2 className="h-4 w-4" />
+                          <span>Enabled</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-1 text-muted-foreground text-sm">
+                          <XCircle className="h-4 w-4" />
+                          <span>Disabled</span>
+                        </div>
+                      )}
+                    </div>
+                    <Switch
+                      checked={repo.autoReviewEnabled}
+                      onCheckedChange={() => handleToggle(repo._id)}
+                    />
                   </div>
                 </div>
               ))}

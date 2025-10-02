@@ -129,3 +129,35 @@ export const getConnectedRepositories = query({
     }));
   },
 });
+
+export const toggleAutoReview = mutation({
+  args: {
+    repositoryId: v.id("repositories"),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error("Not authenticated");
+    }
+
+    const userId = identity.subject;
+
+    const repository = await ctx.db.get(args.repositoryId);
+
+    if (!repository) {
+      throw new Error("Repository not found");
+    }
+
+    if (repository.userId !== userId) {
+      throw new Error("Unauthorized");
+    }
+
+    await ctx.db.patch(args.repositoryId, {
+      autoReviewEnabled: !repository.autoReviewEnabled,
+    });
+
+    return null;
+  },
+});
