@@ -8,10 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@diff0/ai": "workspace:*",
     "@diff0/backend": "workspace:*",
     "@diff0/sandbox": "workspace:*",
-    "@diff0/ai": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
+    "@polar-sh/nextjs": "^0.4.9",
+    "@polar-sh/sdk": "^0.35.4",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.7",

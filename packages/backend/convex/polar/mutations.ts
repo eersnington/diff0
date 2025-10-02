@@ -1,9 +1,9 @@
 import { v } from "convex/values";
 import { internal } from "../_generated/api";
-import { internalMutation } from "../_generated/server";
+import { mutation } from "../_generated/server";
 import { getCreditsForProduct } from "./productMapping";
 
-export const handleOrderCreated = internalMutation({
+export const handleOrderCreated = mutation({
   args: {
     orderId: v.string(),
     checkoutId: v.string(),
@@ -54,7 +54,7 @@ export const handleOrderCreated = internalMutation({
   },
 });
 
-export const handleOrderPaid = internalMutation({
+export const handleOrderPaid = mutation({
   args: {
     orderId: v.string(),
     userExternalId: v.string(),
