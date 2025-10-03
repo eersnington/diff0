@@ -3,7 +3,12 @@
 import type { Preloaded } from "convex/react";
 import { usePreloadedQuery } from "convex/react";
 import type { FunctionReference } from "convex/server";
-import { CreditCard, FileCode, GitBranch, TrendingUp } from "lucide-react";
+import {
+  CreditCard,
+  FileCode,
+  GitBranch,
+  TrendingUp,
+} from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,43 +20,103 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 type DashboardContentProps = {
   preloadedUser: Preloaded<FunctionReference<"query", "public">>;
   preloadedCredits: Preloaded<FunctionReference<"query", "public">>;
+  preloadedStats: Preloaded<FunctionReference<"query", "public">>;
+  preloadedRecentReviews: Preloaded<FunctionReference<"query", "public">>;
 };
+
+type ReviewStatus =
+  | "pending"
+  | "analyzing"
+  | "reviewing"
+  | "completed"
+  | "failed";
+
+interface RecentReview {
+  _id: string;
+  prNumber: number;
+  prTitle: string;
+  prUrl: string;
+  status: ReviewStatus;
+  createdAt: number;
+  completedAt?: number;
+  repository: { name: string; fullName: string; owner: string };
+}
+
+const STATUS_LABEL: Record<ReviewStatus, string> = {
+  pending: "pending",
+  analyzing: "analyzing",
+  reviewing: "reviewing",
+  completed: "completed",
+  failed: "failed",
+};
+
+const STATUS_CLASS: Record<ReviewStatus, string> = {
+  pending:
+    "border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400",
+  analyzing:
+    "border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400",
+  reviewing:
+    "border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400",
+  completed:
+    "border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300",
+  failed:
+    "border-neutral-400 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300",
+};
+
+function formatRelative(ts: number) {
+  const deltaMs = Date.now() - ts;
+  const sec = Math.floor(deltaMs / 1000);
+  if (sec < 60) return `${sec}s ago`;
+  const min = Math.floor(sec / 60);
+  if (min < 60) return `${min}m ago`;
+  const hrs = Math.floor(min / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  const days = Math.floor(hrs / 24);
+  return `${days}d ago`;
+}
 
 export function DashboardContent({
   preloadedUser,
   preloadedCredits,
+  preloadedStats,
+  preloadedRecentReviews,
 }: DashboardContentProps) {
   const user = usePreloadedQuery(preloadedUser);
   const credits = usePreloadedQuery(preloadedCredits);
+  const stats = usePreloadedQuery(preloadedStats);
+  const recentReviewsRaw = usePreloadedQuery(preloadedRecentReviews);
 
-  const stats = [
+  const recentReviews = (recentReviewsRaw ?? []) as RecentReview[];
+
+  const dashboardStats = [
     {
       title: "Available Credits",
       value: credits?.balance ?? 0,
       icon: CreditCard,
-      description: "Credits remaining",
+      description: "credits remaining",
     },
     {
       title: "Reviews This Month",
-      value: 0,
+      value: stats?.reviewsThisMonth ?? 0,
       icon: FileCode,
-      description: "AI-powered reviews",
+      description: "reviews this month",
     },
     {
       title: "Connected Repositories",
-      value: 0,
+      value: stats?.connectedRepositories ?? 0,
       icon: GitBranch,
-      description: "Active repositories",
+      description: "active repositories",
     },
     {
       title: "Total Reviews",
-      value: 0,
+      value: stats?.totalReviews ?? 0,
       icon: TrendingUp,
-      description: "All-time reviews",
+      description: "all-time reviews",
     },
   ];
 
@@ -60,10 +125,10 @@ export function DashboardContent({
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
-          <Separator
-            className="mr-2 data-[orientation=vertical]:h-4"
-            orientation="vertical"
-          />
+            <Separator
+              className="mr-2 data-[orientation=vertical]:h-4"
+              orientation="vertical"
+            />
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
@@ -78,18 +143,18 @@ export function DashboardContent({
         </div>
       </header>
 
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 font-mono">
         <div className="mb-4">
           <h2 className="font-bold text-3xl tracking-tight">
-            Welcome back, {user?.name}!
+            Welcome back, {user?.name}
           </h2>
           <p className="text-muted-foreground">
-            Here's an overview of your AI code review activity
+            Overview of recent code review activity
           </p>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {stats.map((stat) => (
+          {dashboardStats.map((stat) => (
             <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="font-medium text-sm">
@@ -98,7 +163,9 @@ export function DashboardContent({
                 <stat.icon className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="font-bold text-2xl">{stat.value}</div>
+                <div className="font-bold text-2xl tabular-nums">
+                  {stat.value}
+                </div>
                 <p className="text-muted-foreground text-xs">
                   {stat.description}
                 </p>
@@ -113,17 +180,61 @@ export function DashboardContent({
               <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex h-[200px] items-center justify-center rounded-lg border border-dashed">
-                <div className="text-center">
-                  <FileCode className="mx-auto h-8 w-8 text-muted-foreground" />
-                  <p className="mt-2 text-muted-foreground text-sm">
-                    No recent reviews
-                  </p>
-                  <p className="mt-1 text-muted-foreground text-xs">
-                    Connect a repository to get started
-                  </p>
+              {recentReviews.length === 0 ? (
+                <div className="flex h-[200px] items-center justify-center rounded border border-dashed">
+                  <div className="text-center">
+                    <FileCode className="mx-auto h-6 w-6 text-muted-foreground" />
+                    <p className="mt-3 text-sm text-muted-foreground">
+                      No recent reviews
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Connect a repository to get started
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2">
+                  {recentReviews.map((review) => {
+                    const status = review.status;
+                    return (
+                      <div
+                        key={review._id}
+                        className="group rounded border px-3 py-2 text-xs hover:bg-accent/40 transition-colors"
+                      >
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="min-w-0 flex-1 truncate">
+                            <a
+                              href={review.prUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="font-medium truncate hover:underline"
+                            >
+                              {review.repository.fullName}#{review.prNumber}
+                            </a>
+                          </div>
+                          <span
+                            className={`shrink-0 select-none rounded-sm border px-1.5 py-[2px] leading-none tracking-wide ${STATUS_CLASS[status]}`}
+                            aria-label={`status: ${STATUS_LABEL[status]}`}
+                          >
+                            {STATUS_LABEL[status]}
+                          </span>
+                        </div>
+                        <div className="mt-1 truncate text-neutral-500 dark:text-neutral-400">
+                          {review.prTitle}
+                        </div>
+                        <div className="mt-1 flex items-center gap-2 text-[10px] text-neutral-500 dark:text-neutral-500">
+                          <span>{formatRelative(review.createdAt)}</span>
+                          {review.completedAt && (
+                            <span className="text-neutral-400 dark:text-neutral-600">
+                              • done {formatRelative(review.completedAt)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -132,35 +243,31 @@ export function DashboardContent({
               <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <a
-                  className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent"
+              <div className="space-y-2 text-sm">
+                <Link
+                  className="flex items-center justify-between rounded border px-3 py-2 hover:bg-accent/50 transition-colors"
                   href="/settings"
                 >
-                  <div className="flex items-center gap-3">
-                    <GitBranch className="h-5 w-5" />
-                    <div>
-                      <p className="font-medium text-sm">Connect GitHub</p>
-                      <p className="text-muted-foreground text-xs">
-                        Install the GitHub App
-                      </p>
-                    </div>
+                  <div className="flex items-center gap-2 truncate">
+                    <GitBranch className="h-4 w-4 text-muted-foreground" />
+                    <span className="truncate">Connect GitHub</span>
                   </div>
-                </a>
-                <a
-                  className="flex items-center justify-between rounded-lg border p-3 hover:bg-accent"
+                  <span className="text-muted-foreground text-[11px]">
+                    install app
+                  </span>
+                </Link>
+                <Link
+                  className="flex items-center justify-between rounded border px-3 py-2 hover:bg-accent/50 transition-colors"
                   href="/billing"
                 >
-                  <div className="flex items-center gap-3">
-                    <CreditCard className="h-5 w-5" />
-                    <div>
-                      <p className="font-medium text-sm">Buy Credits</p>
-                      <p className="text-muted-foreground text-xs">
-                        Top up your review credits
-                      </p>
-                    </div>
+                  <div className="flex items-center gap-2 truncate">
+                    <CreditCard className="h-4 w-4 text-muted-foreground" />
+                    <span className="truncate">Buy Credits</span>
                   </div>
-                </a>
+                  <span className="text-muted-foreground text-[11px]">
+                    top up
+                  </span>
+                </Link>
               </div>
             </CardContent>
           </Card>
