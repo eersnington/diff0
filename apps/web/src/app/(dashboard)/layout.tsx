@@ -9,9 +9,12 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const token = await getToken();
-  const cookieStore = await cookies();
-  
+
+  const [token, cookieStore] = await Promise.all([
+   getToken(),
+   cookies(),
+  ]);
+
   const preloadedUser = await preloadQuery(
     api.auth.getCurrentUser,
     {},
