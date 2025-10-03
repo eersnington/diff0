@@ -156,7 +156,7 @@ export const handlePullRequestWebhook = internalAction({
       });
       const introBody =
         `✨🔮 The Orb has been consulted. I will peer into the diffs and whisper my findings.\n\n` +
-        `While you wait, a haiku:\n\n_${haiku}_`;
+        `While you wait, here's a haiku:\n\n_${haiku}_`;
       const res = await fetch(
         `${GITHUB_API_BASE}/repos/${repoFullName}/issues/${prNumber}/comments`,
         {
