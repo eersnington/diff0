@@ -17,10 +17,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://diff0.dev"),
-  title:
-    "diff0 - OSS AI Code Review Agent | Catch bugs before they reach prod!",
-  description:
-    "Open-source AI code reviewer agent that helps you catch bugs before you merge to prod",
+   title: "diff0 - OSS AI Code Review Agent | Catch bugs before they reach prod!",
+   description: "Open-source AI code reviewer agent that helps you catch bugs before you merge to prod",
+   openGraph: {
+     images: ['/opengraph-image.png'],
+   },
+   twitter: {
+     card: 'summary_large_image',
+     images: ['/twitter-image.png'],
+   },
 };
 
 export default function RootLayout({
