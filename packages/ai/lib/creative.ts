@@ -43,15 +43,8 @@ export async function generatePrHaiku(input: HaikuInput): Promise<HaikuResult> {
 
   try {
     const result = await generateText({
-      model: models.chat,
+      model: models.haiku,
       prompt,
-      ...(provider === "openai" && {
-        providerOptions: {
-          openai: {
-            reasoningEffort: "low" as const,
-          },
-        },
-      }),
     });
 
     const haiku = postProcess(result.text);
