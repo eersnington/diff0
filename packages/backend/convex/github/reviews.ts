@@ -55,13 +55,20 @@ export const findExistingReview = internalQuery({
     }),
     v.null()
   ),
-  handler: async (ctx, args) =>
-    await ctx.db
+  handler: async (ctx, args) => {
+    const doc = await ctx.db
       .query("reviews")
       .withIndex("repositoryId_and_prNumber", (q) =>
         q.eq("repositoryId", args.repositoryId).eq("prNumber", args.prNumber)
       )
-      .first(),
+      .first();
+    if (!doc) return null;
+    return {
+      _id: doc._id,
+      status: doc.status,
+      completedAt: doc.completedAt,
+    };
+  },
 });
 
 export const createReview = internalMutation({

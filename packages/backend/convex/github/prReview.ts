@@ -735,8 +735,15 @@ async function postReview(
 
     // Only add suggestion if it's actual replacement code
     // IMPORTANT: The suggestion must be the EXACT replacement text
-    if (issue.suggestion && issue.suggestion.trim()) {
-      body += `\n\n\`\`\`suggestion\n${issue.suggestion.trim()}\n\`\`\``;
+    if (issue.suggestion) {
+      const cleaned = sanitizeSuggestion(issue.suggestion);
+      if (cleaned) {
+        body += `\n\n\`\`\`suggestion\n${cleaned}\n\`\`\``;
+      } else {
+        console.log(
+          `[Review] Dropped non-code suggestion for ${issue.file}:${issue.line}`
+        );
+      }
     }
 
     comments.push({
@@ -821,4 +828,43 @@ async function postReview(
 function truncate(str: string, max: number): string {
   if (str.length <= max) return str;
   return str.slice(0, max - 3) + "...";
+}
+
+function sanitizeSuggestion(raw: string): string | null {
+  if (!raw) return null;
+  let text = raw.trim();
+  // Strip surrounding fenced blocks if the agent already wrapped
+  if (text.startsWith("```")) {
+    // remove first fence
+    const lines = text.split("\n").slice(1);
+    // find closing fence
+    const closingIndex = lines.findIndex((l) => l.trim().startsWith("```"));
+    if (closingIndex >= 0) {
+      text = lines.slice(0, closingIndex).join("\n").trim();
+    }
+  }
+  // Heuristic: drop lines that look like pure English instructions at the top
+  const codeCandidateLines: string[] = [];
+  const englishPattern =
+    /^(move|change|update|consider|remove|add|replace|modify|retrieve|set|ensure|use)\b/i;
+  let skipped = true;
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (skipped && englishPattern.test(trimmed) && !/[;{}()=]/.test(trimmed)) {
+      continue;
+    }
+    skipped = false;
+    codeCandidateLines.push(line);
+  }
+  const candidate = codeCandidateLines.join("\n").trim();
+  if (!candidate) return null;
+  // Reject if still looks like prose (no typical code tokens)
+  if (!/[;{}()=]/.test(candidate) && candidate.split("\n").length === 1) {
+    return null;
+  }
+  // Guard: avoid accidental triple backticks inside
+  if (candidate.includes("```")) return null;
+  // Soft length cap
+  if (candidate.split("\n").length > 40) return null;
+  return candidate;
 }
