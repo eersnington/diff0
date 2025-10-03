@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalMutation, internalQuery } from "../_generated/server";
+import { internalMutation, internalQuery, query } from "../_generated/server";
 
 export const findRepository = internalQuery({
   args: {
@@ -191,5 +191,127 @@ export const listRecentReviews = internalQuery({
       createdAt: r.createdAt,
       completedAt: r.completedAt,
     }));
+  },
+});
+
+export const getRecentReviews = query({
+  args: {
+    limit: v.optional(v.number()),
+  },
+  returns: v.array(
+    v.object({
+      _id: v.id("reviews"),
+      prNumber: v.number(),
+      prTitle: v.string(),
+      prUrl: v.string(),
+      status: v.union(
+        v.literal("pending"),
+        v.literal("analyzing"),
+        v.literal("reviewing"),
+        v.literal("completed"),
+        v.literal("failed")
+      ),
+      createdAt: v.number(),
+      completedAt: v.optional(v.number()),
+      repository: v.object({
+        name: v.string(),
+        fullName: v.string(),
+        owner: v.string(),
+      }),
+    })
+  ),
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return [];
+    }
+
+    const userId = identity.subject;
+    const limit = args.limit ?? 5; // Default to 5 for dashboard
+
+    const reviews = await ctx.db
+      .query("reviews")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .order("desc")
+      .take(limit);
+
+    const reviewsWithRepos = [];
+    for (const review of reviews) {
+      const repository = await ctx.db.get(review.repositoryId);
+      if (repository) {
+        reviewsWithRepos.push({
+          _id: review._id,
+          prNumber: review.prNumber,
+          prTitle: review.prTitle,
+          prUrl: review.prUrl,
+          status: review.status,
+          createdAt: review.createdAt,
+          completedAt: review.completedAt,
+          repository: {
+            name: repository.name,
+            fullName: repository.fullName,
+            owner: repository.owner,
+          },
+        });
+      }
+    }
+
+    return reviewsWithRepos;
+  },
+});
+
+export const getDashboardStats = query({
+  args: {},
+  returns: v.object({
+    totalReviews: v.number(),
+    reviewsThisMonth: v.number(),
+    connectedRepositories: v.number(),
+    completedReviews: v.number(),
+  }),
+  handler: async (ctx) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return {
+        totalReviews: 0,
+        reviewsThisMonth: 0,
+        connectedRepositories: 0,
+        completedReviews: 0,
+      };
+    }
+
+    const userId = identity.subject;
+    const now = Date.now();
+    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
+
+    // Get all reviews for the user
+    const allReviews = await ctx.db
+      .query("reviews")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .collect();
+
+    // Get reviews this month
+    const reviewsThisMonth = allReviews.filter(
+      (review) => review.createdAt >= startOfMonth
+    );
+
+    // Get completed reviews
+    const completedReviews = allReviews.filter(
+      (review) => review.status === "completed"
+    );
+
+    // Get connected repositories
+    const repositories = await ctx.db
+      .query("repositories")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .collect();
+
+    return {
+      totalReviews: allReviews.length,
+      reviewsThisMonth: reviewsThisMonth.length,
+      connectedRepositories: repositories.length,
+      completedReviews: completedReviews.length,
+    };
   },
 });
