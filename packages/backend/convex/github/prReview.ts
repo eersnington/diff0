@@ -129,9 +129,9 @@ export const handlePullRequestWebhook = internalAction({
         filesChanged: pull_request.changed_files,
       });
       const introBody =
-        `✨🔮 The Orb has been consulted. Here is a short haiku in the meantime…\n\n` +
-        `${haiku}\n\n` +
-        `_I will peer into the diff and whisper my findings soon.${fallback ? " (fallback haiku)" : ""}_`;
+        `✨🔮 The Orb has been consulted. I will peer into the diff and whisper my findings soon.\n\n` +
+        `Here is a short haiku in the meantime…\n\n` +
+        `_${haiku}_`;
       await fetch(`${GITHUB_API_BASE}/repos/${repoFullName}/issues/${prNumber}/comments`, {
         method: "POST",
         headers: {
