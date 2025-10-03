@@ -122,7 +122,7 @@ export function BillingContent({
           <AlertTitle>Early beta</AlertTitle>
           <AlertDescription>
             <p>
-              This app is in early beta; payments are experimental. If
+              This app is in early beta. If
               you&apos;d like to add credits, email{" "}
               <Link
                 className="underline underline-offset-4"
@@ -132,7 +132,7 @@ export function BillingContent({
               >
                 hi@eers.dev
               </Link>
-              . I&apos;d love to chat.
+              . I might be able to give you free credits to test stuff out!
             </p>
           </AlertDescription>
         </Alert>
