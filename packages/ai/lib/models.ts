@@ -3,10 +3,11 @@ import { openai } from "@ai-sdk/openai";
 import { env } from "@/env";
 
 export const models = {
+  haiku: bedrock("us.anthropic.claude-3-5-haiku-20241022-v1:0"),
   chat:
     env.AI_PROVIDER === "openai"
       ? openai.chat("gpt-5-codex")
-      : bedrock("anthropic.claude-sonnet-4-5-20250929-v1:0"),
+      : bedrock("global.anthropic.claude-sonnet-4-5-20250929-v1:0"),
 
   embeddings: openai("text-embedding-3-small"),
 };
