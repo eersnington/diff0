@@ -419,51 +419,7 @@ async function getPrDiff(params: {
   const { sandboxId, baseRef, headRef, prNumber, repoFullName, token } =
     params;
 
-  // Strategy 1: direct fetch + diff using remote refs
-  const tryGitStandard = await execCommand(sandboxId, {
-    command: `git fetch origin ${baseRef} --depth=100 && git diff --unified=0 origin/${baseRef}...HEAD`,
-    cwd: "repo",
-  });
-
-  if (tryGitStandard.exitCode === 0 && tryGitStandard.result.trim()) {
-    return tryGitStandard.result;
-  }
-
-  const stderr1 = "(stderr unavailable)";
-  console.log(
-    `[Diff] Strategy#1 failed or empty (code=${tryGitStandard.exitCode})`
-  );
-
-  // Strategy 2: ensure local tracking branch + merge-base diff
-  const setupBase = await execCommand(sandboxId, {
-    command: `git fetch origin ${baseRef}:${baseRef} --depth=100 || true`,
-    cwd: "repo",
-  });
-
-  const mergeBase = await execCommand(sandboxId, {
-    command: `git merge-base ${baseRef} HEAD`,
-    cwd: "repo",
-  });
-
-  let mergeBaseSha = mergeBase.result.trim().split("\n")[0] || "";
-  if (mergeBase.exitCode !== 0 || mergeBaseSha.length < 5) {
-    console.log(
-      `[Diff] Strategy#2 merge-base failed code=${mergeBase.exitCode}`
-    );
-  } else {
-    const diff2 = await execCommand(sandboxId, {
-      command: `git diff --unified=0 ${mergeBaseSha}...HEAD`,
-      cwd: "repo",
-    });
-    if (diff2.exitCode === 0 && diff2.result.trim()) {
-      return diff2.result;
-    }
-    console.log(
-      `[Diff] Strategy#2 diff failed code=${diff2.exitCode}`
-    );
-  }
-
-  // Strategy 3: GitHub API diff (robust, but lacks position mapping stability if patch format changes)
+  // Strategy 1: GitHub API diff (most reliable for position mapping)
   try {
     const apiResp = await fetch(
       `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}`,
@@ -478,16 +434,61 @@ async function getPrDiff(params: {
     if (apiResp.ok) {
       const apiDiff = await apiResp.text();
       if (apiDiff.trim()) {
-        console.log("[Diff] Strategy#3 GitHub API diff succeeded");
+        console.log("[Diff] Strategy#1 (GitHub API) succeeded");
         return apiDiff;
       }
     } else {
       console.log(
-        `[Diff] Strategy#3 GitHub API diff failed status=${apiResp.status} ${apiResp.statusText}`
+        `[Diff] Strategy#1 GitHub API failed status=${apiResp.status} ${apiResp.statusText}`
       );
     }
   } catch (apiErr) {
-    console.log("[Diff] Strategy#3 API request error", apiErr);
+    console.log("[Diff] Strategy#1 API request error", apiErr);
+  }
+
+  // Strategy 2: direct fetch + diff using remote refs with context
+  const tryGitStandard = await execCommand(sandboxId, {
+    command: `git fetch origin ${baseRef} --depth=100 && git diff --unified=3 origin/${baseRef}...HEAD`,
+    cwd: "repo",
+  });
+
+  if (tryGitStandard.exitCode === 0 && tryGitStandard.result.trim()) {
+    console.log("[Diff] Strategy#2 (git diff) succeeded");
+    return tryGitStandard.result;
+  }
+
+  console.log(
+    `[Diff] Strategy#2 failed or empty (code=${tryGitStandard.exitCode})`
+  );
+
+  // Strategy 3: merge-base fallback
+  await execCommand(sandboxId, {
+    command: `git fetch origin ${baseRef}:${baseRef} --depth=100 || true`,
+    cwd: "repo",
+  });
+
+  const mergeBase = await execCommand(sandboxId, {
+    command: `git merge-base ${baseRef} HEAD`,
+    cwd: "repo",
+  });
+
+  const mergeBaseSha = mergeBase.result.trim().split("\n")[0] || "";
+  if (mergeBase.exitCode === 0 && mergeBaseSha.length >= 5) {
+    const diff3 = await execCommand(sandboxId, {
+      command: `git diff --unified=3 ${mergeBaseSha}...HEAD`,
+      cwd: "repo",
+    });
+    if (diff3.exitCode === 0 && diff3.result.trim()) {
+      console.log("[Diff] Strategy#3 (merge-base) succeeded");
+      return diff3.result;
+    }
+    console.log(
+      `[Diff] Strategy#3 diff failed code=${diff3.exitCode}`
+    );
+  } else {
+    console.log(
+      `[Diff] Strategy#3 merge-base failed code=${mergeBase.exitCode}`
+    );
   }
 
   throw new Error("Failed to get PR diff (all strategies exhausted)");
@@ -597,13 +598,12 @@ async function postSummaryOnlyReview(params: {
 
 // -------- Diff Parsing for Inline Positions --------
 const matchFilePath = /^diff --git a\/(.+?) b\/(.+)$/;
-const matchHunkHeader =
-  /^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@(?:.*)?$/;
+const matchHunkHeader = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/;
 
 /**
  * Builds a map:
  *  file -> ( lineNumberInNewFile -> positionInUnifiedDiff )
- * Position is 1-based and includes hunk headers & diff lines per GitHub rules.
+ * Position is 1-based and includes ALL lines (headers, hunks, code)
  */
 function parseDiffForPositions(
   diff: string
@@ -616,49 +616,54 @@ function parseDiffForPositions(
   let newLineNumber = 0;
 
   for (const line of lines) {
-    position++;
+    position++; // Every line counts toward position
 
+    // New file starts
     if (line.startsWith("diff --git")) {
       const m = line.match(matchFilePath);
       if (m) {
-        currentFile = m[2];
-        filePositions.set(currentFile, new Map());
-      } else {
-        currentFile = null;
+        currentFile = m[2]; // Use the "b/" path (destination)
+        if (!filePositions.has(currentFile)) {
+          filePositions.set(currentFile, new Map());
+        }
       }
-      // Reset state for next file
       newLineNumber = 0;
       continue;
     }
 
-    if (!currentFile) {
+    if (!currentFile) continue;
+
+    // File metadata (skip)
+    if (line.startsWith("index ") ||
+        line.startsWith("--- ") ||
+        line.startsWith("+++ ") ||
+        line.startsWith("Binary files")) {
       continue;
     }
 
+    // Hunk header
     if (line.startsWith("@@")) {
       const m = line.match(matchHunkHeader);
       if (m) {
-        newLineNumber = Number.parseInt(m[1], 10);
+        newLineNumber = parseInt(m[3], 10); // Start of new file range
       }
-      continue; // hunk header counts toward position but not a code line
+      continue;
     }
 
-    if (line.startsWith("+") && !line.startsWith("+++")) {
-      // Added line
+    // Added line (this is what we can comment on)
+    if (line.startsWith("+")) {
       filePositions.get(currentFile)?.set(newLineNumber, position);
       newLineNumber++;
-    } else if (line.startsWith("-") && !line.startsWith("---")) {
-      // Removal: does not advance new file line counter
-      // (position already incremented)
-    } else {
-      // Context line or other
-      if (
-        !line.startsWith("+++ ") && // file header
-        !line.startsWith("--- ") && // file header
-        !line.startsWith("\\ No newline")
-      ) {
-        newLineNumber++;
-      }
+    }
+    // Removed line (doesn't exist in new file)
+    else if (line.startsWith("-")) {
+      // Don't increment newLineNumber
+    }
+    // Context line (exists in both old and new)
+    else if (!line.startsWith("\\")) {
+      // Context lines appear in the new file and can be commented on
+      filePositions.get(currentFile)?.set(newLineNumber, position);
+      newLineNumber++;
     }
   }
 
@@ -727,8 +732,11 @@ async function postReview(
     let body = `${icon} **${(issue.type || "Issue").toUpperCase()}** (${
       issue.severity || "n/a"
     })\n\n${issue.message || "No description"}`;
-    if (issue.suggestion) {
-      body += `\n\n\`\`\`suggestion\n${issue.suggestion}\n\`\`\``;
+
+    // Only add suggestion if it's actual replacement code
+    // IMPORTANT: The suggestion must be the EXACT replacement text
+    if (issue.suggestion && issue.suggestion.trim()) {
+      body += `\n\n\`\`\`suggestion\n${issue.suggestion.trim()}\n\`\`\``;
     }
 
     comments.push({
