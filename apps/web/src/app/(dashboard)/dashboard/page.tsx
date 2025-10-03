@@ -5,7 +5,7 @@ import { DashboardContent } from "./dashboard-content";
 
 export default async function DashboardPage() {
   const token = await getToken();
-  
+
   const preloadedUser = await preloadQuery(
     api.auth.getCurrentUser,
     {},
@@ -16,11 +16,23 @@ export default async function DashboardPage() {
     {},
     { token }
   );
+  const preloadedStats = await preloadQuery(
+    api.github.reviews.getDashboardStats,
+    {},
+    { token }
+  );
+  const preloadedRecentReviews = await preloadQuery(
+    api.github.reviews.getRecentReviews,
+    {},
+    { token }
+  );
 
   return (
     <DashboardContent
       preloadedCredits={preloadedCredits}
       preloadedUser={preloadedUser}
+      preloadedStats={preloadedStats}
+      preloadedRecentReviews={preloadedRecentReviews}
     />
   );
 }
