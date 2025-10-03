@@ -2,6 +2,7 @@
 "use node";
 
 import { codeAnalysisAgent } from "@diff0/ai/lib/agent";
+import { safeGeneratePrHaiku } from "@diff0/ai/lib/creative";
 import { cloneRepo } from "@diff0/sandbox/helpers/git";
 import { execCommand } from "@diff0/sandbox/helpers/process";
 import {
@@ -113,6 +114,36 @@ export const handlePullRequestWebhook = internalAction({
     );
 
     console.log(`Created review ${reviewId} for PR #${prNumber}`);
+    // Post an initial haiku comment announcing the upcoming AI review
+    try {
+      const token = await ctx.runAction(internal.github.auth.getInstallationToken, {
+        installationId,
+      });
+      const { haiku, fallback } = await safeGeneratePrHaiku({
+        title: prTitle,
+        repoFullName,
+        prNumber,
+        author: prAuthor,
+        additions: pull_request.additions,
+        deletions: pull_request.deletions,
+        filesChanged: pull_request.changed_files,
+      });
+      const introBody =
+        `✨🔮 The Orb has been consulted. Here is a short haiku in the meantime…\n\n` +
+        `${haiku}\n\n` +
+        `_I will peer into the diff and whisper my findings soon.${fallback ? " (fallback haiku)" : ""}_`;
+      await fetch(`${GITHUB_API_BASE}/repos/${repoFullName}/issues/${prNumber}/comments`, {
+        method: "POST",
+        headers: {
+          Authorization: `token ${token}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        body: JSON.stringify({ body: introBody }),
+      });
+    } catch (postErr) {
+      console.log("[PR Webhook] Failed to post initial haiku comment", postErr);
+    }
 
     await ctx.scheduler.runAfter(
       0,
