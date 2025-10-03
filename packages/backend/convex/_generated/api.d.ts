@@ -28,6 +28,7 @@ import type * as polar_productMapping from "../polar/productMapping.js";
 import type * as polar_queries from "../polar/queries.js";
 import type * as polar_webhooks from "../polar/webhooks.js";
 import type * as polarHelpers from "../polarHelpers.js";
+import type * as user from "../user.js";
 
 import type {
   ApiFromModules,
@@ -64,6 +65,7 @@ declare const fullApi: ApiFromModules<{
   "polar/queries": typeof polar_queries;
   "polar/webhooks": typeof polar_webhooks;
   polarHelpers: typeof polarHelpers;
+  user: typeof user;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
 
