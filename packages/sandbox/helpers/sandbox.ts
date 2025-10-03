@@ -1,7 +1,8 @@
-import type { Sandbox } from "@daytonaio/sdk";
+import type { CreateSandboxFromSnapshotParams, Sandbox } from "@daytonaio/sdk";
 import { z } from "zod";
 import { getDaytonaClient } from "./client";
 import type { CreateSandboxOptions, DaytonaCreateParams } from "./types";
+import { snapshot } from "node:test";
 
 const MIN_CPU = 1;
 const MAX_CPU = 4;
@@ -19,6 +20,7 @@ const createSandboxSchema = z.object({
     .enum(["python", "typescript", "javascript", "go", "java", "ruby", "rust"])
     .optional(),
   ephemeral: z.boolean().default(true),
+  snapshot: z.string().optional(),
   autoStopInterval: z.number().default(0),
   autoArchiveInterval: z.number().default(0),
   autoDeleteInterval: z.number().default(0),
@@ -44,14 +46,14 @@ export async function createSandbox(
   const daytona = getDaytonaClient();
 
   try {
-    const createParams: DaytonaCreateParams = {
+    const createParams: CreateSandboxFromSnapshotParams = {
       language: validated.language,
       envVars: validated.envVars,
       ephemeral: validated.ephemeral,
       autoStopInterval: validated.autoStopInterval,
       autoArchiveInterval: validated.autoArchiveInterval,
       autoDeleteInterval: validated.autoDeleteInterval,
-      resources: validated.resources,
+      snapshot: validated.snapshot,
       labels: validated.labels ?? { name: validated.name ?? "diff0-sandbox" },
     };
 
@@ -69,13 +71,14 @@ export async function createPrSandbox(
 ): Promise<Sandbox> {
   const prDefaults: CreateSandboxOptions = {
     ephemeral: true,
-    autoStopInterval: 5,
+    snapshot: "daytona-medium",
+    autoStopInterval: 5, //mins
     autoDeleteInterval: 0,
-    resources: {
-      cpu: 2,
-      memory: 4,
-      disk: 8,
-    },
+    // resources: {
+    //   cpu: 2,
+    //   memory: 4,
+    //   disk: 8,
+    // },
     labels: {
       purpose: "pr-analysis",
       ...(options?.labels || {}),

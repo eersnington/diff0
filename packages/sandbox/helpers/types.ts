@@ -6,6 +6,7 @@ export type CreateSandboxOptions = {
   name?: string;
   language?: SandboxLanguage;
   ephemeral?: boolean;
+  snapshot?: string;
   autoStopInterval?: number;
   autoArchiveInterval?: number;
   autoDeleteInterval?: number;
