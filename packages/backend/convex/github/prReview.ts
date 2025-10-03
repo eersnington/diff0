@@ -338,11 +338,12 @@ export const analyzePullRequest = internalAction({
         throw reviewErr;
       }
 
-      let creditsUsed = 1;
+      // Charge 2 credits for a full analyze PR pipeline (sandbox + diff + AI + review)
+      let creditsUsed = 2;
       try {
         await ctx.runMutation(api.credits.deductCredits, {
           userId: args.userId,
-          amount: 1,
+          amount: 2,
           description: `PR review for ${args.repoFullName}#${args.prNumber}`,
         });
       } catch (_err) {
