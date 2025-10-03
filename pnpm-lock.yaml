@@ -367,9 +367,9 @@ importers:
       '@diff0/sandbox':
         specifier: workspace:*
         version: link:../sandbox
-      '@octokit/app':
-        specifier: ^16.1.1
-        version: 16.1.1
+      '@octokit/auth-app':
+        specifier: ^8.1.1
+        version: 8.1.1
       '@octokit/rest':
         specifier: ^22.0.0
         version: 22.0.0
@@ -1428,10 +1428,6 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@octokit/app@16.1.1':
-    resolution: {integrity: sha512-pcvKSN6Q6aT3gU5heoDFs3ywU5xejxeqs1rQpUwgN7CmBlxCSy9aCoqFuC6GpVv71O/Qq/VuYfCNzrOZp/9Ycw==}
-    engines: {node: '>= 20'}
-
   '@octokit/auth-app@8.1.1':
     resolution: {integrity: sha512-yW9YUy1cuqWlz8u7908ed498wJFt42VYsYWjvepjojM4BdZSp4t+5JehFds7LfvYi550O/GaUI94rgbhswvxfA==}
     engines: {node: '>= 20'}
@@ -1452,10 +1448,6 @@ packages:
     resolution: {integrity: sha512-P4YJBPdPSpWTQ1NU4XYdvHvXJJDxM6YwpS0FZHRgP7YFkdVxsWcpWGy/NVqlAA7PcPCnMacXlRm1y2PFZRWL/w==}
     engines: {node: '>= 20'}
 
-  '@octokit/auth-unauthenticated@7.0.2':
-    resolution: {integrity: sha512-vjcPRP1xsKWdYKiyKmHkLFCxeH4QvVTv05VJlZxwNToslBFcHRJlsWRaoI2+2JGCf9tIM99x8cN0b1rlAHJiQw==}
-    engines: {node: '>= 20'}
-
   '@octokit/core@7.0.5':
     resolution: {integrity: sha512-t54CUOsFMappY1Jbzb7fetWeO0n6K0k/4+/ZpkS+3Joz8I4VcvY9OiEBFRYISqaI2fq5sCiPtAjRDOzVYG8m+Q==}
     engines: {node: '>= 20'}
@@ -1466,10 +1458,6 @@ packages:
 
   '@octokit/graphql@9.0.2':
     resolution: {integrity: sha512-iz6KzZ7u95Fzy9Nt2L8cG88lGRMr/qy1Q36ih/XVzMIlPDMYwaNLE/ENhqmIzgPrlNWiYJkwmveEetvxAgFBJw==}
-    engines: {node: '>= 20'}
-
-  '@octokit/oauth-app@8.0.2':
-    resolution: {integrity: sha512-Oln8yKrDIDKnp49GUCSqda+XZyocmNapumjA0JdTpRfwMpmFMnh3bCOtSgb3X/kHfdtT7Q9ihFeN1djn58forg==}
     engines: {node: '>= 20'}
 
   '@octokit/oauth-authorization-url@8.0.0':
@@ -7600,16 +7588,6 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@octokit/app@16.1.1':
-    dependencies:
-      '@octokit/auth-app': 8.1.1
-      '@octokit/auth-unauthenticated': 7.0.2
-      '@octokit/core': 7.0.5
-      '@octokit/oauth-app': 8.0.2
-      '@octokit/plugin-paginate-rest': 13.2.0(@octokit/core@7.0.5)
-      '@octokit/types': 15.0.0
-      '@octokit/webhooks': 14.1.3
-
   '@octokit/auth-app@8.1.1':
     dependencies:
       '@octokit/auth-oauth-app': 9.0.2
@@ -7646,11 +7624,6 @@ snapshots:
 
   '@octokit/auth-token@6.0.0': {}
 
-  '@octokit/auth-unauthenticated@7.0.2':
-    dependencies:
-      '@octokit/request-error': 7.0.1
-      '@octokit/types': 15.0.0
-
   '@octokit/core@7.0.5':
     dependencies:
       '@octokit/auth-token': 6.0.0
@@ -7670,17 +7643,6 @@ snapshots:
     dependencies:
       '@octokit/request': 10.0.5
       '@octokit/types': 15.0.0
-      universal-user-agent: 7.0.3
-
-  '@octokit/oauth-app@8.0.2':
-    dependencies:
-      '@octokit/auth-oauth-app': 9.0.2
-      '@octokit/auth-oauth-user': 6.0.1
-      '@octokit/auth-unauthenticated': 7.0.2
-      '@octokit/core': 7.0.5
-      '@octokit/oauth-authorization-url': 8.0.0
-      '@octokit/oauth-methods': 6.0.1
-      '@types/aws-lambda': 8.10.152
       universal-user-agent: 7.0.3
 
   '@octokit/oauth-authorization-url@8.0.0': {}
