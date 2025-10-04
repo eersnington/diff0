@@ -38,8 +38,7 @@ import {
 } from "@/components/ui/table";
 
 type BillingContentProps = {
-  preloadedCredits: Preloaded<FunctionReference<"query", "public">>;
-  preloadedTransactions: Preloaded<FunctionReference<"query", "public">>;
+  preloadedBillingData: Preloaded<FunctionReference<"query", "public">>;
 };
 
 const CREDIT_PACKAGES = [
@@ -50,11 +49,12 @@ const CREDIT_PACKAGES = [
 ];
 
 export function BillingContent({
-  preloadedCredits,
-  preloadedTransactions,
+  preloadedBillingData,
 }: BillingContentProps) {
-  const credits = usePreloadedQuery(preloadedCredits);
-  const transactions = usePreloadedQuery(preloadedTransactions);
+  const billingData = usePreloadedQuery(preloadedBillingData);
+  const credits = billingData?.credits;
+  const transactions = billingData?.transactions;
+  
   const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
 
   const formatDate = (timestamp: number) =>
