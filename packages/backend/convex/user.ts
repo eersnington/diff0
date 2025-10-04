@@ -1,6 +1,17 @@
-import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { z } from "zod";
+import { mutation } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
+
+// biome-ignore lint/suspicious/noControlCharactersInRegex: not suspicious
+const NO_CONTROL_CHARS_REGEX = /^[^\u0000-\u001F\u007F]*$/;
+
+const nameSchema = z
+  .string()
+  .trim()
+  .min(2, "Name must be at least 2 characters")
+  .max(64, "Name must be no more than 64 characters")
+  .regex(NO_CONTROL_CHARS_REGEX, "Name contains invalid control characters");
 
 export const updateUserName = mutation({
   args: {
@@ -13,26 +24,12 @@ export const updateUserName = mutation({
     updated: v.boolean(),
   }),
   handler: async (ctx, args) => {
-    // Ensure user is authenticated
     const user = await authComponent.getAuthUser(ctx);
 
-    // Normalize input
-    const raw = args.name;
-    const trimmed = raw.trim();
-
-    // Basic validations (mirror what frontend zod also enforces, but never trust client)
-    if (trimmed.length < 2 || trimmed.length > 64) {
-      throw new Error("Name must be between 2 and 64 characters");
-    }
-
-    // Disallow control characters (except common whitespace already trimmed)
-    if (/[\u0000-\u001F\u007F]/.test(trimmed)) {
-      throw new Error("Name contains invalid control characters");
-    }
+    const trimmed = nameSchema.parse(args.name);
 
     const previousName = user.name;
 
-    // Idempotent no-op if unchanged
     if (previousName === trimmed) {
       return {
         success: true,
@@ -42,7 +39,6 @@ export const updateUserName = mutation({
       };
     }
 
-    // Persist update
     await createAuth(ctx).api.updateUser({
       body: { name: trimmed },
       headers: await authComponent.getHeaders(ctx),
@@ -51,7 +47,7 @@ export const updateUserName = mutation({
     return {
       success: true,
       name: trimmed,
-      previousName: previousName,
+      previousName,
       updated: true,
     };
   },
