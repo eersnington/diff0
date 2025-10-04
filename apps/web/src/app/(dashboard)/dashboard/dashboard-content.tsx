@@ -3,12 +3,8 @@
 import type { Preloaded } from "convex/react";
 import { usePreloadedQuery } from "convex/react";
 import type { FunctionReference } from "convex/server";
-import {
-  CreditCard,
-  FileCode,
-  GitBranch,
-  TrendingUp,
-} from "lucide-react";
+import { CreditCard, FileCode, GitBranch, TrendingUp } from "lucide-react";
+import Link from "next/link";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -20,7 +16,6 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import Link from "next/link";
 
 type DashboardContentProps = {
   preloadedUser: Preloaded<FunctionReference<"query", "public">>;
@@ -36,7 +31,7 @@ type ReviewStatus =
   | "completed"
   | "failed";
 
-interface RecentReview {
+type RecentReview = {
   _id: string;
   prNumber: number;
   prTitle: string;
@@ -45,7 +40,7 @@ interface RecentReview {
   createdAt: number;
   completedAt?: number;
   repository: { name: string; fullName: string; owner: string };
-}
+};
 
 const STATUS_LABEL: Record<ReviewStatus, string> = {
   pending: "pending",
@@ -70,12 +65,19 @@ const STATUS_CLASS: Record<ReviewStatus, string> = {
 
 function formatRelative(ts: number) {
   const deltaMs = Date.now() - ts;
+  // biome-ignore lint/style/noMagicNumbers: not a magic number
   const sec = Math.floor(deltaMs / 1000);
-  if (sec < 60) return `${sec}s ago`;
+  if (sec < 60) {
+    return `${sec}s ago`;
+  }
   const min = Math.floor(sec / 60);
-  if (min < 60) return `${min}m ago`;
+  if (min < 60) {
+    return `${min}m ago`;
+  }
   const hrs = Math.floor(min / 60);
-  if (hrs < 24) return `${hrs}h ago`;
+  if (hrs < 24) {
+    return `${hrs}h ago`;
+  }
   const days = Math.floor(hrs / 24);
   return `${days}d ago`;
 }
@@ -125,10 +127,10 @@ export function DashboardContent({
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
-            <Separator
-              className="mr-2 data-[orientation=vertical]:h-4"
-              orientation="vertical"
-            />
+          <Separator
+            className="mr-2 data-[orientation=vertical]:h-4"
+            orientation="vertical"
+          />
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
@@ -184,37 +186,36 @@ export function DashboardContent({
                 <div className="flex h-[200px] items-center justify-center rounded border border-dashed">
                   <div className="text-center">
                     <FileCode className="mx-auto h-6 w-6 text-muted-foreground" />
-                    <p className="mt-3 text-sm text-muted-foreground">
+                    <p className="mt-3 text-muted-foreground text-sm">
                       No recent reviews
                     </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-1 text-muted-foreground text-xs">
                       Connect a repository to get started
                     </p>
                   </div>
                 </div>
               ) : (
-                <div className="max-h-[200px] overflow-y-auto pr-1 space-y-2">
+                <div className="max-h-[200px] space-y-2 overflow-y-auto pr-1">
                   {recentReviews.map((review) => {
                     const status = review.status;
                     return (
                       <div
+                        className="group rounded border px-3 py-2 text-xs transition-colors hover:bg-accent/40"
                         key={review._id}
-                        className="group rounded border px-3 py-2 text-xs hover:bg-accent/40 transition-colors"
                       >
                         <div className="flex items-center justify-between gap-4">
                           <div className="min-w-0 flex-1 truncate">
                             <a
+                              className="truncate font-medium hover:underline"
                               href={review.prUrl}
-                              target="_blank"
                               rel="noopener noreferrer"
-                              className="font-medium truncate hover:underline"
+                              target="_blank"
                             >
                               {review.repository.fullName}#{review.prNumber}
                             </a>
                           </div>
                           <span
                             className={`shrink-0 select-none rounded-sm border px-1.5 py-[2px] leading-none tracking-wide ${STATUS_CLASS[status]}`}
-                            aria-label={`status: ${STATUS_LABEL[status]}`}
                           >
                             {STATUS_LABEL[status]}
                           </span>
@@ -245,26 +246,26 @@ export function DashboardContent({
             <CardContent>
               <div className="space-y-2 text-sm">
                 <Link
-                  className="flex items-center justify-between rounded border px-3 py-2 hover:bg-accent/50 transition-colors"
+                  className="flex items-center justify-between rounded border px-3 py-2 transition-colors hover:bg-accent/50"
                   href="/settings"
                 >
                   <div className="flex items-center gap-2 truncate">
                     <GitBranch className="h-4 w-4 text-muted-foreground" />
                     <span className="truncate">Connect GitHub</span>
                   </div>
-                  <span className="text-muted-foreground text-[11px]">
+                  <span className="text-[11px] text-muted-foreground">
                     install app
                   </span>
                 </Link>
                 <Link
-                  className="flex items-center justify-between rounded border px-3 py-2 hover:bg-accent/50 transition-colors"
+                  className="flex items-center justify-between rounded border px-3 py-2 transition-colors hover:bg-accent/50"
                   href="/billing"
                 >
                   <div className="flex items-center gap-2 truncate">
                     <CreditCard className="h-4 w-4 text-muted-foreground" />
                     <span className="truncate">Buy Credits</span>
                   </div>
-                  <span className="text-muted-foreground text-[11px]">
+                  <span className="text-[11px] text-muted-foreground">
                     top up
                   </span>
                 </Link>
