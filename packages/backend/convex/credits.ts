@@ -9,12 +9,21 @@ export const getBillingData = query({
     limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const identity = await ctx.auth.getUserIdentity();
 
-    // Get balance
+    if (!identity) {
+      return {
+        balance: 0,
+        totalPurchased: 0,
+        totalUsed: 0,
+      };
+    }
+
+    const userId = identity.subject;
+
     const credits = await ctx.db
       .query("userCredits")
-      .withIndex("userId", (q) => q.eq("userId", user._id))
+      .withIndex("userId", (q) => q.eq("userId", userId))
       .first();
 
     const balance = credits
@@ -33,7 +42,7 @@ export const getBillingData = query({
     const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
     const transactions = await ctx.db
       .query("creditTransactions")
-      .withIndex("userId", (q) => q.eq("userId", user._id))
+      .withIndex("userId", (q) => q.eq("userId", userId))
       .order("desc")
       .take(limit);
 
