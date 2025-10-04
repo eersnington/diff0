@@ -1,7 +1,8 @@
 "use client";
 
+import type { UrlObject } from "node:url";
 import { ChevronRight, type LucideIcon } from "lucide-react";
-import type { UrlObject } from 'url'
+import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
@@ -17,7 +18,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import Link from "next/link";
 
 export function NavMain({
   items,
@@ -57,7 +57,10 @@ export function NavMain({
                   {item.items?.map((subItem) => (
                     <SidebarMenuSubItem key={subItem.title}>
                       <SidebarMenuSubButton asChild>
-                        <Link href={subItem.url as unknown as UrlObject} prefetch>
+                        <Link
+                          href={subItem.url as unknown as UrlObject}
+                          prefetch
+                        >
                           <span>{subItem.title}</span>
                         </Link>
                       </SidebarMenuSubButton>
