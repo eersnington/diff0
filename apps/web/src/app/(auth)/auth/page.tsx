@@ -87,8 +87,12 @@ function SignInForm() {
               type="button"
               variant="outline"
             >
-              <GitHubIcon className="size-4" />
-              {isLoading ? "Signing in…" : "Sign in with GitHub"}
+              {isLoading ? (
+                <Loader className="size-4 animate-spin" />
+              ) : (
+                <GitHubIcon className="size-4" />
+              )}
+              Sign in with GitHub
             </Button>
           </div>
         </CardContent>
