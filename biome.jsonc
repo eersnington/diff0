@@ -1,0 +1,47 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/dist",
+      "!**/.turbo",
+      "!**/dev-dist",
+      "!**/.zed",
+      "!**/.vscode",
+      "!**/routeTree.gen.ts",
+      "!**/src-tauri",
+      "!**/.nuxt",
+      "!bts.jsonc",
+      "!**/.expo",
+      "!**/.wrangler",
+      "!**/.alchemy",
+      "!**/.svelte-kit",
+      "!**/wrangler.jsonc",
+      "!**/.source",
+      "!**/components/ui"
+    ]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noMagicNumbers": "off", // no good support for zod
+        "noNonNullAssertion": "off",
+        "useNamingConvention": "off",
+        "useBlockStatements": "off"
+      },
+      "complexity": {
+        "noForEach": "off", // i disagree with this idea in general
+        "noExcessiveCognitiveComplexity": "off", // i disagree with this idea in general
+        "noExcessiveLinesPerFunction": "off" // i disagree with this idea in general
+      },
+      "nursery": {
+        "useMaxParams": "off"
+      }
+    }
+  },
+  "extends": ["ultracite"]
+}
