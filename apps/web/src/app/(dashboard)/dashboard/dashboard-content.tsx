@@ -18,10 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 type DashboardContentProps = {
-  preloadedUser: Preloaded<FunctionReference<"query", "public">>;
-  preloadedCredits: Preloaded<FunctionReference<"query", "public">>;
-  preloadedStats: Preloaded<FunctionReference<"query", "public">>;
-  preloadedRecentReviews: Preloaded<FunctionReference<"query", "public">>;
+  preloadedDashboardData: Preloaded<FunctionReference<"query", "public">>;
 };
 
 type ReviewStatus =
@@ -49,23 +46,21 @@ const STATUS_LABEL: Record<ReviewStatus, string> = {
   completed: "completed",
   failed: "failed",
 };
-
 const STATUS_CLASS: Record<ReviewStatus, string> = {
   pending:
-    "border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400",
+    "border-yellow-300 dark:border-yellow-600 text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/30",
   analyzing:
-    "border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400",
+    "border-blue-300 dark:border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30",
   reviewing:
-    "border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-400",
+    "border-purple-300 dark:border-purple-600 text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/30",
   completed:
-    "border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300",
+    "border-emerald-300 dark:border-emerald-600 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30",
   failed:
-    "border-neutral-400 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300",
+    "border-red-300 dark:border-red-600 text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/30",
 };
 
 function formatRelative(ts: number) {
   const deltaMs = Date.now() - ts;
-  // biome-ignore lint/style/noMagicNumbers: not a magic number
   const sec = Math.floor(deltaMs / 1000);
   if (sec < 60) {
     return `${sec}s ago`;
@@ -83,17 +78,13 @@ function formatRelative(ts: number) {
 }
 
 export function DashboardContent({
-  preloadedUser,
-  preloadedCredits,
-  preloadedStats,
-  preloadedRecentReviews,
+  preloadedDashboardData,
 }: DashboardContentProps) {
-  const user = usePreloadedQuery(preloadedUser);
-  const credits = usePreloadedQuery(preloadedCredits);
-  const stats = usePreloadedQuery(preloadedStats);
-  const recentReviewsRaw = usePreloadedQuery(preloadedRecentReviews);
+  const data = usePreloadedQuery(preloadedDashboardData);
 
-  const recentReviews = (recentReviewsRaw ?? []) as RecentReview[];
+  const { user, credits, stats, recentReviews: recentReviewsData } = data;
+
+  const recentReviews = (recentReviewsData ?? []) as RecentReview[];
 
   const dashboardStats = [
     {
