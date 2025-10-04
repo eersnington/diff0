@@ -1,13 +1,13 @@
 import { z } from "zod";
+import { findSandbox } from "./sandbox";
 import type {
+  GitAddOptions,
+  GitBranchListResult,
   GitCloneOptions,
   GitCommitOptions,
-  GitAddOptions,
   GitPushOptions,
   GitStatusResult,
-  GitBranchListResult,
 } from "./types";
-import { findSandbox } from "./sandbox";
 
 const BRANCH_PATTERN = /## (.+?)(?:\.\.\.|$)/;
 const STATUS_PREFIX_LENGTH = 3;

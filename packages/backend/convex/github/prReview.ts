@@ -15,6 +15,41 @@ import { internalAction } from "../_generated/server";
 
 const GITHUB_API_BASE = "https://api.github.com";
 
+const REGEX_PATTERNS = {
+  filePath: /^diff --git a\/(.+?) b\/(.+)$/,
+  hunkHeader: /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/,
+  positionError: /position/i,
+  statusError: /422/i,
+  englishInstruction:
+    /^(move|change|update|consider|remove|add|replace|modify|retrieve|set|ensure|use)\b/i,
+  codeTokens: /[;{}()=]/,
+} as const;
+
+const LIMITS = {
+  HAIKU_INTRO_TIMEOUT: 5000,
+  MAX_INLINE_COMMENTS: 50,
+  MAX_SUMMARY_ISSUES: 30,
+  MAX_ADDITIONAL_ISSUES: 25,
+  MAX_SUGGESTION_LINES: 40,
+  CREDITS_PER_REVIEW: 2,
+  DIFF_CONTEXT_LINES: 3,
+  DIFF_FETCH_DEPTH: 100,
+} as const;
+
+const SEVERITY_ICONS = {
+  critical: "🔴",
+  high: "🟠",
+  medium: "🟡",
+  low: "🟢",
+} as const;
+
+const REVIEW_TRIGGERS = [
+  "opened",
+  "reopened",
+  "synchronize",
+  "ready_for_review",
+] as const;
+
 type AnalysisIssue = {
   type: string;
   severity: string;
@@ -28,7 +63,39 @@ type AnalysisResult = {
   issues: AnalysisIssue[];
 };
 
-// -------- Webhook Entry -------
+type DiffMap = Map<string, Map<number, number>>;
+
+type ReviewComment = {
+  path: string;
+  position: number;
+  body: string;
+};
+
+function getSeverityIcon(severity: string): string {
+  return SEVERITY_ICONS[severity as keyof typeof SEVERITY_ICONS] || "⚪";
+}
+
+function truncate(str: string, max: number): string {
+  if (str.length <= max) return str;
+  return `${str.slice(0, max - 3)}...`;
+}
+
+async function postGitHubComment(
+  url: string,
+  token: string,
+  body: Record<string, unknown>
+): Promise<Response> {
+  return await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `token ${token}`,
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
 export const handlePullRequestWebhook = internalAction({
   args: {
     payload: v.any(),
@@ -41,11 +108,7 @@ export const handlePullRequestWebhook = internalAction({
       `[PR Webhook] Action=${action} PR=#${pull_request.number} Repo=${repository.full_name}`
     );
 
-    if (
-      !["opened", "reopened", "synchronize", "ready_for_review"].includes(
-        action
-      )
-    ) {
+    if (!REVIEW_TRIGGERS.includes(action)) {
       console.log(`[PR Webhook] Ignoring action=${action}`);
       return null;
     }
@@ -137,14 +200,12 @@ export const handlePullRequestWebhook = internalAction({
       `[PR Webhook] Created review record ${reviewId} for PR #${prNumber}`
     );
 
-    // best effort haiku comment (don't fail pipeline)
     try {
       const token = await ctx.runAction(
         internal.github.auth.getInstallationToken,
-        {
-          installationId,
-        }
+        { installationId }
       );
+
       const { haiku } = await safeGeneratePrHaiku({
         title: prTitle,
         repoFullName,
@@ -154,21 +215,17 @@ export const handlePullRequestWebhook = internalAction({
         deletions: pull_request.deletions,
         filesChanged: pull_request.changed_files,
       });
+
       const introBody =
-        `✨🔮 The Orb has been consulted. I will peer into the diffs and whisper my findings.\n\n` +
-        `While you wait, here's a haiku:\n\n_${haiku}_`;
-      const res = await fetch(
+        "✨🔮 The Orb has been consulted. I will peer into the diffs and whisper my findings.\n\n" +
+        `Until the whisper arrives, a fragment of haiku emerges:\n\n_${haiku}_`;
+
+      const res = await postGitHubComment(
         `${GITHUB_API_BASE}/repos/${repoFullName}/issues/${prNumber}/comments`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `token ${token}`,
-            Accept: "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-          body: JSON.stringify({ body: introBody }),
-        }
+        token,
+        { body: introBody }
       );
+
       if (!res.ok) {
         console.log(
           `[PR Webhook] Failed to post haiku comment: ${res.status} ${res.statusText}`
@@ -201,7 +258,6 @@ export const handlePullRequestWebhook = internalAction({
   },
 });
 
-// -------- Analysis Pipeline --------
 export const analyzePullRequest = internalAction({
   args: {
     reviewId: v.id("reviews"),
@@ -223,7 +279,7 @@ export const analyzePullRequest = internalAction({
       const delta = (Date.now() - t0).toString().padStart(5, " ");
       console.log(
         `[Analyze PR #${args.prNumber}] +${delta}ms ${step}${
-          extra ? " " + JSON.stringify(extra) : ""
+          extra ? ` ${JSON.stringify(extra)}` : ""
         }`
       );
     }
@@ -239,9 +295,7 @@ export const analyzePullRequest = internalAction({
       logStep("Fetching installation token");
       const token = await ctx.runAction(
         internal.github.auth.getInstallationToken,
-        {
-          installationId: args.installationId,
-        }
+        { installationId: args.installationId }
       );
 
       logStep("Creating sandbox");
@@ -261,9 +315,7 @@ export const analyzePullRequest = internalAction({
         `https://x-access-token:${token}@`
       );
 
-      logStep("Cloning repository", {
-        branch: args.headRef,
-      });
+      logStep("Cloning repository", { branch: args.headRef });
       await cloneRepo(sandboxId, {
         url: tokenizedUrl,
         path: "repo",
@@ -276,7 +328,6 @@ export const analyzePullRequest = internalAction({
       const diff = await getPrDiff({
         sandboxId,
         baseRef: args.baseRef,
-        headRef: args.headRef,
         prNumber: args.prNumber,
         repoFullName: args.repoFullName,
         token,
@@ -287,9 +338,7 @@ export const analyzePullRequest = internalAction({
         throw new Error("Empty diff after all retrieval strategies");
       }
 
-      logStep("Invoking code analysis", {
-        chars: diff.length,
-      });
+      logStep("Invoking code analysis", { chars: diff.length });
 
       let analysis: AnalysisResult;
       try {
@@ -306,7 +355,7 @@ export const analyzePullRequest = internalAction({
         );
       }
 
-      if (!analysis || !Array.isArray(analysis.issues)) {
+      if (!(analysis && Array.isArray(analysis.issues))) {
         analysis = { issues: [] };
       }
 
@@ -318,32 +367,24 @@ export const analyzePullRequest = internalAction({
       });
 
       const diffMap = parseDiffForPositions(diff);
-      logStep("Diff mapped for positions", {
-        files: diffMap.size,
-      });
+      logStep("Diff mapped for positions", { files: diffMap.size });
 
       logStep("Posting review");
-      try {
-        await postReviewWithFallback({
-          token,
-          repoFullName: args.repoFullName,
-          prNumber: args.prNumber,
-          commitSha: args.headSha,
-          analysis,
-          diffMap,
-        });
-        logStep("Review posted");
-      } catch (reviewErr) {
-        // Escalate but after marking failure
-        throw reviewErr;
-      }
+      await postReviewWithFallback({
+        token,
+        repoFullName: args.repoFullName,
+        prNumber: args.prNumber,
+        commitSha: args.headSha,
+        analysis,
+        diffMap,
+      });
+      logStep("Review posted");
 
-      // Charge 2 credits for a full analyze PR pipeline (sandbox + diff + AI + review)
-      let creditsUsed = 2;
+      let creditsUsed: number = LIMITS.CREDITS_PER_REVIEW;
       try {
         await ctx.runMutation(api.credits.deductCredits, {
           userId: args.userId,
-          amount: 2,
+          amount: LIMITS.CREDITS_PER_REVIEW,
           description: `PR review for ${args.repoFullName}#${args.prNumber}`,
         });
       } catch (_err) {
@@ -357,16 +398,16 @@ export const analyzePullRequest = internalAction({
         completedAt: Date.now(),
         creditsUsed,
         findings: analysis.issues.map((issue) => ({
-          type: (issue.type as
-            | "bug"
-            | "security"
-            | "performance"
-            | "style"
-            | "suggestion") || "suggestion",
+          type:
+            (issue.type as
+              | "bug"
+              | "security"
+              | "performance"
+              | "style"
+              | "suggestion") || "suggestion",
           severity:
             (issue.severity as "critical" | "high" | "medium" | "low") || "low",
           file: issue.file || "unknown",
-            // Guard unrealistic line numbers
           line:
             typeof issue.line === "number" && issue.line > 0
               ? issue.line
@@ -408,19 +449,15 @@ export const analyzePullRequest = internalAction({
   },
 });
 
-// -------- Diff Acquisition --------
 async function getPrDiff(params: {
   sandboxId: string;
   baseRef: string;
-  headRef: string;
   prNumber: number;
   repoFullName: string;
   token: string;
 }): Promise<string> {
-  const { sandboxId, baseRef, headRef, prNumber, repoFullName, token } =
-    params;
+  const { sandboxId, baseRef, prNumber, repoFullName, token } = params;
 
-  // Strategy 1: GitHub API diff (most reliable for position mapping)
   try {
     const apiResp = await fetch(
       `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}`,
@@ -447,9 +484,8 @@ async function getPrDiff(params: {
     console.log("[Diff] Strategy#1 API request error", apiErr);
   }
 
-  // Strategy 2: direct fetch + diff using remote refs with context
   const tryGitStandard = await execCommand(sandboxId, {
-    command: `git fetch origin ${baseRef} --depth=100 && git diff --unified=3 origin/${baseRef}...HEAD`,
+    command: `git fetch origin ${baseRef} --depth=${LIMITS.DIFF_FETCH_DEPTH} && git diff --unified=${LIMITS.DIFF_CONTEXT_LINES} origin/${baseRef}...HEAD`,
     cwd: "repo",
   });
 
@@ -462,9 +498,8 @@ async function getPrDiff(params: {
     `[Diff] Strategy#2 failed or empty (code=${tryGitStandard.exitCode})`
   );
 
-  // Strategy 3: merge-base fallback
   await execCommand(sandboxId, {
-    command: `git fetch origin ${baseRef}:${baseRef} --depth=100 || true`,
+    command: `git fetch origin ${baseRef}:${baseRef} --depth=${LIMITS.DIFF_FETCH_DEPTH} || true`,
     cwd: "repo",
   });
 
@@ -476,16 +511,14 @@ async function getPrDiff(params: {
   const mergeBaseSha = mergeBase.result.trim().split("\n")[0] || "";
   if (mergeBase.exitCode === 0 && mergeBaseSha.length >= 5) {
     const diff3 = await execCommand(sandboxId, {
-      command: `git diff --unified=3 ${mergeBaseSha}...HEAD`,
+      command: `git diff --unified=${LIMITS.DIFF_CONTEXT_LINES} ${mergeBaseSha}...HEAD`,
       cwd: "repo",
     });
     if (diff3.exitCode === 0 && diff3.result.trim()) {
       console.log("[Diff] Strategy#3 (merge-base) succeeded");
       return diff3.result;
     }
-    console.log(
-      `[Diff] Strategy#3 diff failed code=${diff3.exitCode}`
-    );
+    console.log(`[Diff] Strategy#3 diff failed code=${diff3.exitCode}`);
   } else {
     console.log(
       `[Diff] Strategy#3 merge-base failed code=${mergeBase.exitCode}`
@@ -495,14 +528,13 @@ async function getPrDiff(params: {
   throw new Error("Failed to get PR diff (all strategies exhausted)");
 }
 
-// -------- Review Posting with Fallback --------
 async function postReviewWithFallback(params: {
   token: string;
   repoFullName: string;
   prNumber: number;
   commitSha: string;
   analysis: AnalysisResult;
-  diffMap: Map<string, Map<number, number>>;
+  diffMap: DiffMap;
 }): Promise<void> {
   try {
     await postReview(
@@ -515,8 +547,10 @@ async function postReviewWithFallback(params: {
     );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    // If the failure is likely due to invalid positions (422), we fallback
-    if (/position/i.test(message) || /422/i.test(message)) {
+    if (
+      REGEX_PATTERNS.positionError.test(message) ||
+      REGEX_PATTERNS.statusError.test(message)
+    ) {
       console.log(
         "[Review] Inline review failed (likely position mismatch). Falling back to summary-only."
       );
@@ -547,68 +581,39 @@ async function postSummaryOnlyReview(params: {
     body += "✅ No issues detected.\n";
   } else {
     body += `Found ${analysis.issues.length} issue(s):\n\n`;
-    for (const issue of analysis.issues.slice(0, 30)) {
-      const icon =
-        {
-          critical: "🔴",
-          high: "🟠",
-          medium: "🟡",
-          low: "🟢",
-        }[issue.severity] || "⚪";
+    for (const issue of analysis.issues.slice(0, LIMITS.MAX_SUMMARY_ISSUES)) {
+      const icon = getSeverityIcon(issue.severity);
       body += `${icon} **${issue.type || "issue"}** (${issue.severity || "n/a"})`;
       if (issue.file) {
-        body += ` in \`${issue.file}${
-          issue.line ? `:${issue.line}` : ""
-        }\``;
+        body += ` in \`${issue.file}${issue.line ? `:${issue.line}` : ""}\``;
       }
       body += `\n${issue.message || "No description"}\n\n`;
     }
-    if (analysis.issues.length > 30) {
-      body += `…and ${analysis.issues.length - 30} more.\n\n`;
+    if (analysis.issues.length > LIMITS.MAX_SUMMARY_ISSUES) {
+      body += `…and ${analysis.issues.length - LIMITS.MAX_SUMMARY_ISSUES} more.\n\n`;
     }
   }
   body += "\n---\n*Inline positions unavailable. Powered by diff0 AI*";
 
-  const resp = await fetch(
+  const resp = await postGitHubComment(
     `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}/reviews`,
+    token,
     {
-      method: "POST",
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      body: JSON.stringify({
-        commit_id: commitSha,
-        body,
-        event: "COMMENT",
-      }),
+      commit_id: commitSha,
+      body,
+      event: "COMMENT",
     }
   );
 
   if (!resp.ok) {
     const text = await resp.text();
     throw new Error(
-      `Failed to post summary-only review: ${resp.status} ${resp.statusText} - ${truncate(
-        text,
-        300
-      )}`
+      `Failed to post summary-only review: ${resp.status} ${resp.statusText} - ${truncate(text, 300)}`
     );
   }
 }
 
-// -------- Diff Parsing for Inline Positions --------
-const matchFilePath = /^diff --git a\/(.+?) b\/(.+)$/;
-const matchHunkHeader = /^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@/;
-
-/**
- * Builds a map:
- *  file -> ( lineNumberInNewFile -> positionInUnifiedDiff )
- * Position is 1-based and includes ALL lines (headers, hunks, code)
- */
-function parseDiffForPositions(
-  diff: string
-): Map<string, Map<number, number>> {
+function parseDiffForPositions(diff: string): DiffMap {
   const filePositions = new Map<string, Map<number, number>>();
 
   const lines = diff.split("\n");
@@ -617,13 +622,12 @@ function parseDiffForPositions(
   let newLineNumber = 0;
 
   for (const line of lines) {
-    position++; // Every line counts toward position
+    position++;
 
-    // New file starts
     if (line.startsWith("diff --git")) {
-      const m = line.match(matchFilePath);
+      const m = line.match(REGEX_PATTERNS.filePath);
       if (m) {
-        currentFile = m[2]; // Use the "b/" path (destination)
+        currentFile = m[2];
         if (!filePositions.has(currentFile)) {
           filePositions.set(currentFile, new Map());
         }
@@ -632,37 +636,33 @@ function parseDiffForPositions(
       continue;
     }
 
-    if (!currentFile) continue;
-
-    // File metadata (skip)
-    if (line.startsWith("index ") ||
-        line.startsWith("--- ") ||
-        line.startsWith("+++ ") ||
-        line.startsWith("Binary files")) {
+    if (!currentFile) {
       continue;
     }
 
-    // Hunk header
+    if (
+      line.startsWith("index ") ||
+      line.startsWith("--- ") ||
+      line.startsWith("+++ ") ||
+      line.startsWith("Binary files")
+    ) {
+      continue;
+    }
+
     if (line.startsWith("@@")) {
-      const m = line.match(matchHunkHeader);
+      const m = line.match(REGEX_PATTERNS.hunkHeader);
       if (m) {
-        newLineNumber = parseInt(m[3], 10); // Start of new file range
+        newLineNumber = Number.parseInt(m[3], 10);
       }
       continue;
     }
 
-    // Added line (this is what we can comment on)
     if (line.startsWith("+")) {
       filePositions.get(currentFile)?.set(newLineNumber, position);
       newLineNumber++;
-    }
-    // Removed line (doesn't exist in new file)
-    else if (line.startsWith("-")) {
-      // Don't increment newLineNumber
-    }
-    // Context line (exists in both old and new)
-    else if (!line.startsWith("\\")) {
-      // Context lines appear in the new file and can be commented on
+    } else if (line.startsWith("-")) {
+      // Don't increment newLineNumber for removed lines
+    } else if (!line.startsWith("\\")) {
       filePositions.get(currentFile)?.set(newLineNumber, position);
       newLineNumber++;
     }
@@ -671,33 +671,24 @@ function parseDiffForPositions(
   return filePositions;
 }
 
-// -------- Review Posting (original logic + minor resilience) --------
 async function postReview(
   token: string,
   repoFullName: string,
   prNumber: number,
   commitSha: string,
   analysis: AnalysisResult,
-  diffMap: Map<string, Map<number, number>>
+  diffMap: DiffMap
 ): Promise<void> {
   const issues = analysis.issues || [];
 
   if (issues.length === 0) {
-    const response = await fetch(
+    const response = await postGitHubComment(
       `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}/reviews`,
+      token,
       {
-        method: "POST",
-        headers: {
-          Authorization: `token ${token}`,
-          Accept: "application/vnd.github+json",
-          "X-GitHub-Api-Version": "2022-11-28",
-        },
-        body: JSON.stringify({
-          commit_id: commitSha,
-            // Keep comment style (not APPROVE or REQUEST_CHANGES)
-          body: "✅ **AI Review Complete** - No issues found!",
-          event: "COMMENT",
-        }),
+        commit_id: commitSha,
+        body: "✅ **AI Review Complete** - No issues found!",
+        event: "COMMENT",
       }
     );
 
@@ -709,7 +700,7 @@ async function postReview(
     return;
   }
 
-  const comments: Array<{ path: string; position: number; body: string }> = [];
+  const comments: ReviewComment[] = [];
 
   for (const issue of issues) {
     if (!(issue.file && typeof issue.line === "number")) {
@@ -717,25 +708,21 @@ async function postReview(
     }
 
     const fileMap = diffMap.get(issue.file);
-    if (!fileMap) continue;
+    if (!fileMap) {
+      continue;
+    }
 
     const position = fileMap.get(issue.line);
-    if (!position) continue;
+    if (!position) {
+      continue;
+    }
 
-    const icon =
-      {
-        critical: "🔴",
-        high: "🟠",
-        medium: "🟡",
-        low: "🟢",
-      }[issue.severity] || "⚪";
+    const icon = getSeverityIcon(issue.severity);
 
     let body = `${icon} **${(issue.type || "Issue").toUpperCase()}** (${
       issue.severity || "n/a"
     })\n\n${issue.message || "No description"}`;
 
-    // Only add suggestion if it's actual replacement code
-    // IMPORTANT: The suggestion must be the EXACT replacement text
     if (issue.suggestion) {
       const cleaned = sanitizeSuggestion(issue.suggestion);
       if (cleaned) {
@@ -753,8 +740,7 @@ async function postReview(
       body,
     });
 
-    if (comments.length >= 50) {
-      // Avoid overly large single review payloads
+    if (comments.length >= LIMITS.MAX_INLINE_COMMENTS) {
       break;
     }
   }
@@ -769,89 +755,63 @@ async function postReview(
     reviewBody += `\n\nPosted ${comments.length} inline comment(s).`;
   }
   if (summaryIssues.length > 0) {
-    reviewBody += `\n\n### Additional Issues (no exact diff position)\n`;
-    for (const issue of summaryIssues.slice(0, 25)) {
-      const icon =
-        {
-          critical: "🔴",
-          high: "🟠",
-          medium: "🟡",
-          low: "🟢",
-        }[issue.severity] || "⚪";
+    reviewBody += "\n\n### Additional Issues (no exact diff position)\n";
+    for (const issue of summaryIssues.slice(0, LIMITS.MAX_ADDITIONAL_ISSUES)) {
+      const icon = getSeverityIcon(issue.severity);
       reviewBody += `\n${icon} **${(issue.type || "Issue").toUpperCase()}** (${
         issue.severity || "n/a"
       })`;
       if (issue.file) {
-        reviewBody += ` in \`${issue.file}${
-          issue.line ? `:${issue.line}` : ""
-        }\``;
+        reviewBody += ` in \`${issue.file}${issue.line ? `:${issue.line}` : ""}\``;
       }
       reviewBody += `\n${issue.message || "No description"}\n`;
     }
-    if (summaryIssues.length > 25) {
-      reviewBody += `\n… and ${
-        summaryIssues.length - 25
-      } more not shown.\n`;
+    if (summaryIssues.length > LIMITS.MAX_ADDITIONAL_ISSUES) {
+      reviewBody += `\n… and ${summaryIssues.length - LIMITS.MAX_ADDITIONAL_ISSUES} more not shown.\n`;
     }
   }
   reviewBody += "\n---\n*Powered by diff0 AI*";
 
-  const response = await fetch(
+  const response = await postGitHubComment(
     `${GITHUB_API_BASE}/repos/${repoFullName}/pulls/${prNumber}/reviews`,
+    token,
     {
-      method: "POST",
-      headers: {
-        Authorization: `token ${token}`,
-        Accept: "application/vnd.github+json",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      body: JSON.stringify({
-        commit_id: commitSha,
-        body: reviewBody,
-        event: "COMMENT",
-        comments,
-      }),
+      commit_id: commitSha,
+      body: reviewBody,
+      event: "COMMENT",
+      comments,
     }
   );
 
   if (!response.ok) {
     const text = await response.text();
     throw new Error(
-      `Failed to post review: ${response.status} ${response.statusText} - ${truncate(
-        text,
-        400
-      )}`
+      `Failed to post review: ${response.status} ${response.statusText} - ${truncate(text, 400)}`
     );
   }
-}
-
-// -------- Utilities --------
-function truncate(str: string, max: number): string {
-  if (str.length <= max) return str;
-  return str.slice(0, max - 3) + "...";
 }
 
 function sanitizeSuggestion(raw: string): string | null {
   if (!raw) return null;
   let text = raw.trim();
-  // Strip surrounding fenced blocks if the agent already wrapped
+
   if (text.startsWith("```")) {
-    // remove first fence
     const lines = text.split("\n").slice(1);
-    // find closing fence
     const closingIndex = lines.findIndex((l) => l.trim().startsWith("```"));
     if (closingIndex >= 0) {
       text = lines.slice(0, closingIndex).join("\n").trim();
     }
   }
-  // Heuristic: drop lines that look like pure English instructions at the top
+
   const codeCandidateLines: string[] = [];
-  const englishPattern =
-    /^(move|change|update|consider|remove|add|replace|modify|retrieve|set|ensure|use)\b/i;
   let skipped = true;
   for (const line of text.split("\n")) {
     const trimmed = line.trim();
-    if (skipped && englishPattern.test(trimmed) && !/[;{}()=]/.test(trimmed)) {
+    if (
+      skipped &&
+      REGEX_PATTERNS.englishInstruction.test(trimmed) &&
+      !REGEX_PATTERNS.codeTokens.test(trimmed)
+    ) {
       continue;
     }
     skipped = false;
@@ -859,13 +819,17 @@ function sanitizeSuggestion(raw: string): string | null {
   }
   const candidate = codeCandidateLines.join("\n").trim();
   if (!candidate) return null;
-  // Reject if still looks like prose (no typical code tokens)
-  if (!/[;{}()=]/.test(candidate) && candidate.split("\n").length === 1) {
+
+  if (
+    !REGEX_PATTERNS.codeTokens.test(candidate) &&
+    candidate.split("\n").length === 1
+  ) {
     return null;
   }
-  // Guard: avoid accidental triple backticks inside
+
   if (candidate.includes("```")) return null;
-  // Soft length cap
-  if (candidate.split("\n").length > 40) return null;
+
+  if (candidate.split("\n").length > LIMITS.MAX_SUGGESTION_LINES) return null;
+
   return candidate;
 }

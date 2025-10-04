@@ -1,6 +1,13 @@
 export type { Sandbox } from "@daytonaio/sdk";
 
-export type SandboxLanguage = "python" | "typescript" | "javascript" | "go" | "java" | "ruby" | "rust";
+export type SandboxLanguage =
+  | "python"
+  | "typescript"
+  | "javascript"
+  | "go"
+  | "java"
+  | "ruby"
+  | "rust";
 
 export type CreateSandboxOptions = {
   name?: string;

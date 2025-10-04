@@ -1,17 +1,17 @@
 import { z } from "zod";
+import { findSandbox } from "./sandbox";
 import type {
   ExecCommandOptions,
   ExecCommandResult,
+  InstallTool,
+  PackageManager,
   RunCodeOptions,
   RunCodeResult,
   SessionCreateResult,
+  SessionDeleteResult,
   SessionExecResult,
   SessionGetResult,
-  SessionDeleteResult,
-  PackageManager,
-  InstallTool,
 } from "./types";
-import { findSandbox } from "./sandbox";
 
 const execCommandSchema = z.object({
   command: z.string().min(1),
@@ -121,7 +121,7 @@ export async function getSession(
 
   return {
     id: sessionId,
-    commands: (session.commands || []).map(cmd => ({
+    commands: (session.commands || []).map((cmd) => ({
       command: cmd.command,
       exitCode: cmd.exitCode ?? 0,
     })),

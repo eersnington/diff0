@@ -48,13 +48,11 @@ const CREDIT_PACKAGES = [
   { credits: 1000, price: 100, popular: false, slug: "credits-1000" },
 ];
 
-export function BillingContent({
-  preloadedBillingData,
-}: BillingContentProps) {
+export function BillingContent({ preloadedBillingData }: BillingContentProps) {
   const billingData = usePreloadedQuery(preloadedBillingData);
   const credits = billingData?.credits;
   const transactions = billingData?.transactions;
-  
+
   const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
 
   const formatDate = (timestamp: number) =>
@@ -122,8 +120,9 @@ export function BillingContent({
           <AlertTitle>Early beta</AlertTitle>
           <AlertDescription>
             <p>
-              This app is in early beta. If
-              you&apos;d like to add credits, email{" "}
+              Please do not give me money right now. The product is super early
+              and I&apos;m not comfortable asking money for it at the moment. If
+              you&apos;d like to add credits, email me at{" "}
               <Link
                 className="underline underline-offset-4"
                 href="mailto:hi@eers.dev"

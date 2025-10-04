@@ -20,7 +20,8 @@
       "!**/.svelte-kit",
       "!**/wrangler.jsonc",
       "!**/.source",
-      "!**/components/ui"
+      "!**/components/ui",
+      "!**/_generated"
     ]
   },
   "linter": {
@@ -43,5 +44,7 @@
       }
     }
   },
-  "extends": ["ultracite"]
+  "extends": [
+    "ultracite"
+  ]
 }

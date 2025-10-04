@@ -1,15 +1,15 @@
 import { z } from "zod";
+import { findSandbox } from "./sandbox";
 import type {
-  FsUploadOptions,
   FsDownloadResult,
   FsListOptions,
   FsListResult,
-  FsSearchOptions,
-  FsSearchResult,
   FsReplaceOptions,
   FsReplaceResult,
+  FsSearchOptions,
+  FsSearchResult,
+  FsUploadOptions,
 } from "./types";
-import { findSandbox } from "./sandbox";
 
 const uploadSchema = z.object({
   content: z.union([z.instanceof(Buffer), z.string()]),
@@ -144,10 +144,7 @@ export async function searchFiles(
   const sandbox = await findSandbox(sandboxId);
 
   try {
-    const files = await sandbox.fs.findFiles(
-      validated.path,
-      validated.pattern
-    );
+    const files = await sandbox.fs.findFiles(validated.path, validated.pattern);
 
     const matches = files.map((file) => ({
       file: file.file,

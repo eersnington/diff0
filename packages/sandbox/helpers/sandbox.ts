@@ -1,23 +1,22 @@
-import { z } from "zod";
 import type { Sandbox } from "@daytonaio/sdk";
+import { z } from "zod";
 import { getDaytonaClient } from "./client";
 import type { CreateSandboxOptions } from "./types";
 
+const RESOURCE_LIMITS = {
+  MIN_CPU: 1,
+  MAX_CPU: 4,
+  MIN_MEMORY: 1,
+  MAX_MEMORY: 8,
+  MIN_DISK: 3,
+  MAX_DISK: 10,
+} as const;
 
-// ---------------------------------------------
-// Constants & Constraints
-// ---------------------------------------------
-
-const MIN_CPU = 1;
-const MAX_CPU = 4;
-const MIN_MEMORY = 1; // Gi
-const MAX_MEMORY = 8;
-const MIN_DISK = 3; // Gi
-const MAX_DISK = 10;
-
-const DEFAULT_CPU = 1;
-const DEFAULT_MEMORY = 1;
-const DEFAULT_DISK = 3;
+const RESOURCE_DEFAULTS = {
+  CPU: 1,
+  MEMORY: 1,
+  DISK: 3,
+} as const;
 
 const DEFAULT_SNAPSHOT = "daytona-medium";
 
@@ -30,15 +29,37 @@ const ALLOWED_SNAPSHOTS = new Set([
   "daytonaio/sandbox:0.3.0",
 ]);
 
-// ---------------------------------------------
-// Schemas
-// ---------------------------------------------
+const PR_SANDBOX_DEFAULTS = {
+  AUTO_STOP_INTERVAL: 5,
+  AUTO_DELETE_INTERVAL: 0,
+} as const;
+
+function extractErrorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "Unknown error";
+}
 
 const resourcesSchema = z
   .object({
-    cpu: z.number().int().min(MIN_CPU).max(MAX_CPU).default(DEFAULT_CPU),
-    memory: z.number().int().min(MIN_MEMORY).max(MAX_MEMORY).default(DEFAULT_MEMORY),
-    disk: z.number().int().min(MIN_DISK).max(MAX_DISK).default(DEFAULT_DISK),
+    cpu: z
+      .number()
+      .int()
+      .min(RESOURCE_LIMITS.MIN_CPU)
+      .max(RESOURCE_LIMITS.MAX_CPU)
+      .default(RESOURCE_DEFAULTS.CPU),
+    memory: z
+      .number()
+      .int()
+      .min(RESOURCE_LIMITS.MIN_MEMORY)
+      .max(RESOURCE_LIMITS.MAX_MEMORY)
+      .default(RESOURCE_DEFAULTS.MEMORY),
+    disk: z
+      .number()
+      .int()
+      .min(RESOURCE_LIMITS.MIN_DISK)
+      .max(RESOURCE_LIMITS.MAX_DISK)
+      .default(RESOURCE_DEFAULTS.DISK),
   })
   .strict();
 
@@ -61,11 +82,12 @@ const normalCreationSchema = baseSchema.extend({
 });
 
 const snapshotCreationSchema = baseSchema.extend({
-  snapshot: z
-    .string()
-    .refine((s) => ALLOWED_SNAPSHOTS.has(s), (s) => ({
+  snapshot: z.string().refine(
+    (s) => ALLOWED_SNAPSHOTS.has(s),
+    (s) => ({
       message: `Unsupported snapshot '${s}'. Allowed: ${[...ALLOWED_SNAPSHOTS].join(", ")}`,
-    })),
+    }),
+  ),
   language: z.undefined(),
   resources: z.undefined(),
 });
@@ -74,12 +96,8 @@ type NormalCreation = z.infer<typeof normalCreationSchema>;
 type SnapshotCreation = z.infer<typeof snapshotCreationSchema>;
 type ValidatedCreation = NormalCreation | SnapshotCreation;
 
-// ---------------------------------------------
-// Internal Helpers
-// ---------------------------------------------
-
 function normalizeOptions(
-  options?: Partial<CreateSandboxOptions>
+  options?: Partial<CreateSandboxOptions>,
 ): ValidatedCreation {
   const o = options || {};
   const wantsSnapshot = typeof o.snapshot === "string" && o.snapshot.length > 0;
@@ -87,12 +105,12 @@ function normalizeOptions(
   if (wantsSnapshot) {
     if (o.language) {
       throw new Error(
-        `Cannot specify 'language' (${o.language}) when using a snapshot (${o.snapshot}). Remove language or omit snapshot.`
+        `Cannot specify 'language' (${o.language}) when using a snapshot (${o.snapshot}). Remove language or omit snapshot.`,
       );
     }
     if (o.resources) {
       throw new Error(
-        `Cannot specify 'resources' when using a snapshot (${o.snapshot}). Remove resources or omit snapshot.`
+        `Cannot specify 'resources' when using a snapshot (${o.snapshot}). Remove resources or omit snapshot.`,
       );
     }
     return snapshotCreationSchema.parse(o);
@@ -101,7 +119,9 @@ function normalizeOptions(
   return normalCreationSchema.parse(o);
 }
 
-function buildDaytonaParams(validated: ValidatedCreation): Record<string, unknown> {
+function buildDaytonaParams(
+  validated: ValidatedCreation,
+): Record<string, unknown> {
   const base: Record<string, unknown> = {
     ephemeral: validated.ephemeral,
     autoStopInterval: validated.autoStopInterval,
@@ -120,7 +140,6 @@ function buildDaytonaParams(validated: ValidatedCreation): Record<string, unknow
     };
   }
 
-  // Normal (non-snapshot) creation path
   const normal = validated as NormalCreation;
   const params: Record<string, unknown> = { ...base };
 
@@ -130,27 +149,22 @@ function buildDaytonaParams(validated: ValidatedCreation): Record<string, unknow
 
   if (normal.resources) {
     const { cpu, memory, disk } = normal.resources;
-    // Daytona TS docs show resources fields as strings with units (except cpu as string number)
     params.resources = {
-      cpu: String(cpu ?? DEFAULT_CPU),
-      memory: `${memory ?? DEFAULT_MEMORY}Gi`,
-      disk: `${disk ?? DEFAULT_DISK}Gi`,
+      cpu: String(cpu ?? RESOURCE_DEFAULTS.CPU),
+      memory: `${memory ?? RESOURCE_DEFAULTS.MEMORY}Gi`,
+      disk: `${disk ?? RESOURCE_DEFAULTS.DISK}Gi`,
     };
   }
 
   return params;
 }
 
-// ---------------------------------------------
-// Public API
-// ---------------------------------------------
+function creationModeLabel(v: ValidatedCreation): string {
+  return "snapshot" in v && v.snapshot ? `snapshot:${v.snapshot}` : "custom";
+}
 
-/**
- * Create a sandbox. Uses snapshot mode when `snapshot` is provided; otherwise
- * uses language/resources mode. Enforces mutual exclusivity.
- */
 export async function createSandbox(
-  options?: Partial<CreateSandboxOptions>
+  options?: Partial<CreateSandboxOptions>,
 ): Promise<Sandbox> {
   const validated = normalizeOptions(options);
   const createParams = buildDaytonaParams(validated);
@@ -160,25 +174,21 @@ export async function createSandbox(
     const sandbox = await daytona.create(createParams as never);
     return sandbox;
   } catch (error) {
-    const msg =
-      error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error";
-    throw new Error(`Failed to create sandbox (${creationModeLabel(validated)}): ${msg}`);
+    const msg = extractErrorMessage(error);
+    throw new Error(
+      `Failed to create sandbox (${creationModeLabel(validated)}): ${msg}`,
+    );
   }
 }
 
-/**
- * PR-specific sandbox factory. Defaults to a medium snapshot for faster cold start.
- * You can override snapshot or opt into language/resources explicitly by passing
- * { snapshot: undefined, language: "...", resources: {...} }.
- */
 export async function createPrSandbox(
-  options?: Partial<CreateSandboxOptions>
+  options?: Partial<CreateSandboxOptions>,
 ): Promise<Sandbox> {
   const defaults: Partial<CreateSandboxOptions> = {
     snapshot: DEFAULT_SNAPSHOT,
     ephemeral: true,
-    autoStopInterval: 5, // minutes
-    autoDeleteInterval: 0,
+    autoStopInterval: PR_SANDBOX_DEFAULTS.AUTO_STOP_INTERVAL,
+    autoDeleteInterval: PR_SANDBOX_DEFAULTS.AUTO_DELETE_INTERVAL,
     labels: {
       purpose: "pr-analysis",
       ...(options?.labels || {}),
@@ -188,9 +198,6 @@ export async function createPrSandbox(
   return await createSandbox({ ...defaults, ...options });
 }
 
-/**
- * Find a sandbox by id and throw if missing.
- */
 export async function findSandbox(id: string): Promise<Sandbox> {
   const daytona = getDaytonaClient();
   try {
@@ -200,18 +207,14 @@ export async function findSandbox(id: string): Promise<Sandbox> {
     }
     return sandbox;
   } catch (error) {
-    const msg =
-      error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error";
+    const msg = extractErrorMessage(error);
     throw new Error(`Failed to find sandbox '${id}': ${msg}`);
   }
 }
 
-/**
- * Manage sandbox lifecycle transitions with uniform error wrapping.
- */
 export async function manageLifecycle(
   sandboxId: string,
-  action: "stop" | "start" | "archive" | "delete"
+  action: "stop" | "start" | "archive" | "delete",
 ): Promise<void> {
   const sandbox = await findSandbox(sandboxId);
   try {
@@ -232,16 +235,7 @@ export async function manageLifecycle(
         throw new Error(`Unsupported action: ${action}`);
     }
   } catch (error) {
-    const msg =
-      error instanceof Error ? error.message : typeof error === "string" ? error : "Unknown error";
+    const msg = extractErrorMessage(error);
     throw new Error(`Failed to ${action} sandbox '${sandboxId}': ${msg}`);
   }
-}
-
-// ---------------------------------------------
-// Utility
-// ---------------------------------------------
-
-function creationModeLabel(v: ValidatedCreation): string {
-  return "snapshot" in v && v.snapshot ? `snapshot:${v.snapshot}` : "custom";
 }

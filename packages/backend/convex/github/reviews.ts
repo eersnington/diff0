@@ -1,4 +1,5 @@
 import { v } from "convex/values";
+import type { Doc } from "../_generated/dataModel";
 import { internalMutation, internalQuery, query } from "../_generated/server";
 
 export const findRepository = internalQuery({
@@ -19,7 +20,9 @@ export const findRepository = internalQuery({
     const repo = await ctx.db
       .query("repositories")
       .withIndex("installationId_and_fullName", (q) =>
-        q.eq("installationId", args.installationId).eq("fullName", args.repoFullName)
+        q
+          .eq("installationId", args.installationId)
+          .eq("fullName", args.repoFullName)
       )
       .first();
 
@@ -62,7 +65,9 @@ export const findExistingReview = internalQuery({
         q.eq("repositoryId", args.repositoryId).eq("prNumber", args.prNumber)
       )
       .first();
-    if (!doc) return null;
+    if (!doc) {
+      return null;
+    }
     return {
       _id: doc._id,
       status: doc.status,
@@ -222,25 +227,33 @@ export const getRecentReviews = query({
   ),
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
-
     if (!identity) {
       return [];
     }
 
     const userId = identity.subject;
-    const limit = args.limit ?? 5; // Default to 5 for dashboard
+    const limit = args.limit ?? 5;
 
-    const reviews = await ctx.db
+    const reviews: Doc<"reviews">[] = await ctx.db
       .query("reviews")
       .withIndex("userId", (q) => q.eq("userId", userId))
       .order("desc")
       .take(limit);
 
-    const reviewsWithRepos = [];
-    for (const review of reviews) {
-      const repository = await ctx.db.get(review.repositoryId);
-      if (repository) {
-        reviewsWithRepos.push({
+    const repositories = await Promise.all(
+      reviews.map(
+        (review) =>
+          ctx.db.get(review.repositoryId) as Promise<Doc<"repositories"> | null>
+      )
+    );
+
+    return reviews
+      .map((review, i) => {
+        const repository = repositories[i];
+        if (!repository) {
+          return null;
+        }
+        return {
           _id: review._id,
           prNumber: review.prNumber,
           prTitle: review.prTitle,
@@ -253,11 +266,9 @@ export const getRecentReviews = query({
             fullName: repository.fullName,
             owner: repository.owner,
           },
-        });
-      }
-    }
-
-    return reviewsWithRepos;
+        };
+      })
+      .filter((r) => r !== null);
   },
 });
 
@@ -282,8 +293,11 @@ export const getDashboardStats = query({
     }
 
     const userId = identity.subject;
-    const now = Date.now();
-    const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
+    const startOfMonth = new Date(
+      new Date().getFullYear(),
+      new Date().getMonth(),
+      1
+    ).getTime();
 
     // Get all reviews for the user
     const allReviews = await ctx.db
