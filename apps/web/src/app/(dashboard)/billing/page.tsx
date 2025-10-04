@@ -5,24 +5,14 @@ import { BillingContent } from "./billing-content";
 
 export default async function BillingPage() {
   const token = await getToken();
-  
-  const preloadedCredits = await preloadQuery(
-    api.credits.getBalance,
-    {},
-    { token }
-  );
-  const preloadedTransactions = await preloadQuery(
-    api.credits.getTransactions,
+
+  const preloadedBillingData = await preloadQuery(
+    api.credits.getBillingData,
     {
       limit: 10,
     },
     { token }
   );
 
-  return (
-    <BillingContent
-      preloadedCredits={preloadedCredits}
-      preloadedTransactions={preloadedTransactions}
-    />
-  );
+  return <BillingContent preloadedBillingData={preloadedBillingData} />;
 }
