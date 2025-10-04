@@ -75,102 +75,97 @@ export function Header({
       </span>
 
       <nav className="md:mt-2">
-        <ul className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
           {user ? (
-            <li>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    className="relative size-7 rounded-full"
-                    variant="ghost"
-                  >
-                    <Avatar className="size-7">
-                      <AvatarImage
-                        alt={user.name}
-                        src={user.image || undefined}
-                      />
-                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col gap-1">
-                      <p className="font-medium text-sm leading-none">
-                        {user.name}
-                      </p>
-                      <p className="text-muted-foreground text-xs leading-none">
-                        {shouldCensorEmail
-                          ? censorEmailText(user.email)
-                          : user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link className="cursor-pointer" href="/dashboard">
-                      <LayoutDashboard className="mr-2 h-4 w-4" />
-                      Dashboard
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link className="cursor-pointer" href="/settings">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Settings
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link className="cursor-pointer" href="/billing">
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      Billing
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center justify-between gap-2 px-2 py-1.5">
-                      <span className="font-medium text-sm">Email</span>
-                      <EmailVisibilitySwitcher
-                        onChange={handleCensorToggle}
-                        value={shouldCensorEmail}
-                      />
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center justify-between gap-2 px-2 py-1.5">
-                      <span className="font-medium text-sm">Theme</span>
-                      <ThemeSwitcherOption />
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    <LogOut />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </li>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  className="relative rounded-full"
+                  variant="ghost"
+                  size={"icon"}
+                >
+                  <Avatar >
+                    <AvatarImage
+                      alt={user.name}
+                      src={user.image || undefined}
+                    />
+                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col gap-1">
+                    <p className="font-medium text-sm leading-none">
+                      {user.name}
+                    </p>
+                    <p className="text-muted-foreground text-xs leading-none">
+                      {shouldCensorEmail
+                        ? censorEmailText(user.email)
+                        : user.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href="/dashboard">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link className="cursor-pointer" href="/billing">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Billing
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                    <span className="font-medium text-sm">Email</span>
+                    <EmailVisibilitySwitcher
+                      onChange={handleCensorToggle}
+                      value={shouldCensorEmail}
+                    />
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center justify-between gap-2 px-2 py-1.5">
+                    <span className="font-medium text-sm">Theme</span>
+                    <ThemeSwitcherOption />
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <li>
-              <Button asChild variant={"outline"}>
-                <Link href={"/auth"} prefetch>
-                  Sign in
-                </Link>
-              </Button>
-            </li>
-          )}
-          <li>
-            <Button asChild>
-              <a
-                href="https://github.com/eersnington/diff0"
-                rel="noreferrer noopener"
-                target="_blank"
-              >
-                Github
-              </a>
+            <Button asChild variant={"outline"} size={"sm"}>
+              <Link href={"/auth"} prefetch>
+                Sign in
+              </Link>
             </Button>
-          </li>
-        </ul>
+          )}
+          <Button size={"sm"} asChild>
+            <a
+              href="https://github.com/eersnington/diff0"
+              rel="noreferrer noopener"
+              target="_blank"
+            >
+              Github
+            </a>
+          </Button>
+        </div>
       </nav>
     </header>
   );
