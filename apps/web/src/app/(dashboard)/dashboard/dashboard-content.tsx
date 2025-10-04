@@ -5,6 +5,7 @@ import { usePreloadedQuery } from "convex/react";
 import type { FunctionReference } from "convex/server";
 import { CreditCard, FileCode, GitBranch, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -205,11 +206,12 @@ export function DashboardContent({
                               {review.repository.fullName}#{review.prNumber}
                             </a>
                           </div>
-                          <span
-                            className={`shrink-0 select-none rounded-sm border px-1.5 py-[2px] leading-none tracking-wide ${STATUS_CLASS[status]}`}
+                          <Badge
+                            className={`select-none leading-none tracking-wide ${STATUS_CLASS[status]}`}
+                            variant={"outline"}
                           >
                             {STATUS_LABEL[status]}
-                          </span>
+                          </Badge>
                         </div>
                         <div className="mt-1 truncate text-neutral-500 dark:text-neutral-400">
                           {review.prTitle}
