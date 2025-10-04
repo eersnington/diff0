@@ -1,9 +1,13 @@
 "use client";
 
+import { api } from "@diff0/backend/convex/_generated/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery } from "convex/react";
+import { Loader2 } from "lucide-react";
 import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,22 +16,33 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { Separator } from "@/components/ui/separator";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { api } from "@diff0/backend/convex/_generated/api";
-import { useMutation, useQuery } from "convex/react";
-import { Loader2 } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+
+const MAX_NAME_LENGTH = 64;
 
 const schema = z.object({
   name: z
     .string()
     .min(2, "Name must be at least 2 characters")
-    .max(64, "Name must be at most 64 characters")
+    .max(MAX_NAME_LENGTH, `Name must be at most ${MAX_NAME_LENGTH} characters`)
     .transform((s) => s.trim()),
 });
 
@@ -125,9 +140,9 @@ export default function ProfileSettingsPage() {
             <CardContent>
               <Form {...form}>
                 <form
-                  onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-6"
                   noValidate
+                  onSubmit={form.handleSubmit(onSubmit)}
                 >
                   <FormField
                     control={form.control}
@@ -137,8 +152,8 @@ export default function ProfileSettingsPage() {
                         <FormLabel>Name</FormLabel>
                         <FormControl>
                           <Input
-                            autoComplete="name"
                             aria-required="true"
+                            autoComplete="name"
                             maxLength={64}
                             placeholder="Your name…"
                             {...field}
@@ -152,17 +167,17 @@ export default function ProfileSettingsPage() {
 
                   <div className="grid gap-2">
                     <label
+                      className="font-medium text-muted-foreground text-sm"
                       htmlFor="email"
-                      className="text-sm font-medium text-muted-foreground"
                     >
                       Email
                     </label>
                     <Input
-                      id="email"
-                      value={user?.email || ""}
-                      readOnly
-                      disabled
                       aria-readonly="true"
+                      disabled
+                      id="email"
+                      readOnly
+                      value={user?.email || ""}
                     />
                     <p className="text-muted-foreground text-xs">
                       Email comes from your GitHub account and cannot be edited.
@@ -171,9 +186,9 @@ export default function ProfileSettingsPage() {
 
                   <div className="flex items-center gap-3">
                     <Button
-                      type="submit"
-                      disabled={isSubmitting || !user}
                       aria-disabled={isSubmitting}
+                      disabled={isSubmitting || !user}
+                      type="submit"
                     >
                       {isSubmitting && (
                         <Loader2 className="size-4 animate-spin" />
@@ -181,15 +196,18 @@ export default function ProfileSettingsPage() {
                       Save Changes
                     </Button>
                     <Button
-                      type="button"
-                      variant="outline"
                       disabled={isSubmitting || !user}
                       onClick={() =>
-                        form.reset({ name: user?.name || "" }, {
-                          keepErrors: false,
-                          keepDirty: false,
-                        })
+                        form.reset(
+                          { name: user?.name || "" },
+                          {
+                            keepErrors: false,
+                            keepDirty: false,
+                          }
+                        )
                       }
+                      type="button"
+                      variant="outline"
                     >
                       Reset
                     </Button>
