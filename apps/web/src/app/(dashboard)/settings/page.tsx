@@ -1,3 +1,6 @@
+import { api } from "@diff0/backend/convex/_generated/api";
+import { getToken } from "@diff0/backend/lib/auth-server";
+import { preloadQuery } from "convex/nextjs";
 import { Suspense } from "react";
 import {
   Breadcrumb,
@@ -12,7 +15,15 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SettingsContent } from "./settings-content";
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const token = await getToken();
+
+  const preloadedGithubSettingsData = await preloadQuery(
+    api.github.installation.getGithubSettingsData,
+    {},
+    { token }
+  );
+
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -45,7 +56,9 @@ export default function SettingsPage() {
         </div>
 
         <Suspense fallback={<SettingsLoading />}>
-          <SettingsContent />
+          <SettingsContent
+            preloadedGithubSettingsData={preloadedGithubSettingsData}
+          />
         </Suspense>
       </div>
     </>

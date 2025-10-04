@@ -74,9 +74,12 @@ export const getBillingData = query({
 
     if (!identity) {
       return {
-        balance: 0,
-        totalPurchased: 0,
-        totalUsed: 0,
+        balance: {
+          balance: 0,
+          totalPurchased: 0,
+          totalUsed: 0,
+        },
+        transactions: [],
       };
     }
 

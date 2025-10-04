@@ -1,8 +1,8 @@
 "use client";
 
+import type { api } from "@diff0/backend/convex/_generated/api";
 import type { Preloaded } from "convex/react";
 import { usePreloadedQuery } from "convex/react";
-import type { FunctionReference } from "convex/server";
 import { CreditCard, FileCode, GitBranch, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 type DashboardContentProps = {
-  preloadedDashboardData: Preloaded<FunctionReference<"query", "public">>;
+  preloadedDashboardData: Preloaded<typeof api.user.getDashboardData>;
 };
 
 type ReviewStatus =

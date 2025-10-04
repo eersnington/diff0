@@ -48,24 +48,16 @@ export const handleInstallationCallback = mutation({
   },
 });
 
-export const getUserInstallations = query({
+export const getGithubSettingsData = query({
   args: {},
-  returns: v.array(
-    v.object({
-      _id: v.id("githubInstallations"),
-      installationId: v.string(),
-      accountLogin: v.string(),
-      accountType: v.union(v.literal("User"), v.literal("Organization")),
-      repositorySelection: v.union(v.literal("all"), v.literal("selected")),
-      installedAt: v.number(),
-      suspendedAt: v.optional(v.number()),
-    })
-  ),
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      return [];
+      return {
+        repositories: [],
+        installations: [],
+      };
     }
 
     const userId = identity.subject;
@@ -75,58 +67,33 @@ export const getUserInstallations = query({
       .withIndex("userId", (q) => q.eq("userId", userId))
       .collect();
 
-    return installations.map((installation) => ({
-      _id: installation._id,
-      installationId: installation.installationId,
-      accountLogin: installation.accountLogin,
-      accountType: installation.accountType,
-      repositorySelection: installation.repositorySelection,
-      installedAt: installation.installedAt,
-      suspendedAt: installation.suspendedAt,
-    }));
-  },
-});
-
-export const getConnectedRepositories = query({
-  args: {},
-  returns: v.array(
-    v.object({
-      _id: v.id("repositories"),
-      name: v.string(),
-      fullName: v.string(),
-      owner: v.string(),
-      private: v.boolean(),
-      autoReviewEnabled: v.boolean(),
-      language: v.optional(v.string()),
-      stargazersCount: v.number(),
-      connectedAt: v.number(),
-    })
-  ),
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      return [];
-    }
-
-    const userId = identity.subject;
-
     const repositories = await ctx.db
       .query("repositories")
       .withIndex("userId", (q) => q.eq("userId", userId))
       .collect();
 
-    return repositories.map((repo) => ({
-      _id: repo._id,
-      name: repo.name,
-      fullName: repo.fullName,
-      owner: repo.owner,
-      private: repo.private,
-      autoReviewEnabled: repo.autoReviewEnabled,
-      language: repo.language,
-      stargazersCount: repo.stargazersCount,
-      connectedAt: repo.connectedAt,
-    }));
+    return {
+      repositories: repositories.map((repo) => ({
+        _id: repo._id,
+        name: repo.name,
+        fullName: repo.fullName,
+        owner: repo.owner,
+        private: repo.private,
+        autoReviewEnabled: repo.autoReviewEnabled,
+        language: repo.language,
+        stargazersCount: repo.stargazersCount,
+        connectedAt: repo.connectedAt,
+      })),
+      installations: installations.map((installation) => ({
+        _id: installation._id,
+        installationId: installation.installationId,
+        accountLogin: installation.accountLogin,
+        accountType: installation.accountType,
+        repositorySelection: installation.repositorySelection,
+        installedAt: installation.installedAt,
+        suspendedAt: installation.suspendedAt,
+      })),
+    };
   },
 });
 

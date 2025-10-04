@@ -2,7 +2,7 @@
 
 import { api } from "@diff0/backend/convex/_generated/api";
 import type { Id } from "@diff0/backend/convex/_generated/dataModel";
-import { useMutation, useQuery } from "convex/react";
+import { type Preloaded, useMutation, usePreloadedQuery } from "convex/react";
 import { CheckCircle2, GitBranch, Github, XCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -19,17 +19,25 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Switch } from "@/components/ui/switch";
 import { env } from "@/env";
 
-export function SettingsContent() {
+export function SettingsContent({
+  preloadedGithubSettingsData,
+}: {
+  preloadedGithubSettingsData: Preloaded<
+    typeof api.github.installation.getGithubSettingsData
+  >;
+}) {
   const searchParams = useSearchParams();
   const [showToast, setShowToast] = useState(false);
 
-  const installations = useQuery(api.github.installation.getUserInstallations);
-  const repositories = useQuery(
-    api.github.installation.getConnectedRepositories
-  );
+  const data = usePreloadedQuery(preloadedGithubSettingsData);
+
+  const installations = data.installations;
+  const repositories = data.repositories;
+
   const toggleAutoReview = useMutation(
     api.github.installation.toggleAutoReview
   );
+
   const isLoading = installations === undefined || repositories === undefined;
 
   const handleToggle = async (repositoryId: Id<"repositories">) => {

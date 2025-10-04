@@ -1,5 +1,6 @@
 "use client";
 
+import type { api } from "@diff0/backend/convex/_generated/api";
 import type { Preloaded } from "convex/react";
 import {
   Authenticated,
@@ -7,7 +8,6 @@ import {
   Unauthenticated,
   usePreloadedQuery,
 } from "convex/react";
-import type { FunctionReference } from "convex/server";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -20,7 +20,7 @@ export function DashboardLayoutClient({
   initialCensorEmail,
 }: {
   children: React.ReactNode;
-  preloadedUser: Preloaded<FunctionReference<"query", "public">>;
+  preloadedUser: Preloaded<typeof api.user.getCurrentUser>;
   initialCensorEmail: boolean;
 }) {
   return (
@@ -63,7 +63,7 @@ function DashboardContent({
   initialCensorEmail,
 }: {
   children: React.ReactNode;
-  preloadedUser: Preloaded<FunctionReference<"query", "public">>;
+  preloadedUser: Preloaded<typeof api.user.getCurrentUser>;
   initialCensorEmail: boolean;
 }) {
   const user = usePreloadedQuery(preloadedUser);

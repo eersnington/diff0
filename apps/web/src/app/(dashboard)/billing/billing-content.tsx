@@ -4,7 +4,6 @@ import { api } from "@diff0/backend/convex/_generated/api";
 import { authClient } from "@diff0/backend/lib/auth-client";
 import type { Preloaded } from "convex/react";
 import { useAction, usePreloadedQuery } from "convex/react";
-import type { FunctionReference } from "convex/server";
 import { Beaker, CreditCard, Loader2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -38,7 +37,7 @@ import {
 } from "@/components/ui/table";
 
 type BillingContentProps = {
-  preloadedBillingData: Preloaded<FunctionReference<"query", "public">>;
+  preloadedBillingData: Preloaded<typeof api.user.getBillingData>;
 };
 
 const CREDIT_PACKAGES = [
@@ -50,8 +49,8 @@ const CREDIT_PACKAGES = [
 
 export function BillingContent({ preloadedBillingData }: BillingContentProps) {
   const billingData = usePreloadedQuery(preloadedBillingData);
-  const credits = billingData?.credits;
-  const transactions = billingData?.transactions;
+  const credits = billingData.balance;
+  const transactions = billingData.transactions;
 
   const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
 
@@ -149,9 +148,7 @@ export function BillingContent({ preloadedBillingData }: BillingContentProps) {
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <div className="font-bold text-4xl">
-                  {credits?.balance ?? 0}
-                </div>
+                <div className="font-bold text-4xl">{credits.balance}</div>
                 <p className="text-muted-foreground text-sm">
                   Available credits
                 </p>
@@ -159,14 +156,12 @@ export function BillingContent({ preloadedBillingData }: BillingContentProps) {
                   <div>
                     <p className="text-muted-foreground">Total Purchased</p>
                     <p className="font-medium text-lg">
-                      {credits?.totalPurchased ?? 0}
+                      {credits.totalPurchased}
                     </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground">Total Used</p>
-                    <p className="font-medium text-lg">
-                      {credits?.totalUsed ?? 0}
-                    </p>
+                    <p className="font-medium text-lg">{credits.totalUsed}</p>
                   </div>
                 </div>
               </div>
