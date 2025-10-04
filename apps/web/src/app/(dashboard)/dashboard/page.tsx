@@ -30,9 +30,9 @@ export default async function DashboardPage() {
   return (
     <DashboardContent
       preloadedCredits={preloadedCredits}
-      preloadedUser={preloadedUser}
-      preloadedStats={preloadedStats}
       preloadedRecentReviews={preloadedRecentReviews}
+      preloadedStats={preloadedStats}
+      preloadedUser={preloadedUser}
     />
   );
 }
