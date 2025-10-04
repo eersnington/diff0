@@ -2,11 +2,11 @@
 
 import { authClient } from "@diff0/backend/lib/auth-client";
 import { Authenticated, AuthLoading, Unauthenticated } from "convex/react";
+import { Loader } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -38,7 +38,7 @@ function LoadingScreen() {
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="flex flex-col items-center gap-4">
         <Loader className="size-8 animate-spin" />
-        <p className="text-sm text-muted-foreground">Checking session…</p>
+        <p className="text-muted-foreground text-sm">Checking session…</p>
       </div>
     </div>
   );
@@ -81,10 +81,10 @@ function SignInForm() {
         <CardContent>
           <div className="grid gap-4">
             <Button
-              type="button"
               className={cn("w-full gap-2")}
               disabled={isLoading}
               onClick={handleGitHub}
+              type="button"
               variant="outline"
             >
               <GitHubIcon className="size-4" />
@@ -116,9 +116,9 @@ function Logo() {
             alt="diff0 logo"
             className="rounded-xl"
             height={64}
+            priority
             src="/logo-dark.svg"
             width={64}
-            priority
           />
         </Link>
       </div>
@@ -128,9 +128,9 @@ function Logo() {
             alt="diff0 logo"
             className="rounded-xl"
             height={64}
+            priority
             src="/logo.svg"
             width={64}
-            priority
           />
         </Link>
       </div>
@@ -142,9 +142,9 @@ function GitHubIcon(props: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
-      viewBox="0 0 24 24"
       className={props.className}
       role="img"
+      viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >
       <title>GitHub logo</title>
