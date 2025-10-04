@@ -4,6 +4,43 @@ import { authComponent } from "./auth";
 
 const DEFAULT_TRANSACTION_LIMIT = 50;
 
+export const getBillingData = query({
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+
+    // Get balance
+    const credits = await ctx.db
+      .query("userCredits")
+      .withIndex("userId", (q) => q.eq("userId", user._id))
+      .first();
+
+    const balance = credits
+      ? {
+          balance: credits.balance,
+          totalPurchased: credits.totalPurchased,
+          totalUsed: credits.totalUsed,
+        }
+      : {
+          balance: 0,
+          totalPurchased: 0,
+          totalUsed: 0,
+        };
+
+    // Get transactions
+    const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
+    const transactions = await ctx.db
+      .query("creditTransactions")
+      .withIndex("userId", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .take(limit);
+
+    return { balance, transactions };
+  },
+});
+
 export const getBalance = query({
   args: {},
   handler: async (ctx) => {
