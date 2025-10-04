@@ -23,7 +23,7 @@
   "devDependencies": {
     "turbo": "^2.5.4",
     "@biomejs/biome": "2.2.4",
-    "ultracite": "5.4.5"
+    "ultracite": "5.5.0"
   },
   "packageManager": "pnpm@10.15.0"
 }
