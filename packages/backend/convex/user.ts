@@ -1,11 +1,12 @@
 import { v } from "convex/values";
 import { z } from "zod";
 import type { Doc } from "./_generated/dataModel";
-import { mutation, query } from "./_generated/server";
+import { mutation, type QueryCtx, query } from "./_generated/server";
 import { authComponent, createAuth } from "./auth";
 
 // biome-ignore lint/suspicious/noControlCharactersInRegex: not suspicious
 const NO_CONTROL_CHARS_REGEX = /^[^\u0000-\u001F\u007F]*$/;
+const DEFAULT_TRANSACTION_LIMIT = 50;
 
 const nameSchema = z
   .string()
@@ -51,6 +52,61 @@ export const updateUserName = mutation({
       previousName,
       updated: true,
     };
+  },
+});
+
+export const safeGetUser = async (ctx: QueryCtx) =>
+  authComponent.safeGetAuthUser(ctx);
+
+export const getUser = async (ctx: QueryCtx) => authComponent.getAuthUser(ctx);
+
+export const getCurrentUser = query({
+  args: {},
+  handler: async (ctx) => safeGetUser(ctx),
+});
+
+export const getBillingData = query({
+  args: {
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      return {
+        balance: 0,
+        totalPurchased: 0,
+        totalUsed: 0,
+      };
+    }
+
+    const userId = identity.subject;
+
+    const credits = await ctx.db
+      .query("userCredits")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .first();
+
+    const balance = credits
+      ? {
+          balance: credits.balance,
+          totalPurchased: credits.totalPurchased,
+          totalUsed: credits.totalUsed,
+        }
+      : {
+          balance: 0,
+          totalPurchased: 0,
+          totalUsed: 0,
+        };
+
+    const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
+    const transactions = await ctx.db
+      .query("creditTransactions")
+      .withIndex("userId", (q) => q.eq("userId", userId))
+      .order("desc")
+      .take(limit);
+
+    return { balance, transactions };
   },
 });
 

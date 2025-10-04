@@ -1,80 +1,6 @@
 import { v } from "convex/values";
-import { internalMutation, mutation, query } from "./_generated/server";
+import { internalMutation, mutation } from "./_generated/server";
 import { authComponent } from "./auth";
-
-const DEFAULT_TRANSACTION_LIMIT = 50;
-
-export const getBillingData = query({
-  args: {
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-
-    if (!identity) {
-      return {
-        balance: 0,
-        totalPurchased: 0,
-        totalUsed: 0,
-      };
-    }
-
-    const userId = identity.subject;
-
-    const credits = await ctx.db
-      .query("userCredits")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .first();
-
-    const balance = credits
-      ? {
-          balance: credits.balance,
-          totalPurchased: credits.totalPurchased,
-          totalUsed: credits.totalUsed,
-        }
-      : {
-          balance: 0,
-          totalPurchased: 0,
-          totalUsed: 0,
-        };
-
-    // Get transactions
-    const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
-    const transactions = await ctx.db
-      .query("creditTransactions")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .order("desc")
-      .take(limit);
-
-    return { balance, transactions };
-  },
-});
-
-export const getBalance = query({
-  args: {},
-  handler: async (ctx) => {
-    const user = await authComponent.getAuthUser(ctx);
-
-    const credits = await ctx.db
-      .query("userCredits")
-      .withIndex("userId", (q) => q.eq("userId", user._id))
-      .first();
-
-    if (!credits) {
-      return {
-        balance: 0,
-        totalPurchased: 0,
-        totalUsed: 0,
-      };
-    }
-
-    return {
-      balance: credits.balance,
-      totalPurchased: credits.totalPurchased,
-      totalUsed: credits.totalUsed,
-    };
-  },
-});
 
 export const initializeCredits = mutation({
   args: {},
@@ -95,24 +21,6 @@ export const initializeCredits = mutation({
         lastUpdated: Date.now(),
       });
     }
-  },
-});
-
-export const getTransactions = query({
-  args: {
-    limit: v.optional(v.number()),
-  },
-  handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
-    const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
-
-    const transactions = await ctx.db
-      .query("creditTransactions")
-      .withIndex("userId", (q) => q.eq("userId", user._id))
-      .order("desc")
-      .take(limit);
-
-    return transactions;
   },
 });
 

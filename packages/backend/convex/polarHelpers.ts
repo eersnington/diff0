@@ -13,7 +13,7 @@ export const ensurePolarCustomer = action({
   args: {},
   returns: v.null(),
   handler: async (ctx) => {
-    const user = await ctx.runQuery(api.auth.getCurrentUser);
+    const user = await ctx.runQuery(api.user.getCurrentUser);
     if (!user) {
       throw new Error("User not authenticated");
     }

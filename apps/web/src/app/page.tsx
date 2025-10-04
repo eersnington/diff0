@@ -14,7 +14,7 @@ export default async function Page() {
   const token = await getToken();
 
   const [currentUser, cookieStore] = await Promise.all([
-    preloadQuery(api.auth.getCurrentUser, {}, { token }),
+    preloadQuery(api.user.getCurrentUser, {}, { token }),
     cookies(),
   ]);
 

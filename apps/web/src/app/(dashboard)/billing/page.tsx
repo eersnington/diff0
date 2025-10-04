@@ -7,7 +7,7 @@ export default async function BillingPage() {
   const token = await getToken();
 
   const preloadedBillingData = await preloadQuery(
-    api.credits.getBillingData,
+    api.user.getBillingData,
     {
       limit: 10,
     },

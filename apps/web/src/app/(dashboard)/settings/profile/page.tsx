@@ -49,7 +49,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 export default function ProfileSettingsPage() {
-  const user = useQuery(api.auth.getCurrentUser);
+  const user = useQuery(api.user.getCurrentUser);
   const updateName = useMutation(api.user.updateUserName);
   const [isPending, startTransition] = useTransition();
 

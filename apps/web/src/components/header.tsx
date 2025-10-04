@@ -37,7 +37,7 @@ export function Header({
   currentUser,
   initialCensorEmail,
 }: {
-  currentUser: Preloaded<typeof api.auth.getCurrentUser>;
+  currentUser: Preloaded<typeof api.user.getCurrentUser>;
   initialCensorEmail: boolean;
 }) {
   const user = usePreloadedQuery(currentUser);
@@ -81,10 +81,10 @@ export function Header({
               <DropdownMenuTrigger asChild>
                 <Button
                   className="relative rounded-full"
-                  variant="ghost"
                   size={"icon"}
+                  variant="ghost"
                 >
-                  <Avatar >
+                  <Avatar>
                     <AvatarImage
                       alt={user.name}
                       src={user.image || undefined}
@@ -150,13 +150,13 @@ export function Header({
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Button asChild variant={"outline"} size={"sm"}>
+            <Button asChild size={"sm"} variant={"outline"}>
               <Link href={"/auth"} prefetch>
                 Sign in
               </Link>
             </Button>
           )}
-          <Button size={"sm"} asChild>
+          <Button asChild size={"sm"}>
             <a
               href="https://github.com/eersnington/diff0"
               rel="noreferrer noopener"
