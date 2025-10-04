@@ -1,21 +1,15 @@
-import type { ReactNode } from 'react';
-import { GoogleAnalytics } from './google';
-import { keys } from './keys';
-import { PostHogProvider } from './posthog/client';
-import { VercelAnalytics } from './vercel';
+import type { ReactNode } from "react";
+import { DatabuddyProvider } from "./databuddy/provider";
+import { VercelProvider } from "./vercel/provider";
 
 type AnalyticsProviderProps = {
   readonly children: ReactNode;
 };
 
-const { NEXT_PUBLIC_GA_MEASUREMENT_ID } = keys();
-
 export const AnalyticsProvider = ({ children }: AnalyticsProviderProps) => (
-  <PostHogProvider>
+  <>
+    <VercelProvider />
+    <DatabuddyProvider />
     {children}
-    <VercelAnalytics />
-    {NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-      <GoogleAnalytics gaId={NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-    )}
-  </PostHogProvider>
+  </>
 );

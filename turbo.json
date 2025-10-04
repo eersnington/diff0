@@ -9,9 +9,7 @@
         "dist/**",
         ".next/**",
         "!.next/cache/**",
-        ".basehub/**",
         "**/generated/**",
-        "storybook-static/**",
         ".react-email/**"
       ],
       "env": [
@@ -44,6 +42,7 @@
         "GITHUB_APP_PRIVATE_KEY",
         "GITHUB_WEBHOOK_SECRET",
         "NEXT_PUBLIC_OPENPANEL_CLIENT_ID",
+        "NEXT_PUBLIC_DATABUDDY_CLIENT_ID",
         "NEXT_PUBLIC_SENTRY_DSN",
         "NEXT_PUBLIC_CONVEX_URL",
         "NEXT_PUBLIC_CONVEX_SITE_URL",
