@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@ai-sdk/amazon-bedrock": "^3.0.29",
+    "@ai-sdk/google": "^2.0.17",
     "@ai-sdk/openai": "^2.0.42",
     "@ai-sdk/react": "^2.0.59",
     "@inkeep/agents-sdk": "^0.11.2",
