@@ -299,27 +299,26 @@ export const getDashboardStats = query({
       1
     ).getTime();
 
-    // Get all reviews for the user
-    const allReviews = await ctx.db
-      .query("reviews")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .collect();
+    const [allReviews, repositories] = await Promise.all([
+      ctx.db
+        .query("reviews")
+        .withIndex("userId", (q) => q.eq("userId", userId))
+        .collect(),
+      ctx.db
+        .query("repositories")
+        .withIndex("userId", (q) => q.eq("userId", userId))
+        .collect(),
+    ]);
 
-    // Get reviews this month
+    // get reviews this month
     const reviewsThisMonth = allReviews.filter(
       (review) => review.createdAt >= startOfMonth
     );
 
-    // Get completed reviews
+    // get completed reviews
     const completedReviews = allReviews.filter(
       (review) => review.status === "completed"
     );
-
-    // Get connected repositories
-    const repositories = await ctx.db
-      .query("repositories")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .collect();
 
     return {
       totalReviews: allReviews.length,

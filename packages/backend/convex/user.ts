@@ -84,11 +84,20 @@ export const getBillingData = query({
     }
 
     const userId = identity.subject;
-
-    const credits = await ctx.db
-      .query("userCredits")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .first();
+    
+    const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
+    
+    const [credits, transactions] = await Promise.all([
+      ctx.db
+        .query("userCredits")
+        .withIndex("userId", (q) => q.eq("userId", userId))
+        .first(),
+      ctx.db
+        .query("creditTransactions")
+        .withIndex("userId", (q) => q.eq("userId", userId))
+        .order("desc")
+        .take(limit),
+    ]);
 
     const balance = credits
       ? {
@@ -101,13 +110,6 @@ export const getBillingData = query({
           totalPurchased: 0,
           totalUsed: 0,
         };
-
-    const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
-    const transactions = await ctx.db
-      .query("creditTransactions")
-      .withIndex("userId", (q) => q.eq("userId", userId))
-      .order("desc")
-      .take(limit);
 
     return { balance, transactions };
   },
