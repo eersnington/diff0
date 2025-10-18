@@ -8,41 +8,26 @@ import { internal } from "../_generated/api";
 import { httpAction } from "../_generated/server";
 
 export const handlePolarWebhook = httpAction(async (ctx, request) => {
-  const id = request.headers.get("webhook-id") ?? undefined;
-  const sig = request.headers.get("webhook-signature") ?? undefined;
-  const ts = request.headers.get("webhook-timestamp") ?? undefined;
-
-  if (!(id && sig && ts)) {
-    return new Response("Missing required webhook headers", { status: 400 });
-  }
-
   if (!env.POLAR_WEBHOOK_SECRET) {
     return new Response("POLAR_WEBHOOK_SECRET not configured", { status: 500 });
   }
 
   const body = await request.text();
+  const headers: Record<string, string> = {};
+  request.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
   let deliveryId: string | undefined;
 
   try {
-    const event = validateEvent(
-      body,
-      {
-        "webhook-id": id,
-        "webhook-signature": sig,
-        "webhook-timestamp": ts,
-      },
-      env.POLAR_WEBHOOK_SECRET
-    );
+    const event = validateEvent(body, headers, env.POLAR_WEBHOOK_SECRET);
 
-    // all Polar events have a data object with an id
-    // https://docs.polar.sh/reference/webhooks
-    deliveryId = event.data?.id;
+    deliveryId = headers["webhook-id"] || event.data?.id;
 
-    // persist raw event for auditing/troubleshooting
     await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
       source: "polar",
       eventType: event.type,
-      deliveryId: deliveryId ?? id,
+      deliveryId: deliveryId ?? headers["webhook-id"],
       payload: event,
     });
 
@@ -104,10 +89,10 @@ export const handlePolarWebhook = httpAction(async (ctx, request) => {
     }
 
     await ctx.runMutation(internal.github.handlers.markEventProcessed, {
-      deliveryId: deliveryId ?? id,
+      deliveryId: deliveryId ?? headers["webhook-id"],
     });
 
-    return new Response("OK", { status: 200 });
+    return new Response("Accepted", { status: 202 });
   } catch (error) {
     let message: string;
     if (error instanceof WebhookVerificationError) {
@@ -118,14 +103,15 @@ export const handlePolarWebhook = httpAction(async (ctx, request) => {
       message = String(error);
     }
 
-    if (deliveryId ?? id) {
+    const fallbackId = deliveryId ?? headers["webhook-id"];
+    if (fallbackId) {
       await ctx.runMutation(internal.github.handlers.markEventProcessed, {
-        deliveryId: deliveryId ?? id!,
+        deliveryId: fallbackId,
         error: message,
       });
     }
 
-    const status = error instanceof WebhookVerificationError ? 401 : 500;
+    const status = error instanceof WebhookVerificationError ? 403 : 500;
     return new Response(message, { status });
   }
 });
