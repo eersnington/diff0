@@ -370,6 +370,12 @@ importers:
       '@diff0/sandbox':
         specifier: workspace:*
         version: link:../sandbox
+      '@dodopayments/better-auth':
+        specifier: ^1.2.0
+        version: 1.2.0(zod@4.1.11)
+      '@dodopayments/convex':
+        specifier: ^0.2.1
+        version: 0.2.1(react@19.1.1)(zod@4.1.11)
       '@octokit/auth-app':
         specifier: ^8.1.1
         version: 8.1.1
@@ -394,12 +400,18 @@ importers:
       better-auth:
         specifier: 1.3.8
         version: 1.3.8(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      buffer:
+        specifier: ^6.0.3
+        version: 6.0.3
       convex:
         specifier: ^1.27.3
         version: 1.27.3(react@19.1.1)
       convex-helpers:
         specifier: ^0.1.104
         version: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(react@19.1.1))(hono@4.9.9)(react@19.1.1)(typescript@5.9.3)(zod@4.1.11)
+      dodopayments:
+        specifier: ^2.2.1
+        version: 2.2.1
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -763,6 +775,27 @@ packages:
 
   '@daytonaio/sdk@0.106.4':
     resolution: {integrity: sha512-hmygL/1gPdQWoiXPPWffqrNOVml9SQkfw1lXxegWQAsk/dTyo8QCco/PgA5Iv6o4tfOr2Cdo25/dOuTyMHrKUQ==}
+
+  '@dodopayments/better-auth@1.2.0':
+    resolution: {integrity: sha512-30IKJ6Vv4O08BQcLRn4hA7nvJhvz7fLBZxYZt1Lws/bVuYqjjaHLf7jHFXMpeDywTj468CEoZUhZSgn67X5q7w==}
+    engines: {node: '>=16.0.0'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@dodopayments/convex@0.2.1':
+    resolution: {integrity: sha512-KAm1NMehViGjVATePRpTv17Rrw4NPt8OaacpZdBYNrIjQy+eO5jnjFR9npWNQCD/cDoZtR3XHg0q+QECznAV9w==}
+    peerDependencies:
+      zod: ^3.23.8
+
+  '@dodopayments/core@0.2.0':
+    resolution: {integrity: sha512-dnjFIK5KVzhKk7I5/UnHjnKerI+g8QWYPdWu4/aw1Q3/d2GTEohluy6uYLcWoUf3TeQb0w30Wi0VtG6q0L7dVg==}
+    peerDependencies:
+      zod: ^3.25.74
+
+  '@dodopayments/core@0.3.0':
+    resolution: {integrity: sha512-5fheVstH6O9kTAxVsyKFdNNqLbod6fAijxUy3EBAwg6C1oXAMgZVYEbbnOoWsZmLrdqJCTOe0XvoaV+F8kWw5Q==}
+    peerDependencies:
+      zod: ^3.25.74
 
   '@emnapi/runtime@1.5.0':
     resolution: {integrity: sha512-97/BJ3iXHww3djw6hYIfErCZFee7qCtrneuLa20UXFCOTCfBM2cvQHjWJ2EG0s0MtdNwInarqCTz35i4wWXHsQ==}
@@ -3696,6 +3729,9 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
+  buffer@6.0.3:
+    resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
+
   bufrw@1.4.0:
     resolution: {integrity: sha512-sWm8iPbqvL9+5SiYxXH73UOkyEbGQg7kyHQmReF89WJHQJw2eV4P/yZ0E+b71cczJ4pPobVhXxgQcmfSTgGHxQ==}
     engines: {node: '>= 0.10.x'}
@@ -4026,6 +4062,10 @@ packages:
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
+
+  dodopayments@2.2.1:
+    resolution: {integrity: sha512-vLBRAEZV/mzEWou5JfzcbSkTle7zPHJ4BFAi/0xcol5IWZrMWp6HimOJUZxyahQNxKGHUoOx18htDIP/s/oo+g==}
+    hasBin: true
 
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
@@ -6993,6 +7033,33 @@ snapshots:
       - aws-crt
       - debug
       - ws
+
+  '@dodopayments/better-auth@1.2.0(zod@4.1.11)':
+    dependencies:
+      '@dodopayments/core': 0.2.0(zod@4.1.11)
+      zod: 4.1.11
+
+  '@dodopayments/convex@0.2.1(react@19.1.1)(zod@4.1.11)':
+    dependencies:
+      '@dodopayments/core': 0.3.0(zod@4.1.11)
+      convex: 1.27.3(react@19.1.1)
+      zod: 4.1.11
+    transitivePeerDependencies:
+      - '@auth0/auth0-react'
+      - '@clerk/clerk-react'
+      - react
+
+  '@dodopayments/core@0.2.0(zod@4.1.11)':
+    dependencies:
+      dodopayments: 2.2.1
+      standardwebhooks: 1.0.0
+      zod: 4.1.11
+
+  '@dodopayments/core@0.3.0(zod@4.1.11)':
+    dependencies:
+      dodopayments: 2.2.1
+      standardwebhooks: 1.0.0
+      zod: 4.1.11
 
   '@emnapi/runtime@1.5.0':
     dependencies:
@@ -10363,6 +10430,11 @@ snapshots:
       ieee754: 1.2.1
     optional: true
 
+  buffer@6.0.3:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+
   bufrw@1.4.0:
     dependencies:
       ansi-color: 0.2.1
@@ -10627,6 +10699,8 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+
+  dodopayments@2.2.1: {}
 
   dom-helpers@5.2.1:
     dependencies:

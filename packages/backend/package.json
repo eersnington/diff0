@@ -16,6 +16,8 @@
     "@convex-dev/better-auth": "^0.8.8",
     "@diff0/ai": "workspace:*",
     "@diff0/sandbox": "workspace:*",
+    "@dodopayments/better-auth": "^1.2.0",
+    "@dodopayments/convex": "^0.2.1",
     "@octokit/auth-app": "^8.1.1",
     "@octokit/rest": "^22.0.0",
     "@octokit/types": "^15.0.0",
@@ -27,6 +29,7 @@
     "buffer": "^6.0.3",
     "convex": "^1.27.3",
     "convex-helpers": "^0.1.104",
+    "dodopayments": "^2.2.1",
     "server-only": "^0.0.1",
     "zod": "^4.1.11"
   }
