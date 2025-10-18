@@ -23,11 +23,13 @@ import type * as github_reviews from "../github/reviews.js";
 import type * as github_signature from "../github/signature.js";
 import type * as github_webhooks from "../github/webhooks.js";
 import type * as http from "../http.js";
-import type * as polar_mutations from "../polar/mutations.js";
-import type * as polar_productMapping from "../polar/productMapping.js";
-import type * as polar_queries from "../polar/queries.js";
-import type * as polar_webhooks from "../polar/webhooks.js";
-import type * as polarHelpers from "../polarHelpers.js";
+import type * as paymentHelpers from "../paymentHelpers.js";
+import type * as payments_http from "../payments/http.js";
+import type * as payments_mutations from "../payments/mutations.js";
+import type * as payments_polyfill from "../payments/polyfill.js";
+import type * as payments_productMapping from "../payments/productMapping.js";
+import type * as payments_queries from "../payments/queries.js";
+import type * as payments_webhooks from "../payments/webhooks.js";
 import type * as user from "../user.js";
 
 import type {
@@ -60,11 +62,13 @@ declare const fullApi: ApiFromModules<{
   "github/signature": typeof github_signature;
   "github/webhooks": typeof github_webhooks;
   http: typeof http;
-  "polar/mutations": typeof polar_mutations;
-  "polar/productMapping": typeof polar_productMapping;
-  "polar/queries": typeof polar_queries;
-  "polar/webhooks": typeof polar_webhooks;
-  polarHelpers: typeof polarHelpers;
+  paymentHelpers: typeof paymentHelpers;
+  "payments/http": typeof payments_http;
+  "payments/mutations": typeof payments_mutations;
+  "payments/polyfill": typeof payments_polyfill;
+  "payments/productMapping": typeof payments_productMapping;
+  "payments/queries": typeof payments_queries;
+  "payments/webhooks": typeof payments_webhooks;
   user: typeof user;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

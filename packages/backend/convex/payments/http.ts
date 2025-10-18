@@ -34,7 +34,7 @@ export const handlePolarWebhook = httpAction(async (ctx, request) => {
     switch (event.type) {
       case "order.created": {
         const order = event.data;
-        await ctx.runMutation(internal.polar.mutations.handleOrderCreated, {
+        await ctx.runMutation(internal.payments.mutations.handleOrderCreated, {
           orderId: order.id,
           checkoutId: order.checkoutId ?? "",
           customerId: order.customerId,
@@ -60,7 +60,7 @@ export const handlePolarWebhook = httpAction(async (ctx, request) => {
         }
 
         // ensure idempotent upsert before marking paid
-        await ctx.runMutation(internal.polar.mutations.handleOrderCreated, {
+        await ctx.runMutation(internal.payments.mutations.handleOrderCreated, {
           orderId: order.id,
           checkoutId: order.checkoutId ?? "",
           customerId: order.customerId,
@@ -76,7 +76,7 @@ export const handlePolarWebhook = httpAction(async (ctx, request) => {
           metadata: order.metadata,
         });
 
-        await ctx.runMutation(internal.polar.mutations.handleOrderPaid, {
+        await ctx.runMutation(internal.payments.mutations.handleOrderPaid, {
           orderId: order.id,
           userExternalId: order.customer.externalId,
         });

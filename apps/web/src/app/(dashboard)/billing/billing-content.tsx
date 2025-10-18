@@ -61,7 +61,7 @@ export function BillingContent({ preloadedBillingData }: BillingContentProps) {
       day: "numeric",
     });
 
-  const ensurePolarCustomer = useAction(api.polarHelpers.ensurePolarCustomer);
+  const ensurePolarCustomer = useAction(api.paymentHelpers.ensurePolarCustomer);
 
   const handlePurchase = async (slug: string) => {
     setLoadingSlug(slug);
