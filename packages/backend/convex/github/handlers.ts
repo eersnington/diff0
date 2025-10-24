@@ -9,7 +9,7 @@ import {
 
 export const logWebhookEvent = internalMutation({
   args: {
-    source: v.union(v.literal("github"), v.literal("polar")),
+    source: v.union(v.literal("github"), v.literal("credits")),
     eventType: v.string(),
     deliveryId: v.string(),
     installationId: v.optional(v.string()),
@@ -45,7 +45,7 @@ export const getWebhookEvent = internalQuery({
     v.object({
       _id: v.id("webhookEvents"),
       _creationTime: v.number(),
-      source: v.union(v.literal("github"), v.literal("polar")),
+      source: v.union(v.literal("github"), v.literal("credits")),
       eventType: v.string(),
       deliveryId: v.string(),
       installationId: v.optional(v.string()),
