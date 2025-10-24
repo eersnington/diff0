@@ -26,7 +26,6 @@ import type * as http from "../http.js";
 import type * as paymentHelpers from "../paymentHelpers.js";
 import type * as payments_http from "../payments/http.js";
 import type * as payments_mutations from "../payments/mutations.js";
-import type * as payments_polyfill from "../payments/polyfill.js";
 import type * as payments_productMapping from "../payments/productMapping.js";
 import type * as payments_queries from "../payments/queries.js";
 import type * as payments_webhooks from "../payments/webhooks.js";
@@ -65,7 +64,6 @@ declare const fullApi: ApiFromModules<{
   paymentHelpers: typeof paymentHelpers;
   "payments/http": typeof payments_http;
   "payments/mutations": typeof payments_mutations;
-  "payments/polyfill": typeof payments_polyfill;
   "payments/productMapping": typeof payments_productMapping;
   "payments/queries": typeof payments_queries;
   "payments/webhooks": typeof payments_webhooks;
@@ -3350,6 +3348,61 @@ export declare const components: {
       findOne: FunctionReference<"query", "internal", any, any>;
       update: FunctionReference<"mutation", "internal", any, any>;
       updateMany: FunctionReference<"mutation", "internal", any, any>;
+    };
+  };
+  dodopayments: {
+    lib: {
+      checkout: FunctionReference<
+        "action",
+        "internal",
+        {
+          apiKey: string;
+          environment: "test_mode" | "live_mode";
+          payload: {
+            allowed_payment_method_types?: Array<string>;
+            billing_address?: {
+              city?: string;
+              country: string;
+              state?: string;
+              street?: string;
+              zipcode?: string;
+            };
+            billing_currency?: string;
+            confirm?: boolean;
+            customer?: { email?: string; name?: string; phone_number?: string };
+            customization?: {
+              show_on_demand_tag?: boolean;
+              show_order_details?: boolean;
+              theme?: string;
+            };
+            discount_code?: string;
+            feature_flags?: {
+              allow_currency_selection?: boolean;
+              allow_discount_code?: boolean;
+              allow_phone_number_collection?: boolean;
+              allow_tax_id?: boolean;
+              always_create_new_customer?: boolean;
+            };
+            metadata?: Record<string, string>;
+            product_cart: Array<{ product_id: string; quantity: number }>;
+            return_url?: string;
+            show_saved_payment_methods?: boolean;
+            subscription_data?: { trial_period_days?: number };
+          };
+        },
+        { checkout_url: string }
+      >;
+      customerPortal: FunctionReference<
+        "action",
+        "internal",
+        {
+          apiKey: string;
+          dodoCustomerId: string;
+          environment: "test_mode" | "live_mode";
+          send_email?: boolean;
+        },
+        { portal_url: string }
+      >;
     };
   };
 };
