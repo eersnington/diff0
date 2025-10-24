@@ -1,5 +1,7 @@
 # diff0
 
+<img width="886" height="633" alt="389c7d29-f3d3-405a-a115-b69e774c24a0" src="https://github.com/user-attachments/assets/144be2af-1c61-4726-b296-92c3a0bc5447" />
+
 An open-source AI code review agent for GitHub. Automatically analyzes pull requests, detects bugs, security issues, and performance problems, then posts actionable inline comments with one-click fixes.
 
 Code reviews that catch bugs before they reach production.
@@ -29,7 +31,7 @@ Code reviews that catch bugs before they reach production.
 diff0 uses a webhook-driven pipeline to automatically review pull requests:
 
 ```
-GitHub PR Event → Webhook Handler → Event Router → PR Analysis Pipeline
+GitHub PR Event → Convex Webhook Handler → Event Router → PR Analysis Pipeline
                                                     ↓
                                     Sandbox Creation → Git Clone → Diff Analysis
                                                     ↓
