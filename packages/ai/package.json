@@ -19,7 +19,7 @@
     "react-markdown": "^10.1.0",
     "scorecard-ai": "^2.1.1",
     "tailwind-merge": "^3.3.0",
-    "zod": "^4.1.11"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/node": "22.15.21",

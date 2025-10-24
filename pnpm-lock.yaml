@@ -168,7 +168,7 @@ importers:
         version: 1.2.2(@types/react@19.2.0)(react@19.1.1)
       '@t3-oss/env-nextjs':
         specifier: ^0.13.8
-        version: 0.13.8(typescript@5.9.3)(zod@4.1.11)
+        version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
       '@tanstack/react-form':
         specifier: ^1.12.3
         version: 1.23.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -239,8 +239,8 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.0(@types/react@19.2.0))(@types/react@19.2.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       zod:
-        specifier: ^4.1.11
-        version: 4.1.11
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.1.10
@@ -265,16 +265,16 @@ importers:
     dependencies:
       '@ai-sdk/amazon-bedrock':
         specifier: ^3.0.29
-        version: 3.0.30(zod@4.1.11)
+        version: 3.0.30(zod@4.1.12)
       '@ai-sdk/google':
         specifier: ^2.0.17
-        version: 2.0.17(zod@4.1.11)
+        version: 2.0.17(zod@4.1.12)
       '@ai-sdk/openai':
         specifier: ^2.0.42
-        version: 2.0.42(zod@4.1.11)
+        version: 2.0.42(zod@4.1.12)
       '@ai-sdk/react':
         specifier: ^2.0.59
-        version: 2.0.60(react@19.1.1)(zod@4.1.11)
+        version: 2.0.60(react@19.1.1)(zod@4.1.12)
       '@inkeep/agents-sdk':
         specifier: ^0.11.2
         version: 0.11.3(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@types/pg@8.15.5)(kysely@0.28.7)
@@ -283,10 +283,10 @@ importers:
         version: 4.3.7
       '@t3-oss/env-core':
         specifier: ^0.13.8
-        version: 0.13.8(typescript@5.9.3)(zod@4.1.11)
+        version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
       ai:
         specifier: ^5.0.59
-        version: 5.0.60(zod@4.1.11)
+        version: 5.0.60(zod@4.1.12)
       react:
         specifier: ^19.1.1
         version: 19.1.1
@@ -300,8 +300,8 @@ importers:
         specifier: ^3.3.0
         version: 3.3.1
       zod:
-        specifier: ^4.1.11
-        version: 4.1.11
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@types/node':
         specifier: 22.15.21
@@ -326,7 +326,7 @@ importers:
         version: 15.3.2(next@15.5.4(@opentelemetry/api@1.9.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
       '@t3-oss/env-nextjs':
         specifier: ^0.13.4
-        version: 0.13.8(typescript@5.9.3)(zod@3.25.76)
+        version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
       '@vercel/analytics':
         specifier: ^1.5.0
         version: 1.5.0(next@15.5.4(@opentelemetry/api@1.9.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)
@@ -337,8 +337,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       zod:
-        specifier: ^3.25.28
-        version: 3.25.76
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@types/node':
         specifier: ^24.3.0
@@ -366,10 +366,10 @@ importers:
         version: link:../sandbox
       '@dodopayments/better-auth':
         specifier: ^1.2.0
-        version: 1.2.0(zod@4.1.11)
+        version: 1.2.0(zod@4.1.12)
       '@dodopayments/convex':
         specifier: ^0.2.1
-        version: 0.2.1(react@19.1.1)(zod@4.1.11)
+        version: 0.2.1(react@19.1.1)(zod@4.1.12)
       '@octokit/auth-app':
         specifier: ^8.1.1
         version: 8.1.1
@@ -384,7 +384,7 @@ importers:
         version: 14.1.3
       '@t3-oss/env-core':
         specifier: ^0.13.8
-        version: 0.13.8(typescript@5.9.3)(zod@4.1.11)
+        version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
       better-auth:
         specifier: 1.3.8
         version: 1.3.8(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -396,7 +396,7 @@ importers:
         version: 1.27.3(react@19.1.1)
       convex-helpers:
         specifier: ^0.1.104
-        version: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(react@19.1.1))(hono@4.9.9)(react@19.1.1)(typescript@5.9.3)(zod@4.1.11)
+        version: 0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(react@19.1.1))(hono@4.9.9)(react@19.1.1)(typescript@5.9.3)(zod@4.1.12)
       dodopayments:
         specifier: ^2.2.1
         version: 2.2.1
@@ -404,8 +404,8 @@ importers:
         specifier: ^0.0.1
         version: 0.0.1
       zod:
-        specifier: ^4.1.11
-        version: 4.1.11
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@types/node':
         specifier: ^24.3.0
@@ -420,12 +420,12 @@ importers:
         specifier: ^0.106.4
         version: 0.106.4(ws@8.18.3)
       zod:
-        specifier: ^3.25.28
-        version: 3.25.76
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@t3-oss/env-core':
         specifier: ^0.13.8
-        version: 0.13.8(typescript@5.9.3)(zod@3.25.76)
+        version: 0.13.8(typescript@5.9.3)(zod@4.1.12)
       '@types/node':
         specifier: 22.15.21
         version: 22.15.21
@@ -1604,6 +1604,7 @@ packages:
   '@opentelemetry/exporter-jaeger@2.1.0':
     resolution: {integrity: sha512-qtUMsp8061pQn6ZN9dngH6okiiF0NlHYBLWprzLeeCmNN7i5UHM+V8GmxvUH4L/zXlNBsySq7p3fZHIIbmK9xg==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Jaeger now has native support for OTLP. Please use @opentelemetry/exporter-trace-otlp-proto instead.
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
 
@@ -6232,87 +6233,90 @@ packages:
   zod@4.1.11:
     resolution: {integrity: sha512-WPsqwxITS2tzx1bzhIKsEs19ABD5vmCVa4xBo2tq/SrV4RNZtfws1EnCWQXM6yh8bD08a1idvkB5MZSBiZsjwg==}
 
+  zod@4.1.12:
+    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
+
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@ai-sdk/amazon-bedrock@3.0.30(zod@4.1.11)':
+  '@ai-sdk/amazon-bedrock@3.0.30(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/anthropic': 2.0.23(zod@4.1.11)
+      '@ai-sdk/anthropic': 2.0.23(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
       '@smithy/eventstream-codec': 4.2.0
       '@smithy/util-utf8': 4.2.0
       aws4fetch: 1.0.20
-      zod: 4.1.11
+      zod: 4.1.12
 
-  '@ai-sdk/anthropic@2.0.23(zod@4.1.11)':
+  '@ai-sdk/anthropic@2.0.23(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
-      zod: 4.1.11
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
+      zod: 4.1.12
 
-  '@ai-sdk/gateway@1.0.33(zod@4.1.11)':
+  '@ai-sdk/gateway@1.0.33(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
       '@vercel/oidc': 3.0.1
-      zod: 4.1.11
+      zod: 4.1.12
 
-  '@ai-sdk/gateway@1.0.5(zod@4.1.11)':
+  '@ai-sdk/gateway@1.0.5(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.2(zod@4.1.11)
-      zod: 4.1.11
+      '@ai-sdk/provider-utils': 3.0.2(zod@4.1.12)
+      zod: 4.1.12
 
-  '@ai-sdk/google@2.0.17(zod@4.1.11)':
+  '@ai-sdk/google@2.0.17(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
-      zod: 4.1.11
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
+      zod: 4.1.12
 
-  '@ai-sdk/openai@2.0.42(zod@4.1.11)':
+  '@ai-sdk/openai@2.0.42(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
-      zod: 4.1.11
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
+      zod: 4.1.12
 
-  '@ai-sdk/provider-utils@3.0.10(zod@4.1.11)':
-    dependencies:
-      '@ai-sdk/provider': 2.0.0
-      '@standard-schema/spec': 1.0.0
-      eventsource-parser: 3.0.6
-      zod: 4.1.11
-
-  '@ai-sdk/provider-utils@3.0.2(zod@4.1.11)':
+  '@ai-sdk/provider-utils@3.0.10(zod@4.1.12)':
     dependencies:
       '@ai-sdk/provider': 2.0.0
       '@standard-schema/spec': 1.0.0
       eventsource-parser: 3.0.6
-      zod: 4.1.11
-      zod-to-json-schema: 3.24.6(zod@4.1.11)
+      zod: 4.1.12
+
+  '@ai-sdk/provider-utils@3.0.2(zod@4.1.12)':
+    dependencies:
+      '@ai-sdk/provider': 2.0.0
+      '@standard-schema/spec': 1.0.0
+      eventsource-parser: 3.0.6
+      zod: 4.1.12
+      zod-to-json-schema: 3.24.6(zod@4.1.12)
 
   '@ai-sdk/provider@2.0.0':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@2.0.60(react@19.1.1)(zod@4.1.11)':
+  '@ai-sdk/react@2.0.60(react@19.1.1)(zod@4.1.12)':
     dependencies:
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
-      ai: 5.0.60(zod@4.1.11)
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
+      ai: 5.0.60(zod@4.1.12)
       react: 19.1.1
       swr: 2.3.6(react@19.1.1)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 4.1.11
+      zod: 4.1.12
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@asteasolutions/zod-to-openapi@8.1.0(zod@4.1.11)':
+  '@asteasolutions/zod-to-openapi@8.1.0(zod@4.1.12)':
     dependencies:
       openapi3-ts: 4.5.0
-      zod: 4.1.11
+      zod: 4.1.12
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:
@@ -6903,32 +6907,32 @@ snapshots:
       - debug
       - ws
 
-  '@dodopayments/better-auth@1.2.0(zod@4.1.11)':
+  '@dodopayments/better-auth@1.2.0(zod@4.1.12)':
     dependencies:
-      '@dodopayments/core': 0.2.0(zod@4.1.11)
-      zod: 4.1.11
+      '@dodopayments/core': 0.2.0(zod@4.1.12)
+      zod: 4.1.12
 
-  '@dodopayments/convex@0.2.1(react@19.1.1)(zod@4.1.11)':
+  '@dodopayments/convex@0.2.1(react@19.1.1)(zod@4.1.12)':
     dependencies:
-      '@dodopayments/core': 0.3.0(zod@4.1.11)
+      '@dodopayments/core': 0.3.0(zod@4.1.12)
       convex: 1.27.3(react@19.1.1)
-      zod: 4.1.11
+      zod: 4.1.12
     transitivePeerDependencies:
       - '@auth0/auth0-react'
       - '@clerk/clerk-react'
       - react
 
-  '@dodopayments/core@0.2.0(zod@4.1.11)':
+  '@dodopayments/core@0.2.0(zod@4.1.12)':
     dependencies:
       dodopayments: 2.2.1
       standardwebhooks: 1.0.0
-      zod: 4.1.11
+      zod: 4.1.12
 
-  '@dodopayments/core@0.3.0(zod@4.1.11)':
+  '@dodopayments/core@0.3.0(zod@4.1.12)':
     dependencies:
       dodopayments: 2.2.1
       standardwebhooks: 1.0.0
-      zod: 4.1.11
+      zod: 4.1.12
 
   '@emnapi/runtime@1.5.0':
     dependencies:
@@ -7127,18 +7131,18 @@ snapshots:
     dependencies:
       hono: 4.9.9
 
-  '@hono/zod-openapi@1.1.3(hono@4.9.9)(zod@4.1.11)':
+  '@hono/zod-openapi@1.1.3(hono@4.9.9)(zod@4.1.12)':
     dependencies:
-      '@asteasolutions/zod-to-openapi': 8.1.0(zod@4.1.11)
-      '@hono/zod-validator': 0.7.3(hono@4.9.9)(zod@4.1.11)
+      '@asteasolutions/zod-to-openapi': 8.1.0(zod@4.1.12)
+      '@hono/zod-validator': 0.7.3(hono@4.9.9)(zod@4.1.12)
       hono: 4.9.9
       openapi3-ts: 4.5.0
-      zod: 4.1.11
+      zod: 4.1.12
 
-  '@hono/zod-validator@0.7.3(hono@4.9.9)(zod@4.1.11)':
+  '@hono/zod-validator@0.7.3(hono@4.9.9)(zod@4.1.12)':
     dependencies:
       hono: 4.9.9
-      zod: 4.1.11
+      zod: 4.1.12
 
   '@hookform/resolvers@5.2.2(react-hook-form@7.64.0(react@19.1.1))':
     dependencies:
@@ -7239,7 +7243,7 @@ snapshots:
   '@inkeep/agents-core@0.11.3(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@types/pg@8.15.5)(kysely@0.28.7)':
     dependencies:
       '@hono/node-server': 1.19.5(hono@4.9.9)
-      '@hono/zod-openapi': 1.1.3(hono@4.9.9)(zod@4.1.11)
+      '@hono/zod-openapi': 1.1.3(hono@4.9.9)(zod@4.1.12)
       '@libsql/client': 0.15.15
       '@modelcontextprotocol/sdk': 1.19.1
       '@nangohq/node': 0.66.2
@@ -7253,13 +7257,13 @@ snapshots:
       '@opentelemetry/sdk-node': 0.203.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/sdk-trace-node': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/semantic-conventions': 1.37.0
-      ai: 5.0.11(zod@4.1.11)
+      ai: 5.0.11(zod@4.1.12)
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
       dotenv: 17.2.3
       dotenv-expand: 12.0.3
       drizzle-orm: 0.44.6(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.7)
-      drizzle-zod: 0.8.3(drizzle-orm@0.44.6(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.7))(zod@4.1.11)
+      drizzle-zod: 0.8.3(drizzle-orm@0.44.6(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.7))(zod@4.1.12)
       exit-hook: 4.0.0
       find-up: 7.0.0
       hono: 4.9.9
@@ -7268,7 +7272,7 @@ snapshots:
       pino: 9.13.1
       pino-pretty: 13.1.1
       ts-pattern: 5.8.0
-      zod: 4.1.11
+      zod: 4.1.12
     optionalDependencies:
       keytar: 7.9.0
     transitivePeerDependencies:
@@ -7310,7 +7314,7 @@ snapshots:
     dependencies:
       '@inkeep/agents-core': 0.11.3(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))(@types/pg@8.15.5)(kysely@0.28.7)
       nanoid: 5.1.6
-      zod: 4.1.11
+      zod: 4.1.12
     transitivePeerDependencies:
       - '@aws-sdk/client-rds-data'
       - '@cloudflare/workers-types'
@@ -9728,29 +9732,17 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@t3-oss/env-core@0.13.8(typescript@5.9.3)(zod@3.25.76)':
+  '@t3-oss/env-core@0.13.8(typescript@5.9.3)(zod@4.1.12)':
     optionalDependencies:
       typescript: 5.9.3
-      zod: 3.25.76
+      zod: 4.1.12
 
-  '@t3-oss/env-core@0.13.8(typescript@5.9.3)(zod@4.1.11)':
-    optionalDependencies:
-      typescript: 5.9.3
-      zod: 4.1.11
-
-  '@t3-oss/env-nextjs@0.13.8(typescript@5.9.3)(zod@3.25.76)':
+  '@t3-oss/env-nextjs@0.13.8(typescript@5.9.3)(zod@4.1.12)':
     dependencies:
-      '@t3-oss/env-core': 0.13.8(typescript@5.9.3)(zod@3.25.76)
+      '@t3-oss/env-core': 0.13.8(typescript@5.9.3)(zod@4.1.12)
     optionalDependencies:
       typescript: 5.9.3
-      zod: 3.25.76
-
-  '@t3-oss/env-nextjs@0.13.8(typescript@5.9.3)(zod@4.1.11)':
-    dependencies:
-      '@t3-oss/env-core': 0.13.8(typescript@5.9.3)(zod@4.1.11)
-    optionalDependencies:
-      typescript: 5.9.3
-      zod: 4.1.11
+      zod: 4.1.12
 
   '@tailwindcss/node@4.1.14':
     dependencies:
@@ -10038,21 +10030,21 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@5.0.11(zod@4.1.11):
+  ai@5.0.11(zod@4.1.12):
     dependencies:
-      '@ai-sdk/gateway': 1.0.5(zod@4.1.11)
+      '@ai-sdk/gateway': 1.0.5(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.2(zod@4.1.11)
+      '@ai-sdk/provider-utils': 3.0.2(zod@4.1.12)
       '@opentelemetry/api': 1.9.0
-      zod: 4.1.11
+      zod: 4.1.12
 
-  ai@5.0.60(zod@4.1.11):
+  ai@5.0.60(zod@4.1.12):
     dependencies:
-      '@ai-sdk/gateway': 1.0.33(zod@4.1.11)
+      '@ai-sdk/gateway': 1.0.33(zod@4.1.12)
       '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.11)
+      '@ai-sdk/provider-utils': 3.0.10(zod@4.1.12)
       '@opentelemetry/api': 1.9.0
-      zod: 4.1.11
+      zod: 4.1.12
 
   ajv-formats@3.0.1(ajv@8.17.1):
     optionalDependencies:
@@ -10137,7 +10129,7 @@ snapshots:
       jose: 5.10.0
       kysely: 0.28.7
       nanostores: 0.11.4
-      zod: 4.1.11
+      zod: 4.1.12
     optionalDependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
@@ -10326,7 +10318,7 @@ snapshots:
       typescript: 5.9.3
       zod: 3.25.76
 
-  convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(react@19.1.1))(hono@4.9.9)(react@19.1.1)(typescript@5.9.3)(zod@4.1.11):
+  convex-helpers@0.1.104(@standard-schema/spec@1.0.0)(convex@1.27.3(react@19.1.1))(hono@4.9.9)(react@19.1.1)(typescript@5.9.3)(zod@4.1.12):
     dependencies:
       convex: 1.27.3(react@19.1.1)
     optionalDependencies:
@@ -10334,7 +10326,7 @@ snapshots:
       hono: 4.9.9
       react: 19.1.1
       typescript: 5.9.3
-      zod: 4.1.11
+      zod: 4.1.12
 
   convex@1.27.3(react@19.1.1):
     dependencies:
@@ -10475,10 +10467,10 @@ snapshots:
       '@types/pg': 8.15.5
       kysely: 0.28.7
 
-  drizzle-zod@0.8.3(drizzle-orm@0.44.6(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.7))(zod@4.1.11):
+  drizzle-zod@0.8.3(drizzle-orm@0.44.6(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.7))(zod@4.1.12):
     dependencies:
       drizzle-orm: 0.44.6(@libsql/client@0.15.15)(@opentelemetry/api@1.9.0)(@types/pg@8.15.5)(kysely@0.28.7)
-      zod: 4.1.11
+      zod: 4.1.12
 
   dunder-proto@1.0.1:
     dependencies:
@@ -12770,12 +12762,12 @@ snapshots:
 
   trough@2.2.0: {}
 
-  trpc-cli@0.11.0(@trpc/server@11.6.0(typescript@5.9.3))(zod@4.1.11):
+  trpc-cli@0.11.0(@trpc/server@11.6.0(typescript@5.9.3))(zod@4.1.12):
     dependencies:
       commander: 14.0.1
     optionalDependencies:
       '@trpc/server': 11.6.0(typescript@5.9.3)
-      zod: 4.1.11
+      zod: 4.1.12
 
   ts-pattern@5.8.0: {}
 
@@ -12840,9 +12832,9 @@ snapshots:
       deepmerge: 4.3.1
       jsonc-parser: 3.3.1
       nypm: 0.6.2
-      trpc-cli: 0.11.0(@trpc/server@11.6.0(typescript@5.9.3))(zod@4.1.11)
+      trpc-cli: 0.11.0(@trpc/server@11.6.0(typescript@5.9.3))(zod@4.1.12)
       vitest: 3.2.4(@types/debug@4.1.12)(@types/node@24.5.2)(jiti@2.6.1)(lightningcss@1.30.1)(yaml@2.8.1)
-      zod: 4.1.11
+      zod: 4.1.12
     transitivePeerDependencies:
       - '@edge-runtime/vm'
       - '@orpc/server'
@@ -13123,12 +13115,14 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
-  zod-to-json-schema@3.24.6(zod@4.1.11):
+  zod-to-json-schema@3.24.6(zod@4.1.12):
     dependencies:
-      zod: 4.1.11
+      zod: 4.1.12
 
   zod@3.25.76: {}
 
   zod@4.1.11: {}
+
+  zod@4.1.12: {}
 
   zwitch@2.0.4: {}
