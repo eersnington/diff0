@@ -194,8 +194,8 @@ importers:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       lucide-react:
-        specifier: ^0.487.0
-        version: 0.487.0(react@19.1.1)
+        specifier: ^0.547.0
+        version: 0.547.0(react@19.1.1)
       motion:
         specifier: ^12.23.22
         version: 12.23.22(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -1604,6 +1604,7 @@ packages:
   '@opentelemetry/exporter-jaeger@2.1.0':
     resolution: {integrity: sha512-qtUMsp8061pQn6ZN9dngH6okiiF0NlHYBLWprzLeeCmNN7i5UHM+V8GmxvUH4L/zXlNBsySq7p3fZHIIbmK9xg==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Jaeger now has native support for OTLP. Please use @opentelemetry/exporter-trace-otlp-proto instead.
     peerDependencies:
       '@opentelemetry/api': ^1.0.0
 
@@ -4813,8 +4814,8 @@ packages:
     resolution: {integrity: sha512-F9ODfyqML2coTIsQpSkRHnLSZMtkU8Q+mSfcaIyKwy58u+8k5nvAYeiNhsyMARvzNcXJ9QfWVrcPsC9e9rAxtg==}
     engines: {node: 20 || >=22}
 
-  lucide-react@0.487.0:
-    resolution: {integrity: sha512-aKqhOQ+YmFnwq8dWgGjOuLc8V1R9/c/yOd+zDY4+ohsR2Jo05lSGc3WsstYPIzcTpeosN7LoCkLReUUITvaIvw==}
+  lucide-react@0.547.0:
+    resolution: {integrity: sha512-YLChGBWKq8ynr1UWP8WWRPhHhyuBAXfSBnHSgfoj51L//9TU3d0zvxpigf5C1IJ4vnEoTzthl5awPK55PiZhdA==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
@@ -11279,7 +11280,7 @@ snapshots:
 
   lru-cache@11.2.2: {}
 
-  lucide-react@0.487.0(react@19.1.1):
+  lucide-react@0.547.0(react@19.1.1):
     dependencies:
       react: 19.1.1
 
