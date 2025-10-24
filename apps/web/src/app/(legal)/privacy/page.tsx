@@ -94,7 +94,7 @@ export default function PrivacyPage() {
           <ul className="list-disc space-y-2 pl-6">
             <li><strong>GitHub:</strong> For authentication and repository access</li>
             <li><strong>Convex:</strong> For database and backend services</li>
-            <li><strong>Polar:</strong> For payment processing</li>
+            <li><strong>Dodopayments:</strong> For payment processing</li>
             <li><strong>OpenAI:</strong> For AI code analysis</li>
           </ul>
           <p className="mt-4">
