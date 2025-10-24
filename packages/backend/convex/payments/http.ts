@@ -1,4 +1,3 @@
-import "./polyfill";
 import {
   validateEvent,
   WebhookVerificationError,
@@ -25,7 +24,7 @@ export const handlePolarWebhook = httpAction(async (ctx, request) => {
     deliveryId = headers["webhook-id"] || event.data?.id;
 
     await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
-      source: "polar",
+      source: "credits",
       eventType: event.type,
       deliveryId: deliveryId ?? headers["webhook-id"],
       payload: event,

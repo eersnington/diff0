@@ -9,7 +9,7 @@ export const getCheckoutDetails = query({
   returns: v.union(
     v.object({
       order: v.object({
-        _id: v.id("polarOrders"),
+        _id: v.id("orders"),
         productName: v.string(),
         amount: v.number(),
         currency: v.string(),
@@ -34,9 +34,9 @@ export const getCheckoutDetails = query({
     const user = await authComponent.getAuthUser(ctx);
 
     const order = await ctx.db
-      .query("polarOrders")
-      .withIndex("polarCheckoutId", (q) =>
-        q.eq("polarCheckoutId", args.checkoutId)
+      .query("orders")
+      .withIndex("checkoutId", (q) =>
+        q.eq("checkoutId", args.checkoutId)
       )
       .first();
 

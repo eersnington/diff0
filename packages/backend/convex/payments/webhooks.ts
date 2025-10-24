@@ -3,7 +3,7 @@ import { mutation } from "../_generated/server";
 
 export const logWebhookEvent = mutation({
   args: {
-    source: v.union(v.literal("github"), v.literal("polar")),
+    source: v.union(v.literal("github"), v.literal("credits")),
     eventType: v.string(),
     deliveryId: v.string(),
     payload: v.any(),

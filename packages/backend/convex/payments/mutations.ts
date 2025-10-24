@@ -22,8 +22,8 @@ export const handleOrderCreated = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const existingOrder = await ctx.db
-      .query("polarOrders")
-      .withIndex("polarOrderId", (q) => q.eq("polarOrderId", args.orderId))
+      .query("orders")
+      .withIndex("orderId", (q) => q.eq("orderId", args.orderId))
       .first();
 
     if (existingOrder) {
@@ -32,11 +32,11 @@ export const handleOrderCreated = internalMutation({
 
     const creditsAmount = getCreditsForProduct(args.productId);
 
-    await ctx.db.insert("polarOrders", {
+    await ctx.db.insert("orders", {
       userEmail: args.customerEmail,
-      polarOrderId: args.orderId,
-      polarCheckoutId: args.checkoutId,
-      polarCustomerId: args.customerId,
+      orderId: args.orderId,
+      checkoutId: args.checkoutId,
+      customerId: args.customerId,
       productId: args.productId,
       productName: args.productName,
       amount: args.amount,
@@ -62,8 +62,8 @@ export const handleOrderPaid = internalMutation({
   returns: v.null(),
   handler: async (ctx, args) => {
     const order = await ctx.db
-      .query("polarOrders")
-      .withIndex("polarOrderId", (q) => q.eq("polarOrderId", args.orderId))
+      .query("orders")
+      .withIndex("orderId", (q) => q.eq("orderId", args.orderId))
       .first();
 
     if (!order) {
@@ -84,7 +84,7 @@ export const handleOrderPaid = internalMutation({
       userId: args.userExternalId,
       amount: order.creditsAmount,
       description: `Purchase: ${order.productName}`,
-      polarCheckoutId: order.polarCheckoutId,
+      checkoutId: order.checkoutId,
     });
 
     return null;
