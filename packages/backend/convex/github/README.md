@@ -61,7 +61,7 @@ GITHUB_WEBHOOK_SECRET="your_webhook_secret_here"
 ## Database Schema
 
 Events are stored in the `webhookEvents` table with:
-- `source`: "github" or "polar"
+- `source`: "github" or "credits"
 - `eventType`: The GitHub event type (e.g., "pull_request")
 - `deliveryId`: Unique delivery ID from GitHub
 - `installationId`: GitHub App installation ID
