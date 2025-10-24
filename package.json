@@ -12,8 +12,8 @@
     "build": "turbo build",
     "deploy:convex": "cd packages/backend && pnpm dlx convex deploy",
     "check-types": "turbo check-types",
-    "dev:native": "turbo -F native dev",
     "dev:web": "turbo -F web dev",
+    "dev:fuma": "turbo -F fumadocs dev",
     "dev:server": "turbo -F @diff0/backend dev",
     "dev:setup": "turbo -F @diff0/backend dev:setup"
   },
