@@ -33,9 +33,9 @@ export default defineSchema({
   // ============================================
 
   orders: defineTable({
+    userId: v.string(),
     userEmail: v.string(),
-    orderId: v.string(),
-    checkoutId: v.string(),
+    paymentId: v.string(),
     customerId: v.string(),
     productId: v.string(),
     productName: v.string(),
@@ -48,16 +48,14 @@ export default defineSchema({
     ),
     creditsAmount: v.number(),
     creditsApplied: v.boolean(),
-    billingReason: v.optional(v.string()),
-    subscriptionId: v.optional(v.string()),
     metadata: v.optional(v.any()),
     createdAt: v.number(),
     paidAt: v.optional(v.number()),
     refundedAt: v.optional(v.number()),
   })
+    .index("userId", ["userId"])
     .index("userEmail", ["userEmail"])
-    .index("orderId", ["orderId"])
-    .index("checkoutId", ["checkoutId"])
+    .index("paymentId", ["paymentId"])
     .index("status", ["status"]),
 
   // ============================================

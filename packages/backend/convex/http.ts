@@ -18,32 +18,109 @@ http.route({
   path: "/dodopayments-webhook",
   method: "POST",
   handler: createDodoWebhookHandler({
-    // Handle successful payments
     onPaymentSucceeded: async (ctx, payload) => {
-      // Use Convex context to persist payment data
-      await ctx.runMutation(internal.webhooks.createPayment, {
-        paymentId: payload.data.payment_id,
-        businessId: payload.business_id,
-        customerEmail: payload.data.customer.email,
-        amount: payload.data.total_amount,
-        currency: payload.data.currency,
-        status: payload.data.status,
-        webhookPayload: JSON.stringify(payload),
+      const deliveryId =
+        payload.id || `payment_${payload.data.payment_id}_${Date.now()}`;
+
+      await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
+        source: "credits",
+        eventType: "payment.succeeded",
+        deliveryId,
+        payload,
+      });
+
+      await ctx.runMutation(
+        internal.payments.dodoWebhooks.handlePaymentSucceeded,
+        {
+          paymentId: payload.data.payment_id,
+          customerId: payload.data.customer.customer_id,
+          customerEmail: payload.data.customer.email,
+          productId: payload.data.product.product_id,
+          productName: payload.data.product.name,
+          amount: payload.data.total_amount,
+          currency: payload.data.currency,
+          metadata: payload.data.metadata,
+          deliveryId,
+        }
+      );
+
+      await ctx.runMutation(internal.github.handlers.markEventProcessed, {
+        deliveryId,
       });
     },
 
-    // Handle subscription activation
-    onSubscriptionActive: async (ctx, payload) => {
-      // Use Convex context to persist subscription data
-      await ctx.runMutation(internal.webhooks.createSubscription, {
-        subscriptionId: payload.data.subscription_id,
-        businessId: payload.business_id,
-        customerEmail: payload.data.customer.email,
-        status: payload.data.status,
-        webhookPayload: JSON.stringify(payload),
+    onRefundSucceeded: async (ctx, payload) => {
+      const deliveryId =
+        payload.id || `refund_${payload.data.payment_id}_${Date.now()}`;
+
+      await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
+        source: "credits",
+        eventType: "refund.succeeded",
+        deliveryId,
+        payload,
+      });
+
+      await ctx.runMutation(
+        internal.payments.dodoWebhooks.handlePaymentRefunded,
+        {
+          paymentId: payload.data.payment_id,
+          refundAmount: payload.data.refund_amount,
+          deliveryId,
+        }
+      );
+
+      await ctx.runMutation(internal.github.handlers.markEventProcessed, {
+        deliveryId,
       });
     },
-    // Add other event handlers as needed
+
+    onPaymentProcessing: async (ctx, payload) => {
+      const deliveryId =
+        payload.id || `processing_${payload.data.payment_id}_${Date.now()}`;
+
+      await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
+        source: "credits",
+        eventType: "payment.processing",
+        deliveryId,
+        payload,
+      });
+
+      await ctx.runMutation(internal.github.handlers.markEventProcessed, {
+        deliveryId,
+      });
+    },
+
+    onPaymentFailed: async (ctx, payload) => {
+      const deliveryId =
+        payload.id || `failed_${payload.data.payment_id}_${Date.now()}`;
+
+      await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
+        source: "credits",
+        eventType: "payment.failed",
+        deliveryId,
+        payload,
+      });
+
+      await ctx.runMutation(internal.github.handlers.markEventProcessed, {
+        deliveryId,
+      });
+    },
+
+    onPaymentCancelled: async (ctx, payload) => {
+      const deliveryId =
+        payload.id || `cancelled_${payload.data.payment_id}_${Date.now()}`;
+
+      await ctx.runMutation(internal.github.handlers.logWebhookEvent, {
+        source: "credits",
+        eventType: "payment.cancelled",
+        deliveryId,
+        payload,
+      });
+
+      await ctx.runMutation(internal.github.handlers.markEventProcessed, {
+        deliveryId,
+      });
+    },
   }),
 });
 

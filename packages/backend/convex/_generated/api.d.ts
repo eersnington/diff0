@@ -23,12 +23,9 @@ import type * as github_reviews from "../github/reviews.js";
 import type * as github_signature from "../github/signature.js";
 import type * as github_webhooks from "../github/webhooks.js";
 import type * as http from "../http.js";
-import type * as paymentHelpers from "../paymentHelpers.js";
-import type * as payments_http from "../payments/http.js";
-import type * as payments_mutations from "../payments/mutations.js";
+import type * as payments_dodoWebhooks from "../payments/dodoWebhooks.js";
 import type * as payments_productMapping from "../payments/productMapping.js";
 import type * as payments_queries from "../payments/queries.js";
-import type * as payments_webhooks from "../payments/webhooks.js";
 import type * as user from "../user.js";
 
 import type {
@@ -61,12 +58,9 @@ declare const fullApi: ApiFromModules<{
   "github/signature": typeof github_signature;
   "github/webhooks": typeof github_webhooks;
   http: typeof http;
-  paymentHelpers: typeof paymentHelpers;
-  "payments/http": typeof payments_http;
-  "payments/mutations": typeof payments_mutations;
+  "payments/dodoWebhooks": typeof payments_dodoWebhooks;
   "payments/productMapping": typeof payments_productMapping;
   "payments/queries": typeof payments_queries;
-  "payments/webhooks": typeof payments_webhooks;
   user: typeof user;
 }>;
 declare const fullApiWithMounts: typeof fullApi;

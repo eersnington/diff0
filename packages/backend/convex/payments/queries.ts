@@ -2,9 +2,9 @@ import { v } from "convex/values";
 import { query } from "../_generated/server";
 import { authComponent } from "../auth";
 
-export const getCheckoutDetails = query({
+export const getPaymentDetails = query({
   args: {
-    checkoutId: v.string(),
+    paymentId: v.string(),
   },
   returns: v.union(
     v.object({
@@ -21,6 +21,7 @@ export const getCheckoutDetails = query({
         ),
         createdAt: v.number(),
         paidAt: v.optional(v.number()),
+        refundedAt: v.optional(v.number()),
       }),
       credits: v.object({
         balance: v.number(),
@@ -35,12 +36,10 @@ export const getCheckoutDetails = query({
 
     const order = await ctx.db
       .query("orders")
-      .withIndex("checkoutId", (q) =>
-        q.eq("checkoutId", args.checkoutId)
-      )
+      .withIndex("paymentId", (q) => q.eq("paymentId", args.paymentId))
       .first();
 
-    if (!order || order.userEmail !== user.email) {
+    if (!order || order.userId !== user._id) {
       return null;
     }
 
@@ -59,6 +58,7 @@ export const getCheckoutDetails = query({
         status: order.status,
         createdAt: order.createdAt,
         paidAt: order.paidAt,
+        refundedAt: order.refundedAt,
       },
       credits: userCredits
         ? {
@@ -68,5 +68,49 @@ export const getCheckoutDetails = query({
           }
         : { balance: 0, totalPurchased: 0, totalUsed: 0 },
     };
+  },
+});
+
+export const getUserOrders = query({
+  args: {},
+  returns: v.array(
+    v.object({
+      _id: v.id("orders"),
+      paymentId: v.string(),
+      productName: v.string(),
+      amount: v.number(),
+      currency: v.string(),
+      creditsAmount: v.number(),
+      status: v.union(
+        v.literal("pending"),
+        v.literal("paid"),
+        v.literal("refunded")
+      ),
+      createdAt: v.number(),
+      paidAt: v.optional(v.number()),
+      refundedAt: v.optional(v.number()),
+    })
+  ),
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+
+    const orders = await ctx.db
+      .query("orders")
+      .withIndex("userId", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .collect();
+
+    return orders.map((order) => ({
+      _id: order._id,
+      paymentId: order.paymentId,
+      productName: order.productName,
+      amount: order.amount,
+      currency: order.currency,
+      creditsAmount: order.creditsAmount,
+      status: order.status,
+      createdAt: order.createdAt,
+      paidAt: order.paidAt,
+      refundedAt: order.refundedAt,
+    }));
   },
 });
