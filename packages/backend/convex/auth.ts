@@ -1,20 +1,20 @@
 import { createClient, type GenericCtx } from "@convex-dev/better-auth";
 import { convex } from "@convex-dev/better-auth/plugins";
-import { checkout, polar, portal, usage } from "@polar-sh/better-auth";
-import { Polar } from "@polar-sh/sdk";
+import { checkout, dodopayments, portal } from "@dodopayments/better-auth";
 import { type BetterAuthOptions, betterAuth } from "better-auth";
 import { organization } from "better-auth/plugins";
+import DodoPayments from "dodopayments";
 import { env } from "../env";
 import { components } from "./_generated/api";
 import type { DataModel } from "./_generated/dataModel";
 import { type QueryCtx, query } from "./_generated/server";
 
-const siteUrl = env.SITE_URL;
-
-const polarClient = new Polar({
-  accessToken: env.POLAR_ORGANIZATION_TOKEN,
-  server: env.POLAR_ENVIRONMENT,
+export const dodoPayments = new DodoPayments({
+  bearerToken: env.DODO_PAYMENTS_API_KEY,
+  environment: env.DODO_PAYMENTS_ENVIRONMENT,
 });
+
+const siteUrl = env.SITE_URL;
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -47,8 +47,8 @@ export const createAuth = (
           allowRemovingAllTeams: false,
         },
       }),
-      polar({
-        client: polarClient,
+      dodopayments({
+        client: dodoPayments,
         createCustomerOnSignUp: true,
         use: [
           checkout({
@@ -74,7 +74,6 @@ export const createAuth = (
             authenticatedUsersOnly: true,
           }),
           portal(),
-          usage(),
         ],
       }),
     ],

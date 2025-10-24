@@ -18,21 +18,19 @@ const CENTS_TO_CURRENCY_UNIT = 100;
 
 export function SuccessContent() {
   const searchParams = useSearchParams();
-  const checkoutId = searchParams.get("checkout_id");
+  const paymentId = searchParams.get("payment_id");
 
-  const checkoutDetails = useQuery(
-    api.polar.queries.getCheckoutDetails,
-    checkoutId ? { checkoutId } : "skip"
+  const paymentDetails = useQuery(
+    api.payments.queries.getPaymentDetails,
+    paymentId ? { paymentId } : "skip"
   );
 
-  if (!checkoutId) {
+  if (!paymentId) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Invalid Request</CardTitle>
-          <CardDescription>
-            No checkout ID provided in the URL
-          </CardDescription>
+          <CardDescription>No payment ID provided in the URL</CardDescription>
         </CardHeader>
         <CardContent>
           <Button asChild className="w-full">
@@ -43,7 +41,7 @@ export function SuccessContent() {
     );
   }
 
-  if (checkoutDetails === undefined) {
+  if (paymentDetails === undefined) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
@@ -59,13 +57,13 @@ export function SuccessContent() {
     );
   }
 
-  if (!checkoutDetails) {
+  if (!paymentDetails) {
     return (
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl">Order Not Found</CardTitle>
           <CardDescription>
-            We couldn't find an order with this checkout ID
+            We couldn't find an order with this payment ID
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,7 +75,7 @@ export function SuccessContent() {
     );
   }
 
-  const { order, credits } = checkoutDetails;
+  const { order, credits } = paymentDetails;
 
   return (
     <Card className="w-full max-w-md">

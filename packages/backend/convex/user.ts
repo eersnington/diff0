@@ -84,9 +84,9 @@ export const getBillingData = query({
     }
 
     const userId = identity.subject;
-    
+
     const limit = args.limit ?? DEFAULT_TRANSACTION_LIMIT;
-    
+
     const [credits, transactions] = await Promise.all([
       ctx.db
         .query("userCredits")

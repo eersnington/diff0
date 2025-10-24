@@ -1,9 +1,9 @@
 "use client";
 
-import { api } from "@diff0/backend/convex/_generated/api";
+import type { api } from "@diff0/backend/convex/_generated/api";
 import { authClient } from "@diff0/backend/lib/auth-client";
 import type { Preloaded } from "convex/react";
-import { useAction, usePreloadedQuery } from "convex/react";
+import { usePreloadedQuery } from "convex/react";
 import { Beaker, CreditCard, Loader2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -61,17 +61,13 @@ export function BillingContent({ preloadedBillingData }: BillingContentProps) {
       day: "numeric",
     });
 
-  const ensurePolarCustomer = useAction(api.polarHelpers.ensurePolarCustomer);
-
   const handlePurchase = async (slug: string) => {
     setLoadingSlug(slug);
     toast.loading("Just a sec", {
       description: "Consulting the Orb 🔮 to summon your user essence...",
     });
     try {
-      await ensurePolarCustomer();
-
-      await authClient.checkout({
+      await authClient.dodopayments.checkout({
         slug,
       });
     } catch (_error) {
@@ -238,7 +234,7 @@ export function BillingContent({ preloadedBillingData }: BillingContentProps) {
               ))}
             </div>
             <p className="mt-4 text-muted-foreground text-sm">
-              Payment processing via Polar. Credits expire in 1 year.
+              Payment processing via Dodopayments. Credits expire in 1 year.
             </p>
           </CardContent>
         </Card>

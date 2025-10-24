@@ -29,7 +29,7 @@ export const addCredits = internalMutation({
     userId: v.string(),
     amount: v.number(),
     description: v.string(),
-    polarCheckoutId: v.optional(v.string()),
+    checkoutId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const credits = await ctx.db
@@ -61,7 +61,7 @@ export const addCredits = internalMutation({
       amount: args.amount,
       balance: newBalance,
       description: args.description,
-      polarCheckoutId: args.polarCheckoutId,
+      checkoutId: args.checkoutId,
       createdAt: Date.now(),
     });
 

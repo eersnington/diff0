@@ -24,19 +24,19 @@ export default defineSchema({
     amount: v.number(),
     balance: v.number(),
     description: v.string(),
-    polarCheckoutId: v.optional(v.string()),
+    checkoutId: v.optional(v.string()),
     createdAt: v.number(),
   }).index("userId", ["userId"]),
 
   // ============================================
-  // POLAR ORDERS
+  // ORDERS
   // ============================================
 
-  polarOrders: defineTable({
+  orders: defineTable({
+    userId: v.string(),
     userEmail: v.string(),
-    polarOrderId: v.string(),
-    polarCheckoutId: v.string(),
-    polarCustomerId: v.string(),
+    paymentId: v.string(),
+    customerId: v.string(),
     productId: v.string(),
     productName: v.string(),
     amount: v.number(),
@@ -48,16 +48,14 @@ export default defineSchema({
     ),
     creditsAmount: v.number(),
     creditsApplied: v.boolean(),
-    billingReason: v.optional(v.string()),
-    subscriptionId: v.optional(v.string()),
     metadata: v.optional(v.any()),
     createdAt: v.number(),
     paidAt: v.optional(v.number()),
     refundedAt: v.optional(v.number()),
   })
+    .index("userId", ["userId"])
     .index("userEmail", ["userEmail"])
-    .index("polarOrderId", ["polarOrderId"])
-    .index("polarCheckoutId", ["polarCheckoutId"])
+    .index("paymentId", ["paymentId"])
     .index("status", ["status"]),
 
   // ============================================
@@ -186,7 +184,7 @@ export default defineSchema({
   // ============================================
 
   webhookEvents: defineTable({
-    source: v.union(v.literal("github"), v.literal("polar")),
+    source: v.union(v.literal("github"), v.literal("credits")),
     eventType: v.string(),
     deliveryId: v.string(),
     installationId: v.optional(v.string()),
