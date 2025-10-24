@@ -24,19 +24,19 @@ export default defineSchema({
     amount: v.number(),
     balance: v.number(),
     description: v.string(),
-    polarCheckoutId: v.optional(v.string()),
+    checkoutId: v.optional(v.string()),
     createdAt: v.number(),
   }).index("userId", ["userId"]),
 
   // ============================================
-  // POLAR ORDERS
+  // ORDERS
   // ============================================
 
-  polarOrders: defineTable({
+  orders: defineTable({
     userEmail: v.string(),
-    polarOrderId: v.string(),
-    polarCheckoutId: v.string(),
-    polarCustomerId: v.string(),
+    orderId: v.string(),
+    checkoutId: v.string(),
+    customerId: v.string(),
     productId: v.string(),
     productName: v.string(),
     amount: v.number(),
@@ -56,8 +56,8 @@ export default defineSchema({
     refundedAt: v.optional(v.number()),
   })
     .index("userEmail", ["userEmail"])
-    .index("polarOrderId", ["polarOrderId"])
-    .index("polarCheckoutId", ["polarCheckoutId"])
+    .index("orderId", ["orderId"])
+    .index("checkoutId", ["checkoutId"])
     .index("status", ["status"]),
 
   // ============================================
@@ -186,7 +186,7 @@ export default defineSchema({
   // ============================================
 
   webhookEvents: defineTable({
-    source: v.union(v.literal("github"), v.literal("polar")),
+    source: v.union(v.literal("github"), v.literal("credits")),
     eventType: v.string(),
     deliveryId: v.string(),
     installationId: v.optional(v.string()),
