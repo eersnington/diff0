@@ -7,23 +7,22 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@ai-sdk/amazon-bedrock": "^3.0.29",
-    "@ai-sdk/google": "^2.0.17",
-    "@ai-sdk/openai": "^2.0.42",
-    "@ai-sdk/react": "^2.0.59",
-    "@inkeep/agents-sdk": "^0.11.2",
-    "@mendable/firecrawl-js": "^4.3.7",
+    "@ai-sdk/amazon-bedrock": "^3.0.47",
+    "@ai-sdk/google": "^2.0.23",
+    "@ai-sdk/openai": "^2.0.53",
+    "@ai-sdk/react": "^2.0.78",
+    "@mendable/firecrawl-js": "^4.4.1",
     "@t3-oss/env-core": "^0.13.8",
-    "ai": "^5.0.59",
-    "react": "^19.1.1",
+    "ai": "^5.0.78",
+    "react": "19.2.0",
     "react-markdown": "^10.1.0",
     "scorecard-ai": "^2.1.1",
     "tailwind-merge": "^3.3.0",
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@types/node": "22.15.21",
-    "@types/react": "^19.1.5",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.2.2",
     "@types/react-dom": "^19.1.5",
     "typescript": "^5.9.2"
   }

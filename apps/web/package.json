@@ -51,12 +51,12 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.487.0",
     "motion": "^12.23.22",
-    "next": "15.5.4",
+    "next": "16.0.0",
     "next-themes": "^0.4.6",
     "radix-ui": "^1.4.2",
-    "react": "19.1.1",
+    "react": "19.2.0",
     "react-day-picker": "^9.11.0",
-    "react-dom": "19.1.1",
+    "react-dom": "19.2.0",
     "react-hook-form": "^7.63.0",
     "react-resizable-panels": "^3.0.6",
     "recharts": "2.15.4",
@@ -68,10 +68,16 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.10",
-    "@types/node": "^20",
-    "@types/react": "^19.1.5",
-    "@types/react-dom": "^19.1.5",
+    "@types/node": "^24.3.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
     "tailwindcss": "^4.1.10",
     "typescript": "^5.9.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "@types/react": "19.2.2",
+      "@types/react-dom": "19.2.2"
+    }
   }
 }
