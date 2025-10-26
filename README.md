@@ -179,20 +179,6 @@ pnpm dev:backend  # Convex backend only
 6. Generate and download private key
 7. Install app on your repositories
 
-## Development Commands
-
-### Development
-
-```bash
-# Start all services
-pnpm dev
-
-# Start specific services
-pnpm dev:web      # Next.js app only
-pnpm dev:fuma      # Fumadocs app only
-pnpm dev:server   # Convex backend only
-```
-
 ### Linting and Formatting
 
 ```bash
