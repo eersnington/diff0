@@ -24,7 +24,7 @@
     "@octokit/types": "^15.0.0",
     "@octokit/webhooks": "^14.1.3",
     "@t3-oss/env-core": "^0.13.8",
-    "better-auth": "1.3.27",
+    "better-auth": "1.3.31",
     "buffer": "^6.0.3",
     "convex": "^1.27.3",
     "convex-helpers": "^0.1.104",
