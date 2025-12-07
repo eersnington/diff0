@@ -14,7 +14,7 @@
     "@mendable/firecrawl-js": "^4.3.7",
     "@t3-oss/env-core": "^0.13.8",
     "ai": "^5.0.59",
-    "react": "19.2.0",
+    "react": "19.2.1",
     "react-markdown": "^10.1.0",
     "scorecard-ai": "^2.1.1",
     "tailwind-merge": "^3.3.0",
