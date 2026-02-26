@@ -181,7 +181,10 @@ export async function runTests(
 
 		while (attempts < maxAttempts) {
 			const session = await getSession(sandboxId, sessionId);
-			const lastCommand = session.commands.at(-1);
+			const lastCommand =
+				session.commands.length > 0
+					? session.commands[session.commands.length - 1]
+					: undefined;
 
 			if (lastCommand && lastCommand.exitCode !== undefined) {
 				await deleteSession(sandboxId, sessionId);
